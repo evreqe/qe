@@ -1,0 +1,35 @@
+[enable]
+
+eqgame.exe+2005C0:
+cmp eax,[eqgame.exe+215F34]
+jne EQGfx_Dx8.t3dSetActorInvisible+1B
+cmp dword ptr [eqgame.exe+215F3C],00
+je EQGfx_Dx8.t3dSetActorInvisible+F
+jmp EQGfx_Dx8.t3dSetActorInvisible+1B
+nop 
+
+EQGfx_Dx8.t3dSetActorInvisible+27:
+jmp eqgame.exe+2005C0
+
+EQGfx_Dx8.t3dSetActorInvisible+D:
+jmp EQGfx_Dx8.t3dSetActorInvisible+27
+
+[disable]
+
+EQGfx_Dx8.t3dSetActorInvisible+D:
+je EQGfx_Dx8.t3dSetActorInvisible+1B
+
+EQGfx_Dx8.t3dSetActorInvisible+27:
+db CC
+db CC
+db CC
+db CC
+db CC
+
+eqgame.exe+2005C0:
+db 00 00 00 00 00 00
+db 00 00 00 00 00 00
+db 00 00 00 00 00 00 00
+db 00 00 00 00 00 00
+db 00 00 00 00 00
+db 00

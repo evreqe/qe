@@ -1,0 +1,18 @@
+eqmain.dll+16327 - 74 5A                 - je eqmain.dll+16383
+
+to
+
+90 90
+
+
+
+NEWEST:::
+
+eqmain.dll+16320 - E8 6BF60200           - call eqmain.dll+45990
+
+
+to
+
+eqmain.dll+16320 - E9 20010000           - jmp eqmain.dll+16445
+
+

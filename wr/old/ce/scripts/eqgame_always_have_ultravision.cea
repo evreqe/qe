@@ -1,0 +1,9 @@
+[enable]
+
+eqgame.exe+1FB78:
+db 00
+
+[disable]
+
+eqgame.exe+1FB78:
+db FF

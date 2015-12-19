@@ -1,0 +1,13 @@
+EQGfx_Dx8.dll
+
+Offset: 54AA8
+Old Value: 75 18
+New Value: 90 90
+
+Offset: 31D5A
+Old Value: 0F 84 70 01 00 00
+New Value: 90 90 90 90 90 90
+
+Offset: 4FBCB
+Old Value: 0F 84 08 02 00 00
+New Value: 90 90 90 90 90 90

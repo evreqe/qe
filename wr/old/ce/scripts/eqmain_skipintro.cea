@@ -1,0 +1,25 @@
+[enable]
+
+eqmain.dll+213CF:
+db 90
+db 90 90 90 90 90
+db 90 90 90 90 90
+
+eqmain.dll+213DA:
+db 90
+db 90
+db 90 90 90 90 90
+db 90 90 90 90 90
+
+[disable]
+
+eqmain.dll+213CF:
+push eax
+push eqmain.dll+AF700
+call eqmain.dll+1C4A4
+
+eqmain.dll+213DA:
+push edi
+push edi
+push eqmain.dll+AF700
+call eqmain.dll+1C4A4

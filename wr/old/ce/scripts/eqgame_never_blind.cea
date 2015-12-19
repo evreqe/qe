@@ -1,0 +1,9 @@
+[enable]
+
+eqgame.exe+1768F:
+db EB
+
+[disable]
+
+eqgame.exe+1768F:
+db 74

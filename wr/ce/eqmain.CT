@@ -1,0 +1,4619 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="18">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>153</ID>
+      <Description>"No description"</Description>
+      <LastState Value="3D483BB8" Activated="0" RealAddress="04C790BC"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+2F90BC</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>119</ID>
+      <Description>"No description"</Description>
+      <LastState Value="048EAEB8" Activated="0" RealAddress="04A7F0EC"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+FF0EC</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>106</ID>
+      <Description>"No description"</Description>
+      <LastState Value="047C6448" Activated="0" RealAddress="04A7F0E4"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+FF0E4</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>1</ID>
+          <Description>"No description"</Description>
+          <LastState Value="0" Activated="0" RealAddress="047C65DC"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0E4</Address>
+          <Offsets>
+            <Offset>194</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>148</ID>
+      <Description>"No description"</Description>
+      <LastState Value="00000000" Activated="0" RealAddress="04A7FDE4"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+FFDE4</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>149</ID>
+          <Description>"No description"</Description>
+          <LastState Value="0" Activated="0" RealAddress="047C65DC"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0E4</Address>
+          <Offsets>
+            <Offset>194</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>6</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="04A7F0E8"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+FF0E8</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>7</ID>
+      <Description>"LoginClient class"</Description>
+      <LastState Value="048EAEB8" Activated="0" RealAddress="04A7F0EC"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+FF0EC</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>16</ID>
+          <Description>"0x00"</Description>
+          <LastState Value="04A44D20" Activated="0" RealAddress="048EAEB8"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>125</ID>
+          <Description>"0x04"</Description>
+          <LastState Value="04A44CF0" Activated="0" RealAddress="048EAEBC"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>4</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>51</ID>
+          <Description>"0x08"</Description>
+          <LastState Value="00AD4EE0" Activated="0" RealAddress="048EAEC0"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>8</Offset>
+          </Offsets>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>152</ID>
+              <Description>"0x00"</Description>
+              <LastState Activated="0" RealAddress="00AD4EE0"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>String</VariableType>
+              <Length>64</Length>
+              <Unicode>0</Unicode>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>eqmain.dll+FF0EC</Address>
+              <Offsets>
+                <Offset>0</Offset>
+                <Offset>8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>173</ID>
+              <Description>"0x404"</Description>
+              <LastState Value="001511C8" Activated="0" RealAddress="00AD52E4"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>eqmain.dll+FF0EC</Address>
+              <Offsets>
+                <Offset>404</Offset>
+                <Offset>8</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>124</ID>
+          <Description>"0x0C"</Description>
+          <LastState Value="04A44BA8" Activated="0" RealAddress="048EAEC4"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>126</ID>
+          <Description>"0x10"</Description>
+          <LastState Value="047A7D80" Activated="0" RealAddress="048EAEC8"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>10</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>50</ID>
+          <Description>"0x14"</Description>
+          <LastState Value="128" Activated="0" RealAddress="048EAECC"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>14</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>127</ID>
+          <Description>"0x15"</Description>
+          <LastState Value="125" Activated="0" RealAddress="048EAECD"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>15</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>53</ID>
+          <Description>"0x16"</Description>
+          <LastState Value="122" Activated="0" RealAddress="048EAECE"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>16</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>52</ID>
+          <Description>"0x17"</Description>
+          <LastState Value="4" Activated="0" RealAddress="048EAECF"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>17</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>54</ID>
+          <Description>"0x18"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EAED0"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>18</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>55</ID>
+          <Description>"0x19"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EAED1"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>19</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>128</ID>
+          <Description>"0x24"</Description>
+          <LastState Value="1" Activated="0" RealAddress="048EAEDC"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>24</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>49</ID>
+          <Description>"0x30"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EAEE8"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>30</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>129</ID>
+          <Description>"0x34"</Description>
+          <LastState Value="04A46E0C" Activated="0" RealAddress="048EAEEC"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>34</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>130</ID>
+          <Description>"0x38"</Description>
+          <LastState Value="048EB220" Activated="0" RealAddress="048EAEF0"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>38</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>131</ID>
+          <Description>"0x3C"</Description>
+          <LastState Value="211" Activated="0" RealAddress="048EAEF4"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>3C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>133</ID>
+          <Description>"0x4C"</Description>
+          <LastState Value="047A13B8" Activated="0" RealAddress="048EAF04"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>4C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>134</ID>
+          <Description>"0x50"</Description>
+          <LastState Value="047A13B8" Activated="0" RealAddress="048EAF08"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>50</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>132</ID>
+          <Description>"0x54"</Description>
+          <LastState Value="1.661534995E35" Activated="0" RealAddress="048EAF0C"/>
+          <Color>80000008</Color>
+          <VariableType>Float</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>54</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>135</ID>
+          <Description>"0x58"</Description>
+          <LastState Value="04A46E0C" Activated="0" RealAddress="048EAF10"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>58</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>136</ID>
+          <Description>"0x5C"</Description>
+          <LastState Value="048EB578" Activated="0" RealAddress="048EAF14"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>5C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>137</ID>
+          <Description>"0x7C"</Description>
+          <LastState Value="04A46E0C" Activated="0" RealAddress="048EAF34"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>7C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>138</ID>
+          <Description>"0x80"</Description>
+          <LastState Value="048EB8D0" Activated="0" RealAddress="048EAF38"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>80</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>102</ID>
+          <Description>"0xA0"</Description>
+          <LastState Value="6.664843428E13" Activated="0" RealAddress="048EAF58"/>
+          <Color>80000008</Color>
+          <VariableType>Float</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>A0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>140</ID>
+          <Description>"0xA0"</Description>
+          <LastState Value="1450342193" Activated="0" RealAddress="048EAF58"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>A0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>139</ID>
+          <Description>"0xB0"</Description>
+          <LastState Value="0479C7E0" Activated="0" RealAddress="048EAF68"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>B0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>141</ID>
+          <Description>"0xB4"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EAF6C"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>B4</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>103</ID>
+          <Description>"0xC0"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EAF78"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>C0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>155</ID>
+          <Description>"0xC4"</Description>
+          <LastState Value="24000000" Activated="0" RealAddress="048EAF7C"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>C4</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>15</ID>
+          <Description>"0xD1"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EAF89"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>D1</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>154</ID>
+          <Description>"0xF8"</Description>
+          <LastState Value="17" Activated="0" RealAddress="048EAFB0"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>F8</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>18</ID>
+          <Description>"0x12C"</Description>
+          <LastState Value="90" Activated="0" RealAddress="048EAFE4"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>12C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>32</ID>
+          <Description>"0x140"</Description>
+          <LastState Value="117" Activated="0" RealAddress="048EAFF8"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>140</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>17</ID>
+          <Description>"0x144"</Description>
+          <LastState Value="121" Activated="0" RealAddress="048EAFFC"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>144</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>45</ID>
+          <Description>"0x18C"</Description>
+          <LastState Value="101" Activated="0" RealAddress="048EB044"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>18C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>46</ID>
+          <Description>"0x194"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EB04C"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>194</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>33</ID>
+          <Description>"0x278"</Description>
+          <LastState Value="00000000" Activated="0" RealAddress="048EB130"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>278</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>40</ID>
+          <Description>"0x288"</Description>
+          <LastState Value="00000000" Activated="0" RealAddress="048EB140"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>288</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>41</ID>
+          <Description>"0x28C"</Description>
+          <LastState Value="00000000" Activated="0" RealAddress="048EB144"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>28C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>38</ID>
+          <Description>"0x290"</Description>
+          <LastState Value="00000000" Activated="0" RealAddress="048EB148"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>290</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>42</ID>
+          <Description>"0x294"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EB14C"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>294</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>39</ID>
+          <Description>"0x298"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EB150"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>298</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>43</ID>
+          <Description>"0x29C"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EB154"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>29C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>36</ID>
+          <Description>"0x2A0 No description"</Description>
+          <LastState Value="-1" Activated="0" RealAddress="048EB158"/>
+          <ShowAsSigned>1</ShowAsSigned>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>2A0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>150</ID>
+          <Description>"0x2A4"</Description>
+          <LastState Value="04980000" Activated="0" RealAddress="048EB15C"/>
+          <ShowAsHex>1</ShowAsHex>
+          <ShowAsSigned>1</ShowAsSigned>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>2A4</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>151</ID>
+          <Description>"0x2A4"</Description>
+          <LastState Value="3.573502826E-36" Activated="0" RealAddress="048EB15C"/>
+          <ShowAsSigned>1</ShowAsSigned>
+          <Color>80000008</Color>
+          <VariableType>Float</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>2A4</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>13</ID>
+          <Description>"0x2AC quick login if set to 1"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EB164"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>2AC</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>44</ID>
+          <Description>"0x2D8"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EB190"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>2D8</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>14</ID>
+          <Description>"0x2F0"</Description>
+          <LastState Value="1" Activated="0" RealAddress="048EB1A8"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>2F0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>47</ID>
+          <Description>"0x2F1"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EB1A9"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>2F1</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>9</ID>
+          <Description>"0x305"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EB1BD"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>305</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>10</ID>
+          <Description>"0x306"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EB1BE"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>306</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>147</ID>
+          <Description>"0x308"</Description>
+          <LastState Value="04A46C84" Activated="0" RealAddress="048EB1C0"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>308</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>37</ID>
+          <Description>"0x338"</Description>
+          <LastState Value="1" Activated="0" RealAddress="048EB1F0"/>
+          <ShowAsSigned>1</ShowAsSigned>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>338</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>166</ID>
+          <Description>"0x340"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048EB1F8"/>
+          <ShowAsSigned>1</ShowAsSigned>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>340</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>142</ID>
+          <Description>"0x354 0 makes game close"</Description>
+          <LastState Value="1" Activated="0" RealAddress="048EB20C"/>
+          <ShowAsSigned>1</ShowAsSigned>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>354</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>19</ID>
+          <Description>"0x358 No description"</Description>
+          <LastState Value="-1" Activated="0" RealAddress="048EB210"/>
+          <ShowAsSigned>1</ShowAsSigned>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>358</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>143</ID>
+          <Description>"0x360"</Description>
+          <LastState Value="38F3EC78" Activated="0" RealAddress="048EB218"/>
+          <ShowAsHex>1</ShowAsHex>
+          <ShowAsSigned>1</ShowAsSigned>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>360</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>144</ID>
+          <Description>"0x360"</Description>
+          <LastState Value="0.0001163118868" Activated="0" RealAddress="048EB218"/>
+          <ShowAsSigned>1</ShowAsSigned>
+          <Color>80000008</Color>
+          <VariableType>Float</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>360</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>145</ID>
+          <Description>"0x364"</Description>
+          <LastState Value="0C0009DE" Activated="0" RealAddress="048EB21C"/>
+          <ShowAsHex>1</ShowAsHex>
+          <ShowAsSigned>1</ShowAsSigned>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>364</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>146</ID>
+          <Description>"0x364"</Description>
+          <LastState Value="9.863730614E-32" Activated="0" RealAddress="048EB21C"/>
+          <ShowAsSigned>1</ShowAsSigned>
+          <Color>80000008</Color>
+          <VariableType>Float</VariableType>
+          <Address>eqmain.dll+FF0EC</Address>
+          <Offsets>
+            <Offset>364</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"Window Manager"</Description>
+      <LastState Value="048ECCB0" Activated="0" RealAddress="04A7F0F0"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+FF0F0</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>34</ID>
+          <Description>"0x00"</Description>
+          <LastState Value="04A46B40" Activated="0" RealAddress="048ECCB0"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>0</Offset>
+          </Offsets>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>92</ID>
+              <Description>"0x14"</Description>
+              <LastState Value="04988080" Activated="0" RealAddress="04A46B54"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>eqmain.dll+FF0F0</Address>
+              <Offsets>
+                <Offset>14</Offset>
+                <Offset>0</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>91</ID>
+              <Description>"0x18"</Description>
+              <LastState Value="04988080" Activated="0" RealAddress="04A46B58"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>eqmain.dll+FF0F0</Address>
+              <Offsets>
+                <Offset>18</Offset>
+                <Offset>0</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>87</ID>
+              <Description>"0x1C"</Description>
+              <LastState Value="04987F00" Activated="0" RealAddress="04A46B5C"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>eqmain.dll+FF0F0</Address>
+              <Offsets>
+                <Offset>1C</Offset>
+                <Offset>0</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>88</ID>
+                  <Description>"0x34"</Description>
+                  <LastState Value="0" Activated="0" RealAddress="04987F34"/>
+                  <Color>80000008</Color>
+                  <VariableType>Byte</VariableType>
+                  <Address>eqmain.dll+FF0F0</Address>
+                  <Offsets>
+                    <Offset>34</Offset>
+                    <Offset>1C</Offset>
+                    <Offset>0</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>89</ID>
+                  <Description>"0x38"</Description>
+                  <LastState Value="C7C08518" Activated="0" RealAddress="04987F38"/>
+                  <ShowAsHex>1</ShowAsHex>
+                  <Color>80000008</Color>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>eqmain.dll+FF0F0</Address>
+                  <Offsets>
+                    <Offset>38</Offset>
+                    <Offset>1C</Offset>
+                    <Offset>0</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>90</ID>
+                  <Description>"0x3C"</Description>
+                  <LastState Value="00082444" Activated="0" RealAddress="04987F3C"/>
+                  <ShowAsHex>1</ShowAsHex>
+                  <Color>80000008</Color>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>eqmain.dll+FF0F0</Address>
+                  <Offsets>
+                    <Offset>3C</Offset>
+                    <Offset>1C</Offset>
+                    <Offset>0</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>83</ID>
+              <Description>"0x50"</Description>
+              <LastState Value="049880A0" Activated="0" RealAddress="04A46B90"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>eqmain.dll+FF0F0</Address>
+              <Offsets>
+                <Offset>50</Offset>
+                <Offset>0</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>156</ID>
+              <Description>"0x60"</Description>
+              <LastState Value="049880C0" Activated="0" RealAddress="04A46BA0"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>eqmain.dll+FF0F0</Address>
+              <Offsets>
+                <Offset>60</Offset>
+                <Offset>0</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>35</ID>
+          <Description>"0x04"</Description>
+          <LastState Value="048ECD28" Activated="0" RealAddress="048ECCB4"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>4</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>72</ID>
+          <Description>"0x07"</Description>
+          <LastState Value="25860" Activated="0" RealAddress="048ECCB7"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>7</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>164</ID>
+          <Description>"0x08"</Description>
+          <LastState Value="101" Activated="0" RealAddress="048ECCB8"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>8</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>73</ID>
+          <Description>"0x0C"</Description>
+          <LastState Value="15" Activated="0" RealAddress="048ECCBC"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>74</ID>
+          <Description>"0x10"</Description>
+          <LastState Value="12" Activated="0" RealAddress="048ECCC0"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>10</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>75</ID>
+          <Description>"0x14 Current Window"</Description>
+          <LastState Value="08212AB8" Activated="0" RealAddress="048ECCC4"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>14</Offset>
+          </Offsets>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>160</ID>
+              <Description>"0x"</Description>
+              <LastState Value="04A4A3C0" Activated="0" RealAddress="08212AB8"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>eqmain.dll+FF0F0</Address>
+              <Offsets>
+                <Offset>0</Offset>
+                <Offset>14</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>76</ID>
+          <Description>"0x18"</Description>
+          <LastState Value="00000000" Activated="0" RealAddress="048ECCC8"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>18</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>80</ID>
+          <Description>"0x1C"</Description>
+          <LastState Value="00000000" Activated="0" RealAddress="048ECCCC"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>1C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>165</ID>
+          <Description>"0x2C"</Description>
+          <LastState Value="048ECEC8" Activated="0" RealAddress="048ECCDC"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>2C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>58</ID>
+          <Description>"0x30"</Description>
+          <LastState Value="101" Activated="0" RealAddress="048ECCE0"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>30</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>163</ID>
+          <Description>"0x34"</Description>
+          <LastState Value="28 0 0 0" Activated="0" RealAddress="048ECCE4"/>
+          <Color>80000008</Color>
+          <VariableType>Array of byte</VariableType>
+          <ByteLength>4</ByteLength>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>34</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>161</ID>
+          <Description>"0x38"</Description>
+          <LastState Value="22" Activated="0" RealAddress="048ECCE8"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>38</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>162</ID>
+          <Description>"0x3C Window CXStr"</Description>
+          <LastState Value="081EC460" Activated="0" RealAddress="048ECCEC"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>3C</Offset>
+          </Offsets>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>177</ID>
+              <Description>"0x10 text"</Description>
+              <LastState Activated="0" RealAddress="081EC474"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>String</VariableType>
+              <Length>10</Length>
+              <Unicode>0</Unicode>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>eqmain.dll+FF0F0</Address>
+              <Offsets>
+                <Offset>14</Offset>
+                <Offset>3C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>178</ID>
+              <Description>"0x10 text"</Description>
+              <LastState Value="616C7565" Activated="0" RealAddress="081EC474"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>eqmain.dll+FF0F0</Address>
+              <Offsets>
+                <Offset>14</Offset>
+                <Offset>3C</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>77</ID>
+          <Description>"0x40"</Description>
+          <LastState Value="047A1660" Activated="0" RealAddress="048ECCF0"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>40</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>78</ID>
+          <Description>"0x44 Window ID?"</Description>
+          <LastState Value="0820B6C0" Activated="0" RealAddress="048ECCF4"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>44</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>68</ID>
+          <Description>"0x50 Window Is Visible/Drawn"</Description>
+          <LastState Value="1" Activated="0" RealAddress="048ECD00"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>50</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>82</ID>
+          <Description>"0x51"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048ECD01"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>51</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>81</ID>
+          <Description>"0x52"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048ECD02"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>52</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>67</ID>
+          <Description>"0x60"</Description>
+          <LastState Value="0" Activated="0" RealAddress="048ECD10"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>60</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>79</ID>
+          <Description>"0x8C"</Description>
+          <LastState Value="00000000" Activated="0" RealAddress="048ECD3C"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>8C</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>2</ID>
+      <Description>"window list?"</Description>
+      <LastState Value="04A46E7C" Activated="0" RealAddress="04A7F180"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+FF180</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>70</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0477FFB8" Activated="0" RealAddress="04A7F0F4"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+FF0F4</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>98</ID>
+          <Description>"0x14"</Description>
+          <LastState Value="00010101" Activated="0" RealAddress="0477FFCC"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F4</Address>
+          <Offsets>
+            <Offset>14</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>99</ID>
+          <Description>"0x1C"</Description>
+          <LastState Value="00000000" Activated="0" RealAddress="0477FFD4"/>
+          <ShowAsHex>1</ShowAsHex>
+          <ShowAsSigned>0</ShowAsSigned>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F4</Address>
+          <Offsets>
+            <Offset>1C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>101</ID>
+          <Description>"0x20 Mouse X"</Description>
+          <LastState Value="971" Activated="0" RealAddress="0477FFD8"/>
+          <ShowAsSigned>1</ShowAsSigned>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F4</Address>
+          <Offsets>
+            <Offset>20</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>100</ID>
+          <Description>"0x24 Mouse Y"</Description>
+          <LastState Value="637" Activated="0" RealAddress="0477FFDC"/>
+          <ShowAsSigned>1</ShowAsSigned>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F4</Address>
+          <Offsets>
+            <Offset>24</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"Timer"</Description>
+      <LastState Value="1450342201" Activated="0" RealAddress="04A7F0D8"/>
+      <Color>80000008</Color>
+      <VariableType>8 Bytes</VariableType>
+      <Address>eqmain.dll+FF0D8</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>5</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="04A7F0DC"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+FF0DC</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>11</ID>
+      <Description>"No description"</Description>
+      <LastState Value="??" Activated="0" RealAddress="003EAEB8"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>3eaeb8</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>12</ID>
+      <Description>"No description"</Description>
+      <LastState Value="048EAEB8" Activated="0" RealAddress="04A7F0EC"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+FF0EC</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>22</ID>
+      <Description>"logo timer thing"</Description>
+      <LastState Value="00000000" Activated="0" RealAddress="04C70A6C"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+2F0A6C</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>23</ID>
+          <Description>"No description"</Description>
+          <LastState Value="??" Activated="0" RealAddress="00000000"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+2F0A6C</Address>
+          <Offsets>
+            <Offset>4</Offset>
+            <Offset>1C8</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>24</ID>
+          <Description>"No description"</Description>
+          <LastState Value="??" Activated="0" RealAddress="000001CC"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+2F0A6C</Address>
+          <Offsets>
+            <Offset>1CC</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>25</ID>
+      <Description>""</Description>
+      <LastState Value="3" Activated="0" RealAddress="044188AC"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>nvspcap.dll+E88AC</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>26</ID>
+      <Description>"No description"</Description>
+      <LastState Value="255" Activated="0" RealAddress="04EEC0E0"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>04EEC0E0</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>27</ID>
+      <Description>"No description"</Description>
+      <LastState Value="255" Activated="0" RealAddress="04EEC0E4"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>04EEC0E4</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>28</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="04C70A6C"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>eqmain.dll+2F0A6C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>29</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="04C70A6D"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>eqmain.dll+2F0A6D</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>30</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="04C70A6E"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>eqmain.dll+2F0A6E</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>48</ID>
+      <Description>"important?"</Description>
+      <LastState Value="1" Activated="0" RealAddress="04A87890"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>eqmain.dll+107890</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>56</ID>
+      <Description>"No description"</Description>
+      <LastState Value="07238E68" Activated="0" RealAddress="04C7097C"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+2F097C</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>57</ID>
+          <Description>"No description"</Description>
+          <LastState Value="04A4D2CC" Activated="0" RealAddress="07238E68"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+2F097C</Address>
+          <Offsets>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>59</ID>
+      <Description>"No description"</Description>
+      <LastState Value="16" Activated="0" RealAddress="034CD0DC"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>EQGraphicsDX9.DLL+13D0DC</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>60</ID>
+      <Description>"No description"</Description>
+      <LastState Value="18" Activated="0" RealAddress="034CD198"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>EQGraphicsDX9.DLL+13D198</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>61</ID>
+      <Description>"No description"</Description>
+      <LastState Value="18" Activated="0" RealAddress="034CD19C"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>EQGraphicsDX9.DLL+13D19C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>62</ID>
+      <Description>"No description"</Description>
+      <LastState Value="16" Activated="0" RealAddress="0351BB14"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>EQGraphicsDX9.DLL+18BB14</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>63</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="04D8015C"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>04D8015C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>64</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="04FE0100"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>04FE0100</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>65</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="050648A0"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>050648A0</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>66</ID>
+      <Description>"No description"</Description>
+      <LastState Value="F7F6F5F4" Activated="0" RealAddress="77694234"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>ntdll.dll+104234</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>69</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0477F290" Activated="0" RealAddress="04C703A0"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+2F03A0</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>71</ID>
+      <Description>"No description"</Description>
+      <LastState Value="244" Activated="0" RealAddress="77694234"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>ntdll.dll+104234</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>93</ID>
+      <Description>"No description"</Description>
+      <LastState Value="07238E68" Activated="0" RealAddress="04C7097C"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+2F097C</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>94</ID>
+          <Description>"Mouse Cursor ID"</Description>
+          <LastState Value="0" Activated="0" RealAddress="07238EEC"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+2F097C</Address>
+          <Offsets>
+            <Offset>84</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>95</ID>
+      <Description>"No description"</Description>
+      <LastState Value="03960050" Activated="0" RealAddress="04C711FC"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+2F11FC</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>96</ID>
+          <Description>"No description"</Description>
+          <LastState Value="3619102270" Activated="0" RealAddress="039600F4"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+2F11FC</Address>
+          <Offsets>
+            <Offset>A4</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>97</ID>
+          <Description>"No description"</Description>
+          <LastState Value="35C4C21C" Activated="0" RealAddress="03960100"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+2F11FC</Address>
+          <Offsets>
+            <Offset>B0</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>104</ID>
+      <Description>"No description"</Description>
+      <LastState Value="1" Activated="0" RealAddress="04A87890"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+107890</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>105</ID>
+      <Description>"No description"</Description>
+      <LastState Activated="0" RealAddress="04A44BDC"/>
+      <Color>80000008</Color>
+      <VariableType>String</VariableType>
+      <Length>7</Length>
+      <Unicode>0</Unicode>
+      <ZeroTerminate>1</ZeroTerminate>
+      <Address>eqmain.dll+C4BDC</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>108</ID>
+      <Description>"No description"</Description>
+      <LastState Activated="0" RealAddress="0920F2F4"/>
+      <Color>80000008</Color>
+      <VariableType>String</VariableType>
+      <Length>15</Length>
+      <Unicode>0</Unicode>
+      <ZeroTerminate>1</ZeroTerminate>
+      <Address>0920F2F4</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>109</ID>
+      <Description>"No description"</Description>
+      <LastState Value="??" Activated="0" RealAddress="0920F2E0"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>0920F2E0</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>110</ID>
+      <Description>"No description"</Description>
+      <LastState Value="00000000" Activated="0" RealAddress="04F9AEB8"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>04F9AEB8</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>111</ID>
+      <Description>"No description"</Description>
+      <LastState Value="??" Activated="0" RealAddress="000002F1"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>04F9AEB8</Address>
+      <Offsets>
+        <Offset>2F1</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>112</ID>
+      <Description>"No description"</Description>
+      <LastState Value="??" Activated="0" RealAddress="000002F1"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>04F9AEB8</Address>
+      <Offsets>
+        <Offset>2F1</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>113</ID>
+      <Description>"No description"</Description>
+      <LastState Value="??" Activated="0" RealAddress="087D6730"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>087D6730</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>116</ID>
+      <Description>"EULA Window???"</Description>
+      <LastState Value="??" Activated="0" RealAddress="087D6940"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>087D6940</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>114</ID>
+      <Description>"LoginViewManager???"</Description>
+      <LastState Value="00000000" Activated="0" RealAddress="04C19740"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>04C19740</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>115</ID>
+      <Description>"EULA Window???"</Description>
+      <LastState Value="00000000" Activated="0" RealAddress="04F18A08"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>04F18A08</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>117</ID>
+      <Description>"boolean for showing the eula window???"</Description>
+      <LastState Value="1" Activated="0" RealAddress="04A87890"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>eqmain.dll+107890</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>118</ID>
+      <Description>"No description"</Description>
+      <LastState Value="??" Activated="0" RealAddress="027F77B8"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>027F77b8</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>120</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0477FFB8" Activated="0" RealAddress="04A7F0F4"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+FF0F4</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>121</ID>
+          <Description>"No description"</Description>
+          <LastState Value="971" Activated="0" RealAddress="0477FFD8"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F4</Address>
+          <Offsets>
+            <Offset>20</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>122</ID>
+      <Description>"No description"</Description>
+      <LastState Value="00000000" Activated="0" RealAddress="08356360"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>08356360</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>123</ID>
+      <Description>"No description"</Description>
+      <LastState Value="00200065" Activated="0" RealAddress="0838A4E4"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>0838A4E4</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>157</ID>
+      <Description>"No description"</Description>
+      <LastState Value="A8791C35" Activated="0" RealAddress="04A3FFB8"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>4a3ffb8</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>158</ID>
+      <Description>"No description"</Description>
+      <LastState Value="2305034276" Activated="0" RealAddress="04A3FFD8"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>4a3ffb8+20</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>159</ID>
+      <Description>"points to 0x04A3FFB8"</Description>
+      <LastState Value="0477FFB8" Activated="0" RealAddress="04A7F0F4"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+FF0F4</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>170</ID>
+      <Description>"points to main window string"</Description>
+      <LastState Value="0477F490" Activated="0" RealAddress="04C70410"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+2F0410</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>167</ID>
+      <Description>"points to EULA window string"</Description>
+      <LastState Value="0477F290" Activated="0" RealAddress="04C703A0"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+2F03A0</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>168</ID>
+      <Description>"EULA function"</Description>
+      <LastState Value="A48B5C68" Activated="0" RealAddress="04A40650"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+C0650</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>169</ID>
+      <Description>"Pointer to EULA function"</Description>
+      <LastState Value="04A40650" Activated="0" RealAddress="04A600A4"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+E00A4</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>171</ID>
+      <Description>"eqmain.dll base address"</Description>
+      <LastState Value="04980000" Activated="0" RealAddress="00AD6DBC"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>00AD6DBC</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>172</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="04C6FE1C"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+2EFE1C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>174</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="04C70A6C"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+2F0A6C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>175</ID>
+      <Description>"No description"</Description>
+      <LastState Value="00000000" Activated="0" RealAddress="04E6CCC4"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>04E6CCC4</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>176</ID>
+      <Description>"No description"</Description>
+      <LastState Value="00000000" Activated="0" RealAddress="04E6CCF4"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>04E6CCF4</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>180</ID>
+      <Description>"Auto Assemble script"</Description>
+      <LastState Activated="0"/>
+      <Color>80000008</Color>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>define(address,"eqmain.dll"+17AF3)
+define(bytes,89 5C 24 0C 39 5F 18)
+
+[ENABLE]
+
+assert(address,bytes)
+alloc(newmem,$1000)
+
+label(code)
+label(code2)
+label(return)
+
+newmem:
+
+code:
+  mov ecx,[eqmain.dll+FF0F0]
+  mov ecx,[ecx+3C]
+  mov ecx,[ecx+10]
+  cmp [ecx+10],616C7565
+  je eqmain.dll+17B01
+  jmp code2
+
+code2:
+  mov [esp+0C],ebx
+  cmp [edi+18],ebx
+  jmp return
+
+address:
+  jmp code
+  nop
+  nop
+return:
+
+[DISABLE]
+
+address:
+  db bytes
+  // mov [esp+0C],ebx
+  // cmp [edi+18],ebx
+
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "eqmain.dll"+17AF3
+
+"eqmain.dll"+17ACC: 8D 4C 24 14              -  lea ecx,[esp+14]
+"eqmain.dll"+17AD0: E8 4B D3 02 00           -  call eqmain.dll+44E20
+"eqmain.dll"+17AD5: 8B 44 24 0C              -  mov eax,[esp+0C]
+"eqmain.dll"+17AD9: 3B C3                    -  cmp eax,ebx
+"eqmain.dll"+17ADB: 89 5C 24 10              -  mov [esp+10],ebx
+"eqmain.dll"+17ADF: C7 44 24 24 FF FF FF FF  -  mov [esp+24],FFFFFFFF
+"eqmain.dll"+17AE7: 74 0A                    -  je eqmain.dll+17AF3
+"eqmain.dll"+17AE9: 50                       -  push eax
+"eqmain.dll"+17AEA: 8D 4C 24 10              -  lea ecx,[esp+10]
+"eqmain.dll"+17AEE: E8 2D D3 02 00           -  call eqmain.dll+44E20
+// ---------- INJECTING HERE ----------
+"eqmain.dll"+17AF3: 89 5C 24 0C              -  mov [esp+0C],ebx
+"eqmain.dll"+17AF7: 39 5F 18                 -  cmp [edi+18],ebx
+// ---------- DONE INJECTING  ----------
+"eqmain.dll"+17AFA: 74 3D                    -  je eqmain.dll+17B39
+"eqmain.dll"+17AFC: 39 5F 1C                 -  cmp [edi+1C],ebx
+"eqmain.dll"+17AFF: 75 38                    -  jne eqmain.dll+17B39
+"eqmain.dll"+17B01: 8B 4F 14                 -  mov ecx,[edi+14]
+"eqmain.dll"+17B04: 3B CB                    -  cmp ecx,ebx
+"eqmain.dll"+17B06: 74 13                    -  je eqmain.dll+17B1B
+"eqmain.dll"+17B08: 8B 01                    -  mov eax,[ecx]
+"eqmain.dll"+17B0A: FF 90 88 00 00 00        -  call dword ptr [eax+00000088]
+"eqmain.dll"+17B10: 8B 4F 14                 -  mov ecx,[edi+14]
+"eqmain.dll"+17B13: 8B 11                    -  mov edx,[ecx]
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>181</ID>
+      <Description>"Auto Assemble script"</Description>
+      <LastState Activated="0"/>
+      <Color>80000008</Color>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>define(address,"eqmain.dll"+17B75)
+define(bytes,FF 90 B0 00 00 00)
+
+[ENABLE]
+
+assert(address,bytes)
+alloc(newmem,$1000)
+
+label(code)
+label(code2)
+label(return)
+
+newmem:
+
+code:
+  call dword ptr [eax+000000B0]
+
+  mov ecx,[eqmain.dll+FF0F0]
+  mov ecx,[ecx+3C]
+  mov ecx,[ecx+10]
+  cmp [ecx+10],616C7565
+  je code2
+
+  jmp return
+
+code2:
+
+  mov ecx,[eqmain.dll+FF0F0]
+
+  jmp return
+
+address:
+  jmp code
+  nop
+return:
+
+[DISABLE]
+
+address:
+  db bytes
+  // call dword ptr [eax+000000B0]
+
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "eqmain.dll"+17B75
+
+"eqmain.dll"+17B47: 38 5F 50                 -  cmp [edi+50],bl
+"eqmain.dll"+17B4A: 74 2F                    -  je eqmain.dll+17B7B
+"eqmain.dll"+17B4C: 8B 0D 7C 09 A2 04        -  mov ecx,[eqmain.dll+2F097C]
+"eqmain.dll"+17B52: E8 B9 B1 04 00           -  call eqmain.dll+62D10
+"eqmain.dll"+17B57: 8B 0D 7C 09 A2 04        -  mov ecx,[eqmain.dll+2F097C]
+"eqmain.dll"+17B5D: E8 0E 9E 04 00           -  call eqmain.dll+61970
+"eqmain.dll"+17B62: 8B 0D 7C 09 A2 04        -  mov ecx,[eqmain.dll+2F097C]
+"eqmain.dll"+17B68: E8 F3 A1 04 00           -  call eqmain.dll+61D60
+"eqmain.dll"+17B6D: 8B 0D FC 11 A2 04        -  mov ecx,[eqmain.dll+2F11FC]
+"eqmain.dll"+17B73: 8B 01                    -  mov eax,[ecx]
+// ---------- INJECTING HERE ----------
+"eqmain.dll"+17B75: FF 90 B0 00 00 00        -  call dword ptr [eax+000000B0]
+// ---------- DONE INJECTING  ----------
+"eqmain.dll"+17B7B: 8B 4C 24 1C              -  mov ecx,[esp+1C]
+"eqmain.dll"+17B7F: 5F                       -  pop edi
+"eqmain.dll"+17B80: 5E                       -  pop esi
+"eqmain.dll"+17B81: 64 89 0D 00 00 00 00     -  mov fs:[00000000],ecx
+"eqmain.dll"+17B88: 5B                       -  pop ebx
+"eqmain.dll"+17B89: 83 C4 1C                 -  add esp,1C
+"eqmain.dll"+17B8C: C3                       -  ret 
+"eqmain.dll"+17B8D: CC                       -  int 3 
+"eqmain.dll"+17B8E: CC                       -  int 3 
+"eqmain.dll"+17B8F: CC                       -  int 3 
+}
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <CheatCodes>
+    <CodeEntry>
+      <Description>change JE to JMP to skip seizure warning</Description>
+      <Address>04CD084A</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>1084A</ModuleNameOffset>
+      <Before>
+        <Byte>79</Byte>
+        <Byte>FF</Byte>
+        <Byte>FF</Byte>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>26</Byte>
+      </Actual>
+      <After>
+        <Byte>51</Byte>
+        <Byte>8B</Byte>
+        <Byte>CC</Byte>
+        <Byte>89</Byte>
+        <Byte>64</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :je eqmain.dll+11B76</Description>
+      <Address>04741A20</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>11A20</ModuleNameOffset>
+      <Before>
+        <Byte>42</Byte>
+        <Byte>83</Byte>
+        <Byte>04</Byte>
+        <Byte>85</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>50</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>3B</Byte>
+        <Byte>46</Byte>
+        <Byte>0C</Byte>
+        <Byte>0F</Byte>
+        <Byte>85</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of jnge eqmain.dll+10C21</Description>
+      <Address>04740BFD</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>10BFD</ModuleNameOffset>
+      <Before>
+        <Byte>86</Byte>
+        <Byte>AC</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>7C</Byte>
+        <Byte>22</Byte>
+      </Actual>
+      <After>
+        <Byte>7F</Byte>
+        <Byte>08</Byte>
+        <Byte>3B</Byte>
+        <Byte>8E</Byte>
+        <Byte>A8</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :call eqmain.dll+A5FE4   timer</Description>
+      <Address>047508B5</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>108B5</ModuleNameOffset>
+      <Before>
+        <Byte>8D</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>18</Byte>
+        <Byte>50</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>2A</Byte>
+        <Byte>57</Byte>
+        <Byte>09</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>1C</Byte>
+        <Byte>99</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+10912</Description>
+      <Address>04740906</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>10906</ModuleNameOffset>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>38</Byte>
+        <Byte>5E</Byte>
+        <Byte>30</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>0A</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>CE</Byte>
+        <Byte>E8</Byte>
+        <Byte>11</Byte>
+        <Byte>A7</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+10A06</Description>
+      <Address>0490097D</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>1097D</ModuleNameOffset>
+      <Before>
+        <Byte>F0</Byte>
+        <Byte>82</Byte>
+        <Byte>04</Byte>
+        <Byte>3B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>83</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>B8</Byte>
+        <Byte>48</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :call eqmain.dll+8700</Description>
+      <Address>00031D1E</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>31C15</ModuleNameOffset>
+      <Before>
+        <Byte>0D</Byte>
+        <Byte>EC</Byte>
+        <Byte>F0</Byte>
+        <Byte>A1</Byte>
+        <Byte>04</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>E6</Byte>
+        <Byte>6A</Byte>
+        <Byte>FD</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>B0</Byte>
+        <Byte>01</Byte>
+        <Byte>59</Byte>
+        <Byte>C3</Byte>
+        <Byte>CC</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :je eqmain.dll+31BEF</Description>
+      <Address>047E1BC3</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>31BC3</ModuleNameOffset>
+      <Before>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>84</Byte>
+        <Byte>C9</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>2A</Byte>
+      </Actual>
+      <After>
+        <Byte>51</Byte>
+        <Byte>8B</Byte>
+        <Byte>CC</Byte>
+        <Byte>89</Byte>
+        <Byte>64</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :je eqmain.dll+167BD</Description>
+      <Address>047C6789</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>16789</ModuleNameOffset>
+      <Before>
+        <Byte>C6</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>1C</Byte>
+        <Byte>0E</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>32</Byte>
+      </Actual>
+      <After>
+        <Byte>51</Byte>
+        <Byte>8B</Byte>
+        <Byte>CC</Byte>
+        <Byte>89</Byte>
+        <Byte>64</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call eqmain.dll+13060</Description>
+      <Address>0452B5A5</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>B5A5</ModuleNameOffset>
+      <Before>
+        <Byte>25</Byte>
+        <Byte>6A</Byte>
+        <Byte>05</Byte>
+        <Byte>6A</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>B6</Byte>
+        <Byte>7A</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>E4</Byte>
+        <Byte>F0</Byte>
+        <Byte>61</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+17AF7</Description>
+      <Address>046679D4</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>179D4</ModuleNameOffset>
+      <Before>
+        <Byte>1C</Byte>
+        <Byte>33</Byte>
+        <Byte>DB</Byte>
+        <Byte>3B</Byte>
+        <Byte>F3</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>1D</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8A</Byte>
+        <Byte>46</Byte>
+        <Byte>34</Byte>
+        <Byte>3A</Byte>
+        <Byte>C3</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :js eqmain.dll+373AB</Description>
+      <Address>046B7338</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>37338</ModuleNameOffset>
+      <Before>
+        <Byte>CA</Byte>
+        <Byte>89</Byte>
+        <Byte>4C</Byte>
+        <Byte>24</Byte>
+        <Byte>10</Byte>
+      </Before>
+      <Actual>
+        <Byte>78</Byte>
+        <Byte>71</Byte>
+      </Actual>
+      <After>
+        <Byte>7F</Byte>
+        <Byte>05</Byte>
+        <Byte>83</Byte>
+        <Byte>F8</Byte>
+        <Byte>1E</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>change JG to JMP to skip logo screen</Description>
+      <Address>0470733A</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>3733A</ModuleNameOffset>
+      <Before>
+        <Byte>4C</Byte>
+        <Byte>24</Byte>
+        <Byte>10</Byte>
+        <Byte>78</Byte>
+        <Byte>71</Byte>
+      </Before>
+      <Actual>
+        <Byte>EB</Byte>
+        <Byte>05</Byte>
+      </Actual>
+      <After>
+        <Byte>83</Byte>
+        <Byte>F8</Byte>
+        <Byte>1E</Byte>
+        <Byte>76</Byte>
+        <Byte>6A</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :push eqmain.dll+C8910   license.txt</Description>
+      <Address>0466020F</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>3020F</ModuleNameOffset>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>89</Byte>
+        <Byte>64</Byte>
+        <Byte>24</Byte>
+        <Byte>1C</Byte>
+      </Before>
+      <Actual>
+        <Byte>68</Byte>
+        <Byte>10</Byte>
+        <Byte>89</Byte>
+        <Byte>6F</Byte>
+        <Byte>04</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>07</Byte>
+        <Byte>4D</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :push -01   window select function</Description>
+      <Address>048A62E0</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>162E0</ModuleNameOffset>
+      <Before>
+        <Byte>FF</Byte>
+        <Byte>FF</Byte>
+        <Byte>5F</Byte>
+        <Byte>C3</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>6A</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>68</Byte>
+        <Byte>BF</Byte>
+        <Byte>6F</Byte>
+        <Byte>94</Byte>
+        <Byte>04</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :je eqmain.dll+16383 jumps to eula window</Description>
+      <Address>04826327</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>16327</ModuleNameOffset>
+      <Before>
+        <Byte>F6</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+        <Byte>85</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>5A</Byte>
+      </Actual>
+      <After>
+        <Byte>68</Byte>
+        <Byte>D4</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call eqmain.dll+13970</Description>
+      <Address>047408E1</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>108E1</ModuleNameOffset>
+      <Before>
+        <Byte>04</Byte>
+        <Byte>3B</Byte>
+        <Byte>CB</Byte>
+        <Byte>74</Byte>
+        <Byte>1C</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>8A</Byte>
+        <Byte>30</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>E4</Byte>
+        <Byte>F0</Byte>
+        <Byte>82</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call eqmain.dll+B020</Description>
+      <Address>0474090A</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>1090A</ModuleNameOffset>
+      <Before>
+        <Byte>30</Byte>
+        <Byte>74</Byte>
+        <Byte>0A</Byte>
+        <Byte>8B</Byte>
+        <Byte>CE</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>11</Byte>
+        <Byte>A7</Byte>
+        <Byte>FF</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>88</Byte>
+        <Byte>5E</Byte>
+        <Byte>30</Byte>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call eqmain.dll+1E020</Description>
+      <Address>0474092D</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>1092D</ModuleNameOffset>
+      <Before>
+        <Byte>B9</Byte>
+        <Byte>80</Byte>
+        <Byte>F1</Byte>
+        <Byte>82</Byte>
+        <Byte>04</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>EE</Byte>
+        <Byte>D6</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>E4</Byte>
+        <Byte>F0</Byte>
+        <Byte>82</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+10975</Description>
+      <Address>04740947</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>10947</ModuleNameOffset>
+      <Before>
+        <Byte>9E</Byte>
+        <Byte>D1</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>2C</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>E4</Byte>
+        <Byte>F0</Byte>
+        <Byte>82</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+10975</Description>
+      <Address>047C093A</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>1093A</ModuleNameOffset>
+      <Before>
+        <Byte>F0</Byte>
+        <Byte>82</Byte>
+        <Byte>04</Byte>
+        <Byte>3B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>39</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>4F</Byte>
+        <Byte>35</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call eqmain.dll+24B20</Description>
+      <Address>047C098E</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>1098E</ModuleNameOffset>
+      <Before>
+        <Byte>0D</Byte>
+        <Byte>E8</Byte>
+        <Byte>F0</Byte>
+        <Byte>8A</Byte>
+        <Byte>04</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>8D</Byte>
+        <Byte>41</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>F7</Byte>
+        <Byte>D8</Byte>
+        <Byte>1A</Byte>
+        <Byte>C0</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+10A06</Description>
+      <Address>047A097D</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>1097D</ModuleNameOffset>
+      <Before>
+        <Byte>F0</Byte>
+        <Byte>8A</Byte>
+        <Byte>04</Byte>
+        <Byte>3B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>83</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>B8</Byte>
+        <Byte>48</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :cmp [esi+000000D0],bl</Description>
+      <Address>047A0A06</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>10A06</ModuleNameOffset>
+      <Before>
+        <Byte>E8</Byte>
+        <Byte>AA</Byte>
+        <Byte>E5</Byte>
+        <Byte>FF</Byte>
+        <Byte>FF</Byte>
+      </Before>
+      <Actual>
+        <Byte>38</Byte>
+        <Byte>9E</Byte>
+        <Byte>D0</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>74</Byte>
+        <Byte>51</Byte>
+        <Byte>8B</Byte>
+        <Byte>15</Byte>
+        <Byte>D8</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+10A5F</Description>
+      <Address>04600A0C</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>10A0C</ModuleNameOffset>
+      <Before>
+        <Byte>9E</Byte>
+        <Byte>D0</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>51</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>15</Byte>
+        <Byte>D8</Byte>
+        <Byte>F0</Byte>
+        <Byte>88</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :cmp eax,0001D4C0</Description>
+      <Address>048809F8</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>109F8</ModuleNameOffset>
+      <Before>
+        <Byte>24</Byte>
+        <Byte>78</Byte>
+        <Byte>10</Byte>
+        <Byte>7F</Byte>
+        <Byte>07</Byte>
+      </Before>
+      <Actual>
+        <Byte>3D</Byte>
+        <Byte>C0</Byte>
+        <Byte>D4</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>76</Byte>
+        <Byte>07</Byte>
+        <Byte>8B</Byte>
+        <Byte>CE</Byte>
+        <Byte>E8</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :cmp edi,00000214</Description>
+      <Address>048872C6</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>72C6</ModuleNameOffset>
+      <Before>
+        <Byte>C4</Byte>
+        <Byte>54</Byte>
+        <Byte>C2</Byte>
+        <Byte>10</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>81</Byte>
+        <Byte>FF</Byte>
+        <Byte>14</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>0F</Byte>
+        <Byte>87</Byte>
+        <Byte>68</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :je eqmain.dll+10C35</Description>
+      <Address>047F0898</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>10898</ModuleNameOffset>
+      <Before>
+        <Byte>9E</Byte>
+        <Byte>54</Byte>
+        <Byte>03</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>97</Byte>
+        <Byte>03</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>3D</Byte>
+        <Byte>18</Byte>
+        <Byte>42</Byte>
+        <Byte>8A</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :call eqmain.dll+179B0 ; accept button was clicked</Description>
+      <Address>04800923</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>10923</ModuleNameOffset>
+      <Before>
+        <Byte>0D</Byte>
+        <Byte>F0</Byte>
+        <Byte>F0</Byte>
+        <Byte>B3</Byte>
+        <Byte>04</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>88</Byte>
+        <Byte>70</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>B9</Byte>
+        <Byte>80</Byte>
+        <Byte>F1</Byte>
+        <Byte>B3</Byte>
+        <Byte>04</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :push eqmain.dll+C8B5C some "eula" function</Description>
+      <Address>04780650</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>C0650</ModuleNameOffset>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>68</Byte>
+        <Byte>5C</Byte>
+        <Byte>8B</Byte>
+        <Byte>78</Byte>
+        <Byte>04</Byte>
+      </Actual>
+      <After>
+        <Byte>B9</Byte>
+        <Byte>A0</Byte>
+        <Byte>03</Byte>
+        <Byte>9B</Byte>
+        <Byte>04</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :je eqmain.dll+108FD</Description>
+      <Address>048208DF</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>108DF</ModuleNameOffset>
+      <Before>
+        <Byte>F0</Byte>
+        <Byte>90</Byte>
+        <Byte>04</Byte>
+        <Byte>3B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>1C</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>8A</Byte>
+        <Byte>30</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :je eqmain.dll+108F7</Description>
+      <Address>048208EE</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>108EE</ModuleNameOffset>
+      <Before>
+        <Byte>F0</Byte>
+        <Byte>90</Byte>
+        <Byte>04</Byte>
+        <Byte>3B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>07</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>11</Byte>
+        <Byte>6A</Byte>
+        <Byte>01</Byte>
+        <Byte>FF</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call eqmain.dll+179B0</Description>
+      <Address>04820923</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>10923</ModuleNameOffset>
+      <Before>
+        <Byte>0D</Byte>
+        <Byte>F0</Byte>
+        <Byte>F0</Byte>
+        <Byte>90</Byte>
+        <Byte>04</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>88</Byte>
+        <Byte>70</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>B9</Byte>
+        <Byte>80</Byte>
+        <Byte>F1</Byte>
+        <Byte>90</Byte>
+        <Byte>04</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call eqmain.dll+12200</Description>
+      <Address>04820918</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>10918</ModuleNameOffset>
+      <Before>
+        <Byte>0D</Byte>
+        <Byte>F4</Byte>
+        <Byte>F0</Byte>
+        <Byte>90</Byte>
+        <Byte>04</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>E3</Byte>
+        <Byte>18</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>F0</Byte>
+        <Byte>F0</Byte>
+        <Byte>90</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call eqmain.dll+1E020</Description>
+      <Address>0482092D</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>1092D</ModuleNameOffset>
+      <Before>
+        <Byte>B9</Byte>
+        <Byte>80</Byte>
+        <Byte>F1</Byte>
+        <Byte>90</Byte>
+        <Byte>04</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>EE</Byte>
+        <Byte>D6</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>E4</Byte>
+        <Byte>F0</Byte>
+        <Byte>90</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :mov eax,fs:[00000000]</Description>
+      <Address>047479B0</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>179B0</ModuleNameOffset>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>64</Byte>
+        <Byte>A1</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>6A</Byte>
+        <Byte>FF</Byte>
+        <Byte>68</Byte>
+        <Byte>20</Byte>
+        <Byte>71</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+17AF7</Description>
+      <Address>047479EE</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>179EE</ModuleNameOffset>
+      <Before>
+        <Byte>23</Byte>
+        <Byte>C1</Byte>
+        <Byte>83</Byte>
+        <Byte>F8</Byte>
+        <Byte>FF</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>03</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>A1</Byte>
+        <Byte>DC</Byte>
+        <Byte>F0</Byte>
+        <Byte>82</Byte>
+        <Byte>04</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+17AF7</Description>
+      <Address>048C79D4</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>179D4</ModuleNameOffset>
+      <Before>
+        <Byte>1C</Byte>
+        <Byte>33</Byte>
+        <Byte>DB</Byte>
+        <Byte>3B</Byte>
+        <Byte>F3</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>1D</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8A</Byte>
+        <Byte>46</Byte>
+        <Byte>34</Byte>
+        <Byte>3A</Byte>
+        <Byte>C3</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+17B7B</Description>
+      <Address>047A7B4A</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>17B4A</ModuleNameOffset>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>38</Byte>
+        <Byte>5F</Byte>
+        <Byte>50</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>2F</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>7C</Byte>
+        <Byte>09</Byte>
+        <Byte>BA</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :call eqmain.dll+15420</Description>
+      <Address>047A15FA</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>115FA</ModuleNameOffset>
+      <Before>
+        <Byte>0D</Byte>
+        <Byte>F0</Byte>
+        <Byte>F0</Byte>
+        <Byte>88</Byte>
+        <Byte>04</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>21</Byte>
+        <Byte>3E</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>C3</Byte>
+        <Byte>81</Byte>
+        <Byte>EC</Byte>
+        <Byte>84</Byte>
+        <Byte>02</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :call eqmain.dll+17090</Description>
+      <Address>047BFE9E</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>2FE9E</ModuleNameOffset>
+      <Before>
+        <Byte>1C</Byte>
+        <Byte>FF</Byte>
+        <Byte>FF</Byte>
+        <Byte>FF</Byte>
+        <Byte>FF</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>ED</Byte>
+        <Byte>71</Byte>
+        <Byte>FE</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>33</Byte>
+        <Byte>C0</Byte>
+        <Byte>8B</Byte>
+        <Byte>4C</Byte>
+        <Byte>24</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :push 01  button accept decline</Description>
+      <Address>046C73D0</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>373D0</ModuleNameOffset>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>6A</Byte>
+        <Byte>01</Byte>
+      </Actual>
+      <After>
+        <Byte>6A</Byte>
+        <Byte>00</Byte>
+        <Byte>81</Byte>
+        <Byte>C1</Byte>
+        <Byte>68</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :call dword ptr [edx+000000A4]  button clicked</Description>
+      <Address>04807B41</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>17B41</ModuleNameOffset>
+      <Before>
+        <Byte>11</Byte>
+        <Byte>98</Byte>
+        <Byte>04</Byte>
+        <Byte>8B</Byte>
+        <Byte>11</Byte>
+      </Before>
+      <Actual>
+        <Byte>FF</Byte>
+        <Byte>92</Byte>
+        <Byte>A4</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>38</Byte>
+        <Byte>5F</Byte>
+        <Byte>50</Byte>
+        <Byte>74</Byte>
+        <Byte>2F</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :push eqmain.dll+C8B50 EulaWindow</Description>
+      <Address>0475007B</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>3007B</ModuleNameOffset>
+      <Before>
+        <Byte>64</Byte>
+        <Byte>24</Byte>
+        <Byte>14</Byte>
+        <Byte>33</Byte>
+        <Byte>FF</Byte>
+      </Before>
+      <Actual>
+        <Byte>68</Byte>
+        <Byte>50</Byte>
+        <Byte>8B</Byte>
+        <Byte>7E</Byte>
+        <Byte>04</Byte>
+      </Actual>
+      <After>
+        <Byte>89</Byte>
+        <Byte>7C</Byte>
+        <Byte>24</Byte>
+        <Byte>2C</Byte>
+        <Byte>E8</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :push -01</Description>
+      <Address>0492BAF0</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>BAF0</ModuleNameOffset>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>6A</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>68</Byte>
+        <Byte>60</Byte>
+        <Byte>61</Byte>
+        <Byte>98</Byte>
+        <Byte>04</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call eqmain.dll+54390</Description>
+      <Address>04A520A7</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>720A7</ModuleNameOffset>
+      <Before>
+        <Byte>28</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>50</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>E4</Byte>
+        <Byte>22</Byte>
+        <Byte>FE</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>5F</Byte>
+        <Byte>5E</Byte>
+        <Byte>5D</Byte>
+        <Byte>33</Byte>
+        <Byte>C0</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of jne eqmain.dll+62FA3</Description>
+      <Address>04862F79</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>62F79</ModuleNameOffset>
+      <Before>
+        <Byte>EF</Byte>
+        <Byte>FE</Byte>
+        <Byte>FF</Byte>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>75</Byte>
+        <Byte>28</Byte>
+      </Actual>
+      <After>
+        <Byte>3B</Byte>
+        <Byte>1F</Byte>
+        <Byte>7D</Byte>
+        <Byte>66</Byte>
+        <Byte>8B</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+10903</Description>
+      <Address>047C08D5</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>108D5</ModuleNameOffset>
+      <Before>
+        <Byte>83</Byte>
+        <Byte>C4</Byte>
+        <Byte>04</Byte>
+        <Byte>3A</Byte>
+        <Byte>C3</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>2C</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>E4</Byte>
+        <Byte>F0</Byte>
+        <Byte>8A</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+108FD</Description>
+      <Address>047C08DF</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>108DF</ModuleNameOffset>
+      <Before>
+        <Byte>F0</Byte>
+        <Byte>8A</Byte>
+        <Byte>04</Byte>
+        <Byte>3B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>1C</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>8A</Byte>
+        <Byte>30</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+108F7</Description>
+      <Address>048708EE</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>108EE</ModuleNameOffset>
+      <Before>
+        <Byte>F0</Byte>
+        <Byte>95</Byte>
+        <Byte>04</Byte>
+        <Byte>3B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>07</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>11</Byte>
+        <Byte>6A</Byte>
+        <Byte>01</Byte>
+        <Byte>FF</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+10912</Description>
+      <Address>04870906</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>10906</ModuleNameOffset>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>38</Byte>
+        <Byte>5E</Byte>
+        <Byte>30</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>0A</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>CE</Byte>
+        <Byte>E8</Byte>
+        <Byte>11</Byte>
+        <Byte>A7</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+10975</Description>
+      <Address>0487093A</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>1093A</ModuleNameOffset>
+      <Before>
+        <Byte>F0</Byte>
+        <Byte>95</Byte>
+        <Byte>04</Byte>
+        <Byte>3B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>39</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>4F</Byte>
+        <Byte>35</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+10975</Description>
+      <Address>04870947</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>10947</ModuleNameOffset>
+      <Before>
+        <Byte>9E</Byte>
+        <Byte>D1</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>2C</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>E4</Byte>
+        <Byte>F0</Byte>
+        <Byte>95</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+1096F</Description>
+      <Address>04870951</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>10951</ModuleNameOffset>
+      <Before>
+        <Byte>F0</Byte>
+        <Byte>95</Byte>
+        <Byte>04</Byte>
+        <Byte>3B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>1C</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>18</Byte>
+        <Byte>30</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+10969</Description>
+      <Address>04870960</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>10960</ModuleNameOffset>
+      <Before>
+        <Byte>F0</Byte>
+        <Byte>95</Byte>
+        <Byte>04</Byte>
+        <Byte>3B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>07</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>01</Byte>
+        <Byte>6A</Byte>
+        <Byte>01</Byte>
+        <Byte>FF</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+10A06</Description>
+      <Address>0487097D</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>1097D</ModuleNameOffset>
+      <Before>
+        <Byte>F0</Byte>
+        <Byte>95</Byte>
+        <Byte>04</Byte>
+        <Byte>3B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>83</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>B8</Byte>
+        <Byte>48</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>LoadLibrary eqmain.dll</Description>
+      <Address>0055E495</Address>
+      <ModuleName>eqgame.exe</ModuleName>
+      <ModuleNameOffset>15E495</ModuleNameOffset>
+      <Before>
+        <Byte>68</Byte>
+        <Byte>C8</Byte>
+        <Byte>63</Byte>
+        <Byte>7D</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>FF</Byte>
+        <Byte>15</Byte>
+        <Byte>F4</Byte>
+        <Byte>41</Byte>
+        <Byte>7C</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>85</Byte>
+        <Byte>C0</Byte>
+        <Byte>A3</Byte>
+        <Byte>BC</Byte>
+        <Byte>6D</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>create the EULA window</Description>
+      <Address>04E66379</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>16379</ModuleNameOffset>
+      <Before>
+        <Byte>2C</Byte>
+        <Byte>6A</Byte>
+        <Byte>00</Byte>
+        <Byte>89</Byte>
+        <Byte>02</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>D2</Byte>
+        <Byte>9C</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>E9</Byte>
+        <Byte>3C</Byte>
+        <Byte>04</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>this made the EULA window show up???</Description>
+      <Address>04D87709</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>7709</ModuleNameOffset>
+      <Before>
+        <Byte>90</Byte>
+        <Byte>78</Byte>
+        <Byte>F5</Byte>
+        <Byte>04</Byte>
+        <Byte>01</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>C2</Byte>
+        <Byte>8F</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>EC</Byte>
+        <Byte>F0</Byte>
+        <Byte>F4</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :mov al,[esp+04]</Description>
+      <Address>04D551E0</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>151E0</ModuleNameOffset>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>8A</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>04</Byte>
+      </Actual>
+      <After>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+        <Byte>74</Byte>
+        <Byte>0F</Byte>
+        <Byte>8B</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>accept button was pushed</Description>
+      <Address>049E15F0</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>115F0</ModuleNameOffset>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>83</Byte>
+        <Byte>C1</Byte>
+        <Byte>20</Byte>
+      </Actual>
+      <After>
+        <Byte>51</Byte>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>F0</Byte>
+        <Byte>F0</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>accept button was pushed</Description>
+      <Address>049FFE90</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>2FE90</ModuleNameOffset>
+      <Before>
+        <Byte>E8</Byte>
+        <Byte>80</Byte>
+        <Byte>11</Byte>
+        <Byte>FD</Byte>
+        <Byte>FF</Byte>
+      </Before>
+      <Actual>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>F0</Byte>
+        <Byte>F0</Byte>
+        <Byte>E7</Byte>
+        <Byte>04</Byte>
+      </Actual>
+      <After>
+        <Byte>C7</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>1C</Byte>
+        <Byte>FF</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+373AB    NOP to skip logo</Description>
+      <Address>04717313</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>37313</ModuleNameOffset>
+      <Before>
+        <Byte>86</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>92</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>A1</Byte>
+        <Byte>D8</Byte>
+        <Byte>F0</Byte>
+        <Byte>7C</Byte>
+        <Byte>04</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :test al,al</Description>
+      <Address>04714788</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>34788</ModuleNameOffset>
+      <Before>
+        <Byte>E8</Byte>
+        <Byte>78</Byte>
+        <Byte>B2</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+      </Actual>
+      <After>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>83</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+34813</Description>
+      <Address>0471478A</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>3478A</ModuleNameOffset>
+      <Before>
+        <Byte>B2</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>83</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>86</Byte>
+        <Byte>F4</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+34813</Description>
+      <Address>04714798</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>34798</ModuleNameOffset>
+      <Before>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>85</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>79</Byte>
+      </Actual>
+      <After>
+        <Byte>53</Byte>
+        <Byte>57</Byte>
+        <Byte>FF</Byte>
+        <Byte>15</Byte>
+        <Byte>4C</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :test al,al</Description>
+      <Address>047109E8</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>309E8</ModuleNameOffset>
+      <Before>
+        <Byte>E8</Byte>
+        <Byte>18</Byte>
+        <Byte>F0</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+      </Actual>
+      <After>
+        <Byte>74</Byte>
+        <Byte>40</Byte>
+        <Byte>8B</Byte>
+        <Byte>86</Byte>
+        <Byte>14</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+30A2C</Description>
+      <Address>047109EA</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>309EA</ModuleNameOffset>
+      <Before>
+        <Byte>F0</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>40</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>86</Byte>
+        <Byte>14</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+30A2C</Description>
+      <Address>047109F4</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>309F4</ModuleNameOffset>
+      <Before>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>85</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>36</Byte>
+      </Actual>
+      <After>
+        <Byte>8D</Byte>
+        <Byte>88</Byte>
+        <Byte>98</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+30A2C</Description>
+      <Address>04710A06</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>30A06</ModuleNameOffset>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>24</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>8E</Byte>
+        <Byte>14</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+30A2C</Description>
+      <Address>04710A16</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>30A16</ModuleNameOffset>
+      <Before>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>14</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>C1</Byte>
+        <Byte>8B</Byte>
+        <Byte>90</Byte>
+        <Byte>98</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :test al,al</Description>
+      <Address>04706B9B</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>26B9B</ModuleNameOffset>
+      <Before>
+        <Byte>E8</Byte>
+        <Byte>65</Byte>
+        <Byte>8E</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+      </Actual>
+      <After>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>9F</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+26C42</Description>
+      <Address>04706B9D</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>26B9D</ModuleNameOffset>
+      <Before>
+        <Byte>8E</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>9F</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>8E</Byte>
+        <Byte>E4</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+26C42</Description>
+      <Address>04706BAB</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>26BAB</ModuleNameOffset>
+      <Before>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>85</Byte>
+        <Byte>C9</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>91</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>4A</Byte>
+        <Byte>8E</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+26C42</Description>
+      <Address>04706BB8</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>26BB8</ModuleNameOffset>
+      <Before>
+        <Byte>8E</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>84</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>53</Byte>
+        <Byte>57</Byte>
+        <Byte>FF</Byte>
+        <Byte>15</Byte>
+        <Byte>4C</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :xor al,al</Description>
+      <Address>0472EDCA</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>4EDCA</ModuleNameOffset>
+      <Before>
+        <Byte>D2</Byte>
+        <Byte>8B</Byte>
+        <Byte>C8</Byte>
+        <Byte>75</Byte>
+        <Byte>E6</Byte>
+      </Before>
+      <Actual>
+        <Byte>32</Byte>
+        <Byte>C0</Byte>
+      </Actual>
+      <After>
+        <Byte>C3</Byte>
+        <Byte>B0</Byte>
+        <Byte>01</Byte>
+        <Byte>C3</Byte>
+        <Byte>A1</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :mov eax,[eqmain.dll+FF0EC]</Description>
+      <Address>04CF538D</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>3538D</ModuleNameOffset>
+      <Before>
+        <Byte>E8</Byte>
+        <Byte>53</Byte>
+        <Byte>CA</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>A1</Byte>
+        <Byte>EC</Byte>
+        <Byte>F0</Byte>
+        <Byte>DB</Byte>
+        <Byte>04</Byte>
+      </Actual>
+      <After>
+        <Byte>05</Byte>
+        <Byte>F8</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :mov al,[ecx+000002F0]</Description>
+      <Address>04CC70D8</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>70D8</ModuleNameOffset>
+      <Before>
+        <Byte>85</Byte>
+        <Byte>9C</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>8A</Byte>
+        <Byte>81</Byte>
+        <Byte>F0</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+        <Byte>74</Byte>
+        <Byte>64</Byte>
+        <Byte>A1</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :add ecx,20 ; button accepted</Description>
+      <Address>046615F0</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>115F0</ModuleNameOffset>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>83</Byte>
+        <Byte>C1</Byte>
+        <Byte>20</Byte>
+      </Actual>
+      <After>
+        <Byte>51</Byte>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>F0</Byte>
+        <Byte>F0</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :mov ecx,[eqmain.dll+2F11FC]</Description>
+      <Address>04667B39</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>17B39</ModuleNameOffset>
+      <Before>
+        <Byte>90</Byte>
+        <Byte>84</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>FC</Byte>
+        <Byte>11</Byte>
+        <Byte>94</Byte>
+        <Byte>04</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>11</Byte>
+        <Byte>FF</Byte>
+        <Byte>92</Byte>
+        <Byte>A4</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :mov eax,fs:[00000000]</Description>
+      <Address>046F79B0</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>179B0</ModuleNameOffset>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>64</Byte>
+        <Byte>A1</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>6A</Byte>
+        <Byte>FF</Byte>
+        <Byte>68</Byte>
+        <Byte>20</Byte>
+        <Byte>71</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>EULA window</Description>
+      <Address>04DE0650</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>C0650</ModuleNameOffset>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>68</Byte>
+        <Byte>5C</Byte>
+        <Byte>8B</Byte>
+        <Byte>73</Byte>
+        <Byte>04</Byte>
+      </Actual>
+      <After>
+        <Byte>B9</Byte>
+        <Byte>A0</Byte>
+        <Byte>03</Byte>
+        <Byte>96</Byte>
+        <Byte>04</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>MAIN window</Description>
+      <Address>04850950</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>C0950</ModuleNameOffset>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>68</Byte>
+        <Byte>8C</Byte>
+        <Byte>92</Byte>
+        <Byte>85</Byte>
+        <Byte>04</Byte>
+      </Actual>
+      <After>
+        <Byte>B9</Byte>
+        <Byte>10</Byte>
+        <Byte>04</Byte>
+        <Byte>A8</Byte>
+        <Byte>04</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call eqmain.dll+12200</Description>
+      <Address>04DD0918</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>10918</ModuleNameOffset>
+      <Before>
+        <Byte>0D</Byte>
+        <Byte>F4</Byte>
+        <Byte>F0</Byte>
+        <Byte>EB</Byte>
+        <Byte>04</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>E3</Byte>
+        <Byte>18</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>F0</Byte>
+        <Byte>F0</Byte>
+        <Byte>EB</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+10975</Description>
+      <Address>04DD093A</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>1093A</ModuleNameOffset>
+      <Before>
+        <Byte>F0</Byte>
+        <Byte>EB</Byte>
+        <Byte>04</Byte>
+        <Byte>3B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>39</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>4F</Byte>
+        <Byte>35</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :mov [esp+2C],00000002</Description>
+      <Address>049D70B4</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>170B4</ModuleNameOffset>
+      <Before>
+        <Byte>24</Byte>
+        <Byte>38</Byte>
+        <Byte>85</Byte>
+        <Byte>C0</Byte>
+        <Byte>51</Byte>
+      </Before>
+      <Actual>
+        <Byte>C7</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>2C</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>89</Byte>
+        <Byte>64</Byte>
+        <Byte>24</Byte>
+        <Byte>1C</Byte>
+        <Byte>8B</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+1722C</Description>
+      <Address>047D7220</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>17220</ModuleNameOffset>
+      <Before>
+        <Byte>C6</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>28</Byte>
+        <Byte>03</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>0A</Byte>
+      </Actual>
+      <After>
+        <Byte>50</Byte>
+        <Byte>8D</Byte>
+        <Byte>4C</Byte>
+        <Byte>24</Byte>
+        <Byte>14</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+1724B</Description>
+      <Address>0467723F</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>1723F</ModuleNameOffset>
+      <Before>
+        <Byte>C6</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>28</Byte>
+        <Byte>02</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>0A</Byte>
+      </Actual>
+      <After>
+        <Byte>50</Byte>
+        <Byte>8D</Byte>
+        <Byte>4C</Byte>
+        <Byte>24</Byte>
+        <Byte>10</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+1726A</Description>
+      <Address>0467725E</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>1725E</ModuleNameOffset>
+      <Before>
+        <Byte>C6</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>28</Byte>
+        <Byte>01</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>0A</Byte>
+      </Actual>
+      <After>
+        <Byte>50</Byte>
+        <Byte>8D</Byte>
+        <Byte>4C</Byte>
+        <Byte>24</Byte>
+        <Byte>34</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+172C0</Description>
+      <Address>046772A6</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>172A6</ModuleNameOffset>
+      <Before>
+        <Byte>64</Byte>
+        <Byte>24</Byte>
+        <Byte>20</Byte>
+        <Byte>8B</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>18</Byte>
+      </Actual>
+      <After>
+        <Byte>89</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>1C</Byte>
+        <Byte>33</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+172E9</Description>
+      <Address>046772CF</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>172CF</ModuleNameOffset>
+      <Before>
+        <Byte>64</Byte>
+        <Byte>24</Byte>
+        <Byte>24</Byte>
+        <Byte>8B</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>18</Byte>
+      </Actual>
+      <After>
+        <Byte>89</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>20</Byte>
+        <Byte>33</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+1730E</Description>
+      <Address>047D72F8</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>172F8</ModuleNameOffset>
+      <Before>
+        <Byte>C8</Byte>
+        <Byte>8B</Byte>
+        <Byte>01</Byte>
+        <Byte>85</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>14</Byte>
+      </Actual>
+      <After>
+        <Byte>89</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>18</Byte>
+        <Byte>33</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :push -01</Description>
+      <Address>04917090</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>17090</ModuleNameOffset>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>6A</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>68</Byte>
+        <Byte>A0</Byte>
+        <Byte>70</Byte>
+        <Byte>9B</Byte>
+        <Byte>04</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Accept/Decline at MouseX/Y</Description>
+      <Address>04F215F0</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>115F0</ModuleNameOffset>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>83</Byte>
+        <Byte>C1</Byte>
+        <Byte>20</Byte>
+      </Actual>
+      <After>
+        <Byte>51</Byte>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>F0</Byte>
+        <Byte>F0</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :call dword ptr [eax+00000084]</Description>
+      <Address>04927B33</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>17B33</ModuleNameOffset>
+      <Before>
+        <Byte>8B</Byte>
+        <Byte>4F</Byte>
+        <Byte>14</Byte>
+        <Byte>8B</Byte>
+        <Byte>01</Byte>
+      </Before>
+      <Actual>
+        <Byte>FF</Byte>
+        <Byte>90</Byte>
+        <Byte>84</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>0D</Byte>
+        <Byte>FC</Byte>
+        <Byte>11</Byte>
+        <Byte>98</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :je eqmain.dll+17B1B // change to JMP</Description>
+      <Address>046E7B06</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>17B06</ModuleNameOffset>
+      <Before>
+        <Byte>8B</Byte>
+        <Byte>4F</Byte>
+        <Byte>14</Byte>
+        <Byte>3B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>13</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>01</Byte>
+        <Byte>FF</Byte>
+        <Byte>90</Byte>
+        <Byte>88</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of jmp eqmain.dll+17AF3</Description>
+      <Address>046E7AE7</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>17AE7</ModuleNameOffset>
+      <Before>
+        <Byte>24</Byte>
+        <Byte>FF</Byte>
+        <Byte>FF</Byte>
+        <Byte>FF</Byte>
+        <Byte>FF</Byte>
+      </Before>
+      <Actual>
+        <Byte>EB</Byte>
+        <Byte>0A</Byte>
+      </Actual>
+      <After>
+        <Byte>50</Byte>
+        <Byte>8D</Byte>
+        <Byte>4C</Byte>
+        <Byte>24</Byte>
+        <Byte>10</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of jmp eqmain.dll+17AD9</Description>
+      <Address>046E7AC9</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>17AC9</ModuleNameOffset>
+      <Before>
+        <Byte>F3</Byte>
+        <Byte>88</Byte>
+        <Byte>5C</Byte>
+        <Byte>24</Byte>
+        <Byte>24</Byte>
+      </Before>
+      <Actual>
+        <Byte>EB</Byte>
+        <Byte>0E</Byte>
+      </Actual>
+      <After>
+        <Byte>56</Byte>
+        <Byte>8D</Byte>
+        <Byte>4C</Byte>
+        <Byte>24</Byte>
+        <Byte>14</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+17A6C</Description>
+      <Address>046E7A50</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>17A50</ModuleNameOffset>
+      <Before>
+        <Byte>CB</Byte>
+        <Byte>89</Byte>
+        <Byte>5C</Byte>
+        <Byte>24</Byte>
+        <Byte>24</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>1A</Byte>
+      </Actual>
+      <After>
+        <Byte>89</Byte>
+        <Byte>4C</Byte>
+        <Byte>24</Byte>
+        <Byte>14</Byte>
+        <Byte>33</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je eqmain.dll+17A40</Description>
+      <Address>046E7A28</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>17A28</ModuleNameOffset>
+      <Before>
+        <Byte>8B</Byte>
+        <Byte>46</Byte>
+        <Byte>40</Byte>
+        <Byte>3B</Byte>
+        <Byte>C3</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>16</Byte>
+      </Actual>
+      <After>
+        <Byte>89</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>14</Byte>
+        <Byte>33</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :je eqmain.dll+17AF7</Description>
+      <Address>047479D4</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>179D4</ModuleNameOffset>
+      <Before>
+        <Byte>1C</Byte>
+        <Byte>33</Byte>
+        <Byte>DB</Byte>
+        <Byte>3B</Byte>
+        <Byte>F3</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>1D</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8A</Byte>
+        <Byte>46</Byte>
+        <Byte>34</Byte>
+        <Byte>3A</Byte>
+        <Byte>C3</Byte>
+      </After>
+    </CodeEntry>
+  </CheatCodes>
+  <UserdefinedSymbols/>
+  <LuaScript>createProcess("c:\\eqdalayabeta\\eqgame.exe", "patchme", true, true)
+</LuaScript>
+</CheatTable>

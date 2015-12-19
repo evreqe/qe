@@ -1,0 +1,9 @@
+[enable]
+
+eqgame.exe+98DB8:
+db EB
+
+[disable]
+
+eqgame.exe+98DB8:
+db 7F

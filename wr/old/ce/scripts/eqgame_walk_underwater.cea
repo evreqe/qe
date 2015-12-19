@@ -1,0 +1,15 @@
+[enable]
+
+eqgame.exe+60FB4:
+jne eqgame.exe+60FF3
+
+eqgame.exe+60FBE:
+jne eqgame.exe+60FF3
+
+[disable]
+
+eqgame.exe+60FB4:
+je eqgame.exe+60FF3
+
+eqgame.exe+60FBE:
+je eqgame.exe+60FF3

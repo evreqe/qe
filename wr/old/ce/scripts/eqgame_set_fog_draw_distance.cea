@@ -1,0 +1,9 @@
+[enable]
+
+EQGfx_Dx8.t3dSetFog+3E:
+db 90 90 90 90 90 90
+
+[disable]
+
+EQGfx_Dx8.t3dSetFog+3E:
+mov [EQGfx_Dx8.DLL+91A28C],ebx

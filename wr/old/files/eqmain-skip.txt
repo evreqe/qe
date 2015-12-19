@@ -1,0 +1,11 @@
+eqmain.dll skip straight to the main menu
+
+// Skip the license.txt with the I Accept button
+Offset: 212EA
+Replace This: 74 59
+With This: 90 90
+
+// Skip the intro logos
+Offset: 2137E
+Replace This: 74 09
+With This: EB 72

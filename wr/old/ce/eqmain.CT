@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="18">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"No description"</Description>
+      <LastState Value="1" Activated="0" RealAddress="110AF178"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>110AF178</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"No description"</Description>
+      <LastState Value="1" Activated="0" RealAddress="110AF188"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>110AF188</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>5</ID>
+      <Description>"boolean to exit or quit"</Description>
+      <LastState Value="0" Activated="0" RealAddress="110BC3E8"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>110BC3E8</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="11146D88"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>11146D88</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>2</ID>
+      <Description>"boolean to show options button"</Description>
+      <LastState Value="0" Activated="0" RealAddress="11146D89"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>11146D89</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>11</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="11146D8C"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>11146D8C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"boolean for test server"</Description>
+      <LastState Value="0" Activated="0" RealAddress="11151418"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>11151418</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>6</ID>
+      <Description>"No description"</Description>
+      <LastState Value="7" Activated="0" RealAddress="110AF17C"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>110AF17C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>7</ID>
+      <Description>"No description"</Description>
+      <LastState Value="1" Activated="0" RealAddress="110AF180"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>110AF180</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>8</ID>
+      <Description>"No description"</Description>
+      <LastState Value="3" Activated="0" RealAddress="110AF184"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>110AF184</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>9</ID>
+      <Description>"No description"</Description>
+      <LastState Value="1" Activated="0" RealAddress="110AF188"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>110AF188</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>12</ID>
+      <Description>"No description"</Description>
+      <LastState Value="02AA9B48" Activated="0" RealAddress="111468F4"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>111468F4</Address>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>13</ID>
+          <Description>"128 shows health warning"</Description>
+          <LastState Value="32" Activated="0" RealAddress="02AA9B4C"/>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>111468F4</Address>
+          <Offsets>
+            <Offset>4</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>10</ID>
+      <Description>"HWND"</Description>
+      <LastState Value="01610F66" Activated="0" RealAddress="111468FC"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>111468FC</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>14</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0394DC80" Activated="0" RealAddress="111FF520"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>111FF520</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>15</ID>
+      <Description>"edi+20"</Description>
+      <LastState Value="72611296" Activated="0" RealAddress="03A20DA0"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>3A20D80+20</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>17</ID>
+      <Description>"ebp+20"</Description>
+      <LastState Value="60437568" Activated="0" RealAddress="03A20D58"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>3A20D38+20</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>16</ID>
+      <Description>"decline = 0, accept = 1"</Description>
+      <LastState Value="0" Activated="0" RealAddress="0018EC78"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>0018EC78</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>19</ID>
+      <Description>"No description"</Description>
+      <LastState Value="FFFFFFFF" Activated="0" RealAddress="0018EC40"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>0018EC40</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>20</ID>
+      <Description>"No description"</Description>
+      <LastState Value="1101E0BD" Activated="0" RealAddress="0018ECA0"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>0018ECA0</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>23</ID>
+      <Description>"decline button state"</Description>
+      <LastState Value="??" Activated="0" RealAddress="10000001F"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>0018EC40</Address>
+      <Offsets>
+        <Offset>20</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>24</ID>
+      <Description>"accept button state"</Description>
+      <LastState Value="14648847" Activated="0" RealAddress="1101E0DD"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>0018ECA0</Address>
+      <Offsets>
+        <Offset>20</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>21</ID>
+      <Description>"No description"</Description>
+      <LastState Value="16711935" Activated="0" RealAddress="03652D90"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>03652D70+20</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>22</ID>
+      <Description>"No description"</Description>
+      <LastState Value="16711935" Activated="0" RealAddress="03652D48"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>03652D28+20</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>25</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="111F5DF4"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>111F5DF4</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>26</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="111F5EAD"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>111F5EAD</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>27</ID>
+      <Description>"screen number, 7=connect, 6=account password"</Description>
+      <LastState Value="6" Activated="0" RealAddress="110BE290"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>eqmain.dll+BE290</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>30</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0455CAF8" Activated="0" RealAddress="110BE29C"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>110BE29C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>29</ID>
+      <Description>"No description"</Description>
+      <LastState Value="03963788" Activated="0" RealAddress="110C23FC"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+C23FC</Address>
+    </CheatEntry>
+  </CheatEntries>
+  <CheatCodes>
+    <CodeEntry>
+      <Description>Code :je eqmain.dll+21389 ; change to JMP 110213F2 to skip logos</Description>
+      <Address>1102137E</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>2137E</ModuleNameOffset>
+      <Before>
+        <Byte>8A</Byte>
+        <Byte>5D</Byte>
+        <Byte>E0</Byte>
+        <Byte>84</Byte>
+        <Byte>DB</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>09</Byte>
+      </Actual>
+      <After>
+        <Byte>80</Byte>
+        <Byte>3D</Byte>
+        <Byte>78</Byte>
+        <Byte>F1</Byte>
+        <Byte>0A</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>NOP to skip the license.txt I Accept button</Description>
+      <Address>110212EA</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>212EA</ModuleNameOffset>
+      <Before>
+        <Byte>89</Byte>
+        <Byte>6D</Byte>
+        <Byte>14</Byte>
+        <Byte>11</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>90</Byte>
+      </Actual>
+      <After>
+        <Byte>90</Byte>
+        <Byte>BF</Byte>
+        <Byte>28</Byte>
+        <Byte>61</Byte>
+        <Byte>10</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Code :push ebp ; new_dll_main</Description>
+      <Address>110210E3</Address>
+      <ModuleName>eqmain.dll</ModuleName>
+      <ModuleNameOffset>210E3</ModuleNameOffset>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>5B</Byte>
+        <Byte>C9</Byte>
+        <Byte>C3</Byte>
+      </Before>
+      <Actual>
+        <Byte>55</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>EC</Byte>
+        <Byte>6A</Byte>
+        <Byte>FF</Byte>
+        <Byte>68</Byte>
+      </After>
+    </CodeEntry>
+  </CheatCodes>
+  <UserdefinedSymbols>
+    <SymbolEntry>
+      <Name>humhe03</Name>
+      <Address>141DC64A</Address>
+    </SymbolEntry>
+    <SymbolEntry>
+      <Name>hufhe03</Name>
+      <Address>14176B29</Address>
+    </SymbolEntry>
+    <SymbolEntry>
+      <Name>newmem</Name>
+      <Address>003B0000</Address>
+    </SymbolEntry>
+    <SymbolEntry>
+      <Name>throttlefps</Name>
+      <Address>04410000</Address>
+    </SymbolEntry>
+  </UserdefinedSymbols>
+</CheatTable>

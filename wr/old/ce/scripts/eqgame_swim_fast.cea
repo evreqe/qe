@@ -1,0 +1,9 @@
+[enable]
+
+eqgame.exe+67E29:
+db 90 90
+
+[disable]
+
+eqgame.exe+67E29:
+jne eqgame.exe+67E41

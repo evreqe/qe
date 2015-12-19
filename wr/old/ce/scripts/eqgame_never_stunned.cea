@@ -1,0 +1,16 @@
+[enable]
+
+eqgame.exe+1F726:
+mov byte ptr [esi+000000B0],00
+
+eqgame.exe+2EF2A:
+mov byte ptr [esi+000000B0],00
+
+[disable]
+
+eqgame.exe+1F726:
+mov byte ptr [esi+000000B0],01
+
+eqgame.exe+2EF2A:
+mov byte ptr [esi+000000B0],01
+

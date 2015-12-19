@@ -1,0 +1,9 @@
+[enable]
+
+eqgame.exe+60B13:
+db EB
+
+[disable]
+
+eqgame.exe+60B13:
+db 75

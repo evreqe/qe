@@ -1,0 +1,36 @@
+[enable]
+
+eqgame.exe+214EB1:
+cmp esi,[eqgame.exe+32B7A0]
+jne eqgame.exe+214EBD
+cmp al,66
+je eqgame.exe+214EC8
+mov [esi+00000179],al
+jmp eqgame.exe+831D1
+mov [esi+00000179],00000064
+mov esi,[eqgame.exe+32B7A8]
+mov [esi+00000A64],00000064
+mov esi,[eqgame.exe+32B7A0]
+jmp eqgame.exe+831D1
+
+eqgame.exe+831CB:
+jmp eqgame.exe+214EB1
+nop 
+
+[disable]
+
+eqgame.exe+831CB:
+mov [esi+00000179],al
+
+eqgame.exe+214EB1:
+db 00 00 00 00 00 00
+db 00 00
+db 00 00
+db 00 00
+db 00 00 00 00 00 00
+db 00 00 00 00 00
+db 00 00 00 00 00 00 00 00 00 00
+db 00 00 00 00 00 00
+db 00 00 00 00 00 00 00 00 00 00
+db 00 00 00 00 00 00
+db 00 00 00 00 00

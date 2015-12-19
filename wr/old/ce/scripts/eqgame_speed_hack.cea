@@ -1,0 +1,27 @@
+[enable]
+
+eqgame.exe+215001:
+fmul dword ptr [eqgame.exe+215013]
+fstp dword ptr [ecx+00000080]
+jmp 004643D8
+nop
+
+eqgame.exe+215013:
+db 00 00 80 3F
+
+eqgame.exe+643F6:
+jmp eqgame.exe+215001
+
+[disable]
+
+eqgame.exe+643F6:
+fstp dword ptr [ecx+00000080]
+
+eqgame.exe+215001:
+db 00 00 00 00 00 00
+db 00 00 00 00 00 00
+db 00 00 00 00 00
+db 00
+
+eqgame.exe+215013:
+db 00 00 00 00

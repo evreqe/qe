@@ -1,0 +1,9 @@
+[enable]
+
+EQGfx_Dx8.t3dSetCameraLens+3B:
+db 90 90 90
+
+[disable]
+
+EQGfx_Dx8.t3dSetCameraLens+3B:
+fstp dword ptr [ecx+20]

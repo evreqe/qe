@@ -1,0 +1,13 @@
+[enable]
+
+eqgame.exe+ADFA5:
+mov al,05
+nop
+nop
+nop
+nop
+
+[disable]
+
+eqgame.exe+ADFA5:
+mov al,[ebx+000000A5]

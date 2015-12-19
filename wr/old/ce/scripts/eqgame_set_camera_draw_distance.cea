@@ -1,0 +1,9 @@
+[enable]
+
+EQGfx_Dx8.t3dSetCameraLens+48:
+db 90 90 90
+
+[disable]
+
+EQGfx_Dx8.t3dSetCameraLens+48:
+mov [ecx+30],eax
