@@ -7,7 +7,7 @@
 #include <cstring>
 #include <cmath>
 
-#include "eqdalaya.h"
+#include "eqsod.h"
 
 #define EQ_FUNCTION_AT_ADDRESS(function,offset) __declspec(naked) function\
 {\
@@ -165,6 +165,14 @@ public:
 CTextOverlay** EQ_CLASS_ppCTextOverlay = (CTextOverlay**)EQ_POINTER_CTextOverlay;
 #define EQ_CLASS_CTextOverlay (*EQ_CLASS_ppCTextOverlay)
 
+class EQPlayer
+{
+public:
+    void EQPlayer::ChangeHeight(float height);
+    void EQPlayer::ChangePosition(BYTE standingState);
+    void EQPlayer::FacePlayer(DWORD spawnInfo);
+};
+
 EQ_Character** EQ_CLASS_ppEQ_Character = (EQ_Character**)EQ_POINTER_EQ_Character;
 #define EQ_CLASS_EQ_Character (*EQ_CLASS_ppEQ_Character)
 
@@ -245,6 +253,20 @@ typedef int (__thiscall* EQ_FUNCTION_TYPE_CTextOverlay__DisplayText)(void* pThis
 EQ_FUNCTION_AT_ADDRESS(void CTextOverlay::DisplayText(const char* text, int textColor, int font, int alpha, int x, int y, int duration), EQ_FUNCTION_CTextOverlay__DisplayText);
 #endif
 
+/* EQPlayer */
+
+#ifdef EQ_FUNCTION_EQPlayer__ChangeHeight
+EQ_FUNCTION_AT_ADDRESS(void EQPlayer::ChangeHeight(float height), EQ_FUNCTION_EQPlayer__ChangeHeight);
+#endif
+
+#ifdef EQ_FUNCTION_EQPlayer__ChangePosition
+EQ_FUNCTION_AT_ADDRESS(void EQPlayer::ChangePosition(BYTE standingState), EQ_FUNCTION_EQPlayer__ChangePosition);
+#endif
+
+#ifdef EQ_FUNCTION_EQPlayer__FacePlayer
+EQ_FUNCTION_AT_ADDRESS(void EQPlayer::FacePlayer(DWORD spawnInfo), EQ_FUNCTION_EQPlayer__FacePlayer);
+#endif
+
 /* EQ_Character */
 
 #ifdef EQ_FUNCTION_EQ_Character__eqspa_movement_rate
@@ -275,6 +297,10 @@ typedef int (__cdecl* EQ_FUNCTION_TYPE_DrawNetStatus)(int, unsigned short, unsig
 
 #ifdef EQ_FUNCTION_get_melee_range
 EQ_FUNCTION_AT_ADDRESS(float __cdecl EQ_get_melee_range(DWORD spawn1, DWORD spawn2), EQ_FUNCTION_get_melee_range);
+#endif
+
+#ifdef EQ_FUNCTION_get_bearing
+EQ_FUNCTION_AT_ADDRESS(float __cdecl EQ_get_bearing(float y1, float x1, float y2, float x2), EQ_FUNCTION_get_bearing);
 #endif
 
 /* functions */
@@ -327,11 +353,25 @@ bool EQ_IsInGame()
     return true;
 }
 
+bool EQ_IsNetStatusEnabled()
+{
+    DWORD isNetStatusEnabled = EQ_ReadMemory<BYTE>(EQ_BOOL_NET_STATUS);
+
+    return (isNetStatusEnabled == 1);
+}
+
 bool EQ_IsAutoAttackEnabled()
 {
-    DWORD isAutoAttackEnabled = EQ_ReadMemory<BYTE>(0x00AC1196);
+    DWORD isAutoAttackEnabled = EQ_ReadMemory<BYTE>(EQ_BOOL_AUTO_ATTACK);
 
     return (isAutoAttackEnabled == 1);
+}
+
+bool EQ_IsAutoFireEnabled()
+{
+    DWORD isAutoFireEnabled = EQ_ReadMemory<BYTE>(EQ_BOOL_AUTO_FIRE);
+
+    return (isAutoFireEnabled == 1);
 }
 
 void EQ_WriteToChat(const char* text)
@@ -378,6 +418,113 @@ DWORD EQ_GetCharInfo2()
     }
 
     return charInfo2;
+}
+
+void EQ_SetSpawnCollisionRadius(DWORD spawnInfo, float radius)
+{
+    DWORD actorInfo = EQ_ReadMemory<DWORD>(spawnInfo + 0xF84);
+
+    if (actorInfo == NULL)
+    {
+        return;
+    }
+
+    EQ_WriteMemory<FLOAT>(actorInfo + 0x104, radius);
+}
+
+DWORD EQ_GetZoneId()
+{
+    return EQ_ReadMemory<DWORD>(EQ_ZONE_ID);
+}
+
+bool EQ_IsZoneCity()
+{
+    DWORD zoneId = EQ_GetZoneId();
+
+    if
+    (
+        //zoneId == 1   || // south newport
+        //zoneId == 2   || // north newport
+        zoneId == 3   //|| // surefall
+        //zoneId == 23  || // erudin palace
+        //zoneId == 24  || // erudin
+        //zoneId == 29  || // halas
+        //zoneId == 55  || // underhill
+        //zoneId == 61  || // athica a
+        //zoneId == 62  || // athica b
+        //zoneId == 74  || // sadri malath
+        //zoneId == 114    // thurgadin
+    )
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool EQ_IsCastingSpell()
+{
+    DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
+
+    if (playerSpawn == NULL)
+    {
+        return false;
+    }
+
+    DWORD spellCastingTimer = EQ_ReadMemory<DWORD>(playerSpawn + 0x448);
+
+    if (spellCastingTimer != 0)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool EQ_IsSpawnInGroup(DWORD spawnInfo)
+{
+    if (spawnInfo == NULL)
+    {
+        return false;
+    }
+
+    DWORD charInfo = EQ_ReadMemory<DWORD>(EQ_POINTER_CHAR_INFO);
+
+    if (charInfo == NULL)
+    {
+        return false;
+    }
+
+    DWORD group = EQ_ReadMemory<DWORD>(charInfo + 0xF1B8);
+
+    if (group == NULL)
+    {
+        return false;
+    }
+
+    for (size_t i = 1; i < 7; i++)
+    {
+        DWORD groupMember = EQ_ReadMemory<DWORD>(group + (i * 4));
+
+        if (groupMember == NULL)
+        {
+            continue;
+        }
+
+        DWORD groupMemberSpawn = EQ_ReadMemory<DWORD>(groupMember + 0x28);
+
+        if (groupMemberSpawn == NULL)
+        {
+            continue;
+        }
+
+        if (groupMemberSpawn == spawnInfo)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 DWORD EQ_GetTimer()
@@ -579,6 +726,32 @@ std::string EQ_GetSpellNameById(int spellId)
     memcpy(spellName, (LPVOID)(spell + 0x247), sizeof(spellName));
 
     return spellName;
+}
+
+DWORD EQ_GetNumPlayersInZone()
+{
+    DWORD numPlayers = 0;
+
+    DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_SPAWN_INFO);
+
+    while (spawn)
+    {
+        int spawnType = EQ_ReadMemory<BYTE>(spawn + 0x125);
+
+        if (spawnType == EQ_SPAWN_TYPE_PLAYER)
+        {
+            int spawnLevel = EQ_ReadMemory<BYTE>(spawn + 0x315);
+
+            if (spawnLevel > 0 && spawnLevel < 100)
+            {
+                numPlayers++;
+            }
+        }
+
+        spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+    }
+
+    return numPlayers;
 }
 
 #endif // EQSOD_FUNCTIONS_H

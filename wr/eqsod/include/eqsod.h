@@ -12,12 +12,13 @@ const float EQ_PI = 3.14159265358979f;
 
 #define EQ_BASE_ADDRESS 0x00400000
 
-#define EQ_WINDOW_WIDTH  0x00AD6950
-#define EQ_WINDOW_HEIGHT 0x00AD6954
+#define EQ_WINDOW_HWND   0x00AD6974 // DWORD
+#define EQ_WINDOW_WIDTH  0x00AD6950 // DWORD
+#define EQ_WINDOW_HEIGHT 0x00AD6954 // DWORD
 
-#define EQ_BOOL_AUTO_ATTACK        0x00AC1196
-#define EQ_BOOL_AUTO_FIRE          0x00AC1197
-#define EQ_BOOL_DRAW_NET_STATUS    0x00A603E1
+#define EQ_BOOL_AUTO_ATTACK    0x00AC1196 // BYTE
+#define EQ_BOOL_AUTO_FIRE      0x00AC1197 // BYTE
+#define EQ_BOOL_NET_STATUS     0x00A603E1 // BYTE
 
 #define EQ_POINTER_GRAPHICS_DLL_BASE_ADDRESS 0x00B112A8 // EQGraphicsDX9.DLL
 
@@ -54,13 +55,19 @@ const float EQ_PI = 3.14159265358979f;
 
 #define EQ_POINTER_GROUP_INFO                 0x00A40ABE // pinstGroup
 
-#define EQ_ZONEINFO_SHORT_NAME    0x00A605BC
+#define EQ_ZONEINFO_CHARACTER_NAME    0x00A6057C // string 64
+#define EQ_ZONEINFO_SHORT_NAME        0x00A605BC // string 32
+#define EQ_ZONEINFO_LONG_NAME         0x00A6063C // string 128
+#define EQ_ZONEINFO_GRAVITY           0x00A60780 // FLOAT
+#define EQ_ZONEINFO_MIN_CLIP          0x00A607E0 // FLOAT
+#define EQ_ZONEINFO_MAX_CLIP          0x00A607E4 // FLOAT
 
 #define EQ_FUNCTION_CastRay                     0x004C3E40 // __CastRay
 #define EQ_FUNCTION_CXWnd_DrawColoredRect       0x006DBB30
 #define EQ_FUNCTION_DrawNetStatus               0x00512280
 #define EQ_FUNCTION_ExecuteCmd                  0x004A5580
 #define EQ_FUNCTION_get_melee_range             0x004AAA20 // __get_melee_range
+#define EQ_FUNCTION_get_bearing                 0x004B7BF0
 
 #define EQ_FUNCTION_CDisplay__WriteTextHD2        0x0046D880
 
@@ -80,6 +87,12 @@ const float EQ_PI = 3.14159265358979f;
 #define EQ_FUNCTION_CTextEntryWnd__Activate    0x00649060
 
 #define EQ_FUNCTION_CTextOverlay__DisplayText     0x0041DB10
+
+#define EQ_FUNCTION_EQPlayer__ChangeHeight      0x00530900
+#define EQ_FUNCTION_EQPlayer__ChangePosition    0x0052E120
+#define EQ_FUNCTION_EQPlayer__FacePlayer        0x0052C170
+
+#define EQ_ZONE_ID 0x00B01E50 // DWORD
 
 #define EQ_SPAWN_TYPE_PLAYER        0
 #define EQ_SPAWN_TYPE_NPC           1

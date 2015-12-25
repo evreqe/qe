@@ -38,6 +38,7 @@ const char* g_applicationExeName = "eqapp";
 
 volatile int g_bLoaded = 0;
 volatile int g_bExit   = 0;
+volatile int g_bConsole = 0;
 
 HWND g_hwnd;
 
@@ -105,6 +106,19 @@ unsigned int g_combatHotbuttonIndex = 0;
 DWORD g_combatHotbuttonTimer = 0;
 DWORD g_combatHotbuttonDelay = 1000;
 
+bool g_alwaysHotbuttonIsEnabled = false;
+unsigned int g_alwaysHotbuttonIndex = 0;
+DWORD g_alwaysHotbuttonTimer = 0;
+DWORD g_alwaysHotbuttonDelay = 1000;
+
+bool g_targetAlertIsEnabled = false;
+DWORD g_targetAlertTimer = 0;
+DWORD g_targetAlertDelay = 1000;
+std::string g_targetAlertName;
+
+bool g_heightIsEnabled = true;
+float g_heightMaximum = 5.0f;
+
 // slash commands
 const std::vector<std::string> g_slashCommands
 {
@@ -127,6 +141,9 @@ const std::vector<std::string> g_slashCommands
     "//memory",
     "//alwaysattack",
     "//combathotbutton",
+    "//alwayshotbutton",
+    "//setcollisionradius",
+    "//targetalert",
 };
 
 // function prototypes
@@ -134,6 +151,7 @@ void EQAPP_EnableDebugPrivileges();
 void EQAPP_LoadConsole();
 void EQAPP_CoutSaveFlags();
 void EQAPP_CoutRestoreFlags();
+void EQAPP_DoWindowTitles();
 bool EQAPP_IsForegroundWindowCurrentProcessId();
 DWORD EQAPP_GetModuleBaseAddress(const wchar_t* moduleName);
 void EQAPP_LoadGraphicsDllFunctions();
@@ -145,11 +163,14 @@ void EQAPP_ToggleMemory(PEQAPPMEMORY pMemory, bool bEnabled);
 void EQAPP_LoadNamedSpawns();
 void EQAPP_LoadTextOverlayChatText();
 void EQAPP_DrawHud();
+void EQAPP_DoTargetAlert();
 void EQAPP_DoLineToTarget();
 void EQAPP_DoAlwaysAttack();
 void EQAPP_DoCombatHotbutton();
+void EQAPP_DoAlwaysHotbutton();
 void EQAPP_DoEsp();
 void EQAPP_DoMaxSwimming();
+void EQAPP_DoHeight();
 void EQAPP_DoInterpretCommand(char* command);
 int __cdecl EQAPP_DETOUR_DrawNetStatus(int a1, unsigned short a2, unsigned short a3, unsigned short a4, unsigned short a5, int a6, unsigned short a7, unsigned long a8, long a9, unsigned long a10);
 int __fastcall EQAPP_DETOUR_CEverQuest__dsp_chat(void* pThis, void* not_used, const char* a1, int a2, bool a3);
@@ -213,7 +234,7 @@ void EQAPP_EnableDebugPrivileges()
 
 void EQAPP_LoadConsole()
 {
-    static const WORD MAX_CONSOLE_LINES = 1000;
+    static const WORD MAX_CONSOLE_LINES = 500;
     int hConHandle;
     long lStdHandle;
     CONSOLE_SCREEN_BUFFER_INFO coninfo;
@@ -262,6 +283,8 @@ void EQAPP_LoadConsole()
             DeleteMenu(hMenu, SC_CLOSE, MF_BYCOMMAND);
         }
     }
+
+    g_bConsole = 1;
 }
 
 void EQAPP_CoutSaveFlags()
@@ -360,6 +383,10 @@ std::string EQAPP_IniReadString(const char* filename, const char* section, const
 
 void EQAPP_DoLoad()
 {
+    AttachConsole(-1);
+
+    std::cout << g_applicationName << std::endl;
+
     EQAPP_LoadMemory();
     EQAPP_LoadNamedSpawns();
     EQAPP_LoadTextOverlayChatText();
@@ -376,6 +403,12 @@ void EQAPP_DoUnload()
     EQ_WriteToChat("Unloaded.");
 
     g_bExit = 1;
+
+    HWND window = EQ_ReadMemory<HWND>(EQ_WINDOW_HWND);
+    if (window != NULL)
+    {
+        SetWindowTextA(window, EQ_STRING_WINDOW_TITLE);
+    }
 }
 
 void EQAPP_LoadMemory()
@@ -602,13 +635,134 @@ void EQAPP_LoadTextOverlayChatText()
 
 void EQAPP_DrawHud()
 {
-    EQ_DrawQuad(6, 28, 100, 50, 0xC8000040);
+    unsigned int x = 5;
+    unsigned int y = 28;
 
-    EQ_DrawText(g_applicationName, 6, 28, 0xFF808080, 2);
+    EQ_DrawQuad((float)x, (float)y, 127.0f, 63.0f, 0xC8000040);
+
+    EQ_DrawText(g_applicationName, x, y, 0xFF808080, 2);
+    y += 12;
+
+    DWORD numPlayersInZone = EQ_GetNumPlayersInZone();
+
+    if (numPlayersInZone != 0)
+    {
+        std::stringstream ss;
+        ss << "Players in zone: " << numPlayersInZone;
+
+        EQ_DrawText(ss.str().c_str(), x, y, 0xFFFFFFFF, 2);
+        y += 12;
+    }
 
     if (EQ_IsAutoAttackEnabled() == true)
     {
-        EQ_DrawText("Auto attack is on.", 6, 40, 0xFFFF0000, 2);
+        EQ_DrawText("Auto attack is on.", x, y, 0xFFFF0000, 2);
+        y += 12;
+    }
+
+    if (EQ_IsAutoFireEnabled() == true)
+    {
+        EQ_DrawText("Auto fire is on.", x, y, 0xFFFF0000, 2);
+        y += 12;
+    }
+
+    if (g_alwaysAttackIsEnabled == true)
+    {
+        EQ_DrawText("Always attack is on.", x, y, 0xFFFF0000, 2);
+        y += 12;
+    }
+
+    if (g_alwaysHotbuttonIsEnabled == true)
+    {
+        std::stringstream ss;
+        ss << "Always Hotbutton: " << g_alwaysHotbuttonIndex << " (" << g_alwaysHotbuttonDelay << ")";
+
+        EQ_DrawText(ss.str().c_str(), x, y, 0xFF00FF00, 2);
+        y += 12;
+    }
+
+    if (g_combatHotbuttonIsEnabled == true)
+    {
+        std::stringstream ss;
+        ss << "Combat Hotbutton: " << g_combatHotbuttonIndex << " (" << g_combatHotbuttonDelay << ")";
+
+        EQ_DrawText(ss.str().c_str(), x, y, 0xFF00FF00, 2);
+        y += 12;
+    }
+}
+
+void EQAPP_DoWindowTitles()
+{
+    if (g_bExit == 1)
+    {
+        return;
+    }
+
+    HWND window = EQ_ReadMemory<HWND>(EQ_WINDOW_HWND);
+
+    if (window == NULL)
+    {
+        return;
+    }
+
+    DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
+
+    if (playerSpawn == NULL)
+    {
+        SetWindowTextA(window, EQ_STRING_WINDOW_TITLE);
+
+        SetConsoleTitleA(g_applicationName);
+    }
+    {
+        char playerName[0x40] = {0};
+        memcpy(playerName, (LPVOID)(playerSpawn + 0xE4), sizeof(playerName));
+
+        std::stringstream ss;
+        ss << EQ_STRING_WINDOW_TITLE << ": " << playerName;
+
+        SetWindowTextA(window, ss.str().c_str());
+
+        ss.str(std::string());
+        ss.clear();
+
+        ss << g_applicationName << ": " << playerName;
+
+        SetConsoleTitleA(ss.str().c_str());
+    }
+}
+
+void EQAPP_DoTargetAlert()
+{
+    if (g_targetAlertIsEnabled == false)
+    {
+        return;
+    }
+
+    DWORD targetSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_TARGET_SPAWN_INFO);
+
+    if (targetSpawn == NULL)
+    {
+        return;
+    }
+
+    DWORD currentTime = EQ_GetTimer();
+
+    if ((currentTime - g_targetAlertTimer) < g_targetAlertDelay)
+    {
+        return;
+    }
+
+    g_targetAlertTimer = currentTime;
+
+    char spawnName[0x40] = {0};
+    memcpy(spawnName, (LPVOID)(targetSpawn + 0xE4), sizeof(spawnName));
+
+    if (strlen(spawnName) > 1 && g_targetAlertName.size() != 0)
+    {
+        if (strstr(spawnName, g_targetAlertName.c_str()) != NULL)
+        {
+            MessageBeep(0);
+        }
     }
 }
 
@@ -649,9 +803,21 @@ void EQAPP_DoAlwaysAttack()
         return;
     }
 
+    if (EQ_IsZoneCity() == true)
+    {
+        return;
+    }
+
     DWORD targetSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_TARGET_SPAWN_INFO);
 
     if (targetSpawn == NULL)
+    {
+        return;
+    }
+
+    int spawnType = EQ_ReadMemory<BYTE>(targetSpawn + 0x125);
+
+    if (spawnType != EQ_SPAWN_TYPE_NPC)
     {
         return;
     }
@@ -678,6 +844,18 @@ void EQAPP_DoCombatHotbutton()
         return;
     }
 
+    int spawnType = EQ_ReadMemory<BYTE>(targetSpawn + 0x125);
+
+    if (spawnType != EQ_SPAWN_TYPE_NPC)
+    {
+        return;
+    }
+
+    if (EQ_IsCastingSpell() == true)
+    {
+        return;
+    }
+
     DWORD currentTime = EQ_GetTimer();
 
     if ((currentTime - g_combatHotbuttonTimer) < g_combatHotbuttonDelay)
@@ -690,6 +868,25 @@ void EQAPP_DoCombatHotbutton()
     EQ_CLASS_CHotButtonWnd->DoHotButton(g_combatHotbuttonIndex, 0);
 }
 
+void EQAPP_DoAlwaysHotbutton()
+{
+    if (g_alwaysHotbuttonIsEnabled == false)
+    {
+        return;
+    }
+
+    DWORD currentTime = EQ_GetTimer();
+
+    if ((currentTime - g_alwaysHotbuttonTimer) < g_alwaysHotbuttonDelay)
+    {
+        return;
+    }
+
+    g_alwaysHotbuttonTimer = currentTime;
+
+    EQ_CLASS_CHotButtonWnd->DoHotButton(g_alwaysHotbuttonIndex, 0);
+}
+
 void EQAPP_DoMaxSwimming()
 {
     DWORD charInfo2 = EQ_GetCharInfo2();
@@ -700,6 +897,23 @@ void EQAPP_DoMaxSwimming()
     }
 
     EQ_WriteMemory<BYTE>(charInfo2 + 0x144C, 0xFA); // 250
+}
+
+void EQAPP_DoHeight()
+{
+    DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
+
+    if (playerSpawn == NULL)
+    {
+        return;
+    }
+
+    float height = EQ_ReadMemory<FLOAT>(playerSpawn + 0x13C);
+
+    if (height > g_heightMaximum)
+    {
+        ((EQPlayer*)playerSpawn)->ChangeHeight(g_heightMaximum);
+    }
 }
 
 void EQAPP_DoEsp()
@@ -742,7 +956,7 @@ void EQAPP_DoEsp()
 
         int spawnLevel = EQ_ReadMemory<BYTE>(spawn + 0x315);
 
-        if (spawnLevel > 100)
+        if (spawnLevel < 1 || spawnLevel > 100)
         {
             spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
             continue;
@@ -820,13 +1034,25 @@ void EQAPP_DoEsp()
             textColor = 0xFFFFFF00; // yellow
         }
 
+        if (EQ_IsSpawnInGroup(spawn) == true)
+        {
+            textColor = 0xFF00FF00; // green
+        }
+
         if (spawn == targetSpawn || spawnIsGm == 1)
         {
             textColor = 0xFFFF00FF; // pink
         }
 
         std::stringstream ss;
-        ss << "+ " << spawnName << " L" << spawnLevel << " (" << (int)spawnDistance << ")";
+        ss << "+ " << spawnName;
+
+        if (spawnType == EQ_SPAWN_TYPE_PLAYER_CORPSE || spawnType == EQ_SPAWN_TYPE_NPC_CORPSE)
+        {
+            ss << " corpse";
+        }
+
+        ss << " L" << spawnLevel << " (" << (int)spawnDistance << ")";
 
         if (spawnIsLfg == 1)
         {
@@ -1385,6 +1611,218 @@ void EQAPP_DoInterpretCommand(const char* command)
 
         return;
     }
+
+    // always hotbutton
+    if (strncmp(command, "//alwayshotbutton", 17) == 0)
+    {
+        if (strcmp(command, "//alwayshotbutton") == 0)
+        {
+            EQ_ToggleBool(g_alwaysHotbuttonIsEnabled);
+
+            std::cout << "Always Hotbutton: " << std::boolalpha << g_alwaysHotbuttonIsEnabled << std::noboolalpha << std::endl;
+        }
+        else if (strncmp(command, "//alwayshotbutton ", 18) == 0)
+        {
+            char commandEx[128];
+
+            unsigned int buttonIndex = 0;
+
+            unsigned int delay = 1;
+
+            int result = sscanf_s(command, "%s %d %d", commandEx, sizeof(commandEx), &buttonIndex, &delay);
+
+            if (result == 3)
+            {
+                if (buttonIndex < 1 || buttonIndex > 10)
+                {
+                    std::cout << "No hotbutton exists at specified index: " << buttonIndex << std::endl;
+                    return;
+                }
+
+                g_alwaysHotbuttonIndex = buttonIndex - 1;
+
+                g_alwaysHotbuttonDelay = delay * 1000;
+
+                std::cout << "Always Hotbutton: " << buttonIndex << " (" << delay << " second(s))" << std::endl;
+
+                g_alwaysHotbuttonIsEnabled = true;
+            }
+        }
+
+        return;
+    }
+
+    // set collision radius
+    if (strncmp(command, "//setcollisionradius ", 21) == 0)
+    {
+        char commandEx[128];
+
+        float radius = 1.0f;
+
+        int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &radius);
+
+        if (result == 2)
+        {
+            if (radius < 0.1f)
+            {
+                std::cout << "Specified radius too low: " << radius << std::endl;
+                return;
+            }
+
+            DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
+
+            if (playerSpawn == NULL)
+            {
+                return;
+            }
+
+            EQ_SetSpawnCollisionRadius(playerSpawn, radius);
+
+            std::cout << "Collision Radius: " << radius << std::endl;
+        }
+
+        return;
+    }
+
+    // set zone clip
+    if (strncmp(command, "//setzoneclip ", 14) == 0)
+    {
+        char commandEx[128];
+
+        float clip = 1000.0f;
+
+        int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &clip);
+
+        if (result == 2)
+        {
+            if (clip < 100.0f)
+            {
+                std::cout << "Specified clip too low: " << clip << std::endl;
+                return;
+            }
+
+            EQ_WriteMemory<FLOAT>(EQ_ZONEINFO_MIN_CLIP, clip);
+            EQ_WriteMemory<FLOAT>(EQ_ZONEINFO_MAX_CLIP, clip);
+
+            std::cout << "Zone Clip: " << clip << std::endl;
+        }
+
+        return;
+    }
+
+    // target alert
+    if (strncmp(command, "//targetalert", 13) == 0)
+    {
+        if (strcmp(command, "//targetalert") == 0)
+        {
+            EQ_ToggleBool(g_targetAlertIsEnabled);
+
+            std::cout << "Target Alert: " << std::boolalpha << g_targetAlertIsEnabled << std::noboolalpha << std::endl;
+        }
+        else if (strncmp(command, "//targetalert ", 14) == 0)
+        {
+            char commandEx[128];
+
+            char name[1024];
+
+            unsigned int delay = 1;
+
+            int result = sscanf_s(command, "%s %s %d", commandEx, sizeof(commandEx), name, sizeof(name), &delay);
+
+            if (result == 3)
+            {
+                g_targetAlertName = name;
+
+                g_targetAlertDelay = delay * 1000;
+
+                std::cout << "Target Alert: " << name << " (" << delay << " second(s))" << std::endl;
+
+                g_targetAlertIsEnabled = true;
+            }
+        }
+
+        return;
+    }
+
+    // height
+    if (strcmp(command, "//height") == 0)
+    {
+        EQ_ToggleBool(g_heightIsEnabled);
+
+        std::cout << "Height: " << std::boolalpha << g_heightIsEnabled << std::noboolalpha << std::endl;
+
+        return;
+    }
+
+    // set height
+    if (strncmp(command, "//setheight ", 12) == 0)
+    {
+        DWORD targetSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_TARGET_SPAWN_INFO);
+
+        if (targetSpawn == NULL)
+        {
+            std::cout << "Target not found!" << std::endl;
+            return;
+        }
+
+        char commandEx[128];
+
+        float height = g_heightMaximum;
+
+        int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &height);
+
+        if (result == 2)
+        {
+            ((EQPlayer*)targetSpawn)->ChangeHeight(height);
+
+            std::cout << "Set Target Height: " << height << std::endl;
+
+            g_targetAlertIsEnabled = true;
+        }
+
+        return;
+    }
+
+    // get zone id
+    if (strcmp(command, "//getzoneid") == 0)
+    {
+        DWORD zoneId = EQ_GetZoneId();
+
+        std::cout << "Zone ID: " << zoneId << std::endl;
+
+        return;
+    }
+
+    // load memory
+    if (strcmp(command, "//loadmemory") == 0)
+    {
+        EQAPP_UnloadMemory();
+        EQAPP_LoadMemory();
+
+        std::cout << "Loading memories..." << std::endl;
+
+        return;
+    }
+
+    // load named spawns
+    if (strcmp(command, "//loadnamedspawns") == 0)
+    {
+        EQAPP_LoadNamedSpawns();
+
+        std::cout << "Loading named spawns..." << std::endl;
+
+        return;
+    }
+
+    // load text overlay chat text
+    if (strcmp(command, "//loadtextoverlaychattext") == 0)
+    {
+        EQAPP_LoadTextOverlayChatText();
+
+        std::cout << "Loading text overlay chat text..." << std::endl;
+
+        return;
+    }
 }
 
 int __cdecl EQAPP_DETOUR_DrawNetStatus(int a1, unsigned short a2, unsigned short a3, unsigned short a4, unsigned short a5, int a6, unsigned short a7, unsigned long a8, long a9, unsigned long a10)
@@ -1410,11 +1848,15 @@ int __cdecl EQAPP_DETOUR_DrawNetStatus(int a1, unsigned short a2, unsigned short
         return EQAPP_REAL_DrawNetStatus(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
     }
 
+    EQAPP_DoWindowTitles();
     EQAPP_DrawHud();
 
+    EQAPP_DoTargetAlert();
     EQAPP_DoCombatHotbutton();
+    EQAPP_DoAlwaysHotbutton();
     EQAPP_DoAlwaysAttack();
     EQAPP_DoMaxSwimming();
+    EQAPP_DoHeight();
     EQAPP_DoLineToTarget();
     EQAPP_DoEsp();
 
@@ -1593,6 +2035,7 @@ DWORD WINAPI EQAPP_ThreadConsole(LPVOID param)
 
     while (g_bExit == 0)
     {
+/*
         DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
 
         if (playerSpawn != NULL)
@@ -1601,15 +2044,16 @@ DWORD WINAPI EQAPP_ThreadConsole(LPVOID param)
             memcpy(playerName, (LPVOID)(playerSpawn + 0xE4), sizeof(playerName));
 
             std::stringstream ss;
-            ss << "EQAPP: " << playerName;
+            ss << g_applicationName << ": " << playerName;
 
             SetConsoleTitleA(ss.str().c_str());
         }
+*/
 
         std::string command;
         std::getline(std::cin, command);
 
-        std::cout << command << std::endl;
+        //std::cout << command << std::endl;
 
         EQAPP_DoInterpretCommand(command.c_str());
     }
@@ -1624,6 +2068,11 @@ DWORD WINAPI EQAPP_ThreadLoad(LPVOID param)
     EQAPP_EnableDebugPrivileges();
 
     EQAPP_LoadGraphicsDllFunctions();
+
+    g_handleThreadConsole = CreateThread(NULL, 0, &EQAPP_ThreadConsole, NULL, 0, NULL);
+
+    // wait for the console to load
+    while (g_bConsole == 0);
 
     g_handleThreadLoop = CreateThread(NULL, 0, &EQAPP_ThreadLoop, NULL, 0, NULL);
 
@@ -1643,7 +2092,6 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved)
         case DLL_PROCESS_ATTACH:
             DisableThreadLibraryCalls(module);
             g_handleThreadLoad = CreateThread(NULL, 0, &EQAPP_ThreadLoad, NULL, 0, NULL);
-            g_handleThreadConsole = CreateThread(NULL, 0, &EQAPP_ThreadConsole, NULL, 0, NULL);
             break;
 
         case DLL_PROCESS_DETACH:
