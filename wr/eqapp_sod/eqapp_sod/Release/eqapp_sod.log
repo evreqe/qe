@@ -1,4 +1,4 @@
-﻿Build started 12/24/2015 9:32:09 PM.
+﻿Build started 1/1/2016 8:35:53 AM.
      1>Project "D:\Code\everquest\eqapp_sod\eqapp_sod\eqapp_sod.vcxproj" on node 2 (Rebuild target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ID:\Code\_libraries\detours\include /ID:\Code\everquest\eqsod\include /IC:\VisualLeakDetector\include /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D EQAPP_SOD_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt dllmain.cpp
@@ -12,4 +12,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.23
+Time Elapsed 00:00:03.72

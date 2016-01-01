@@ -77,6 +77,7 @@ class CXRect;
 class CDisplay;
 class CEverQuest;
 class CHotButtonWnd;
+class CMapViewWnd;
 class CTextEntryWnd;
 class CTextOverlay;
 class EQPlayer;
@@ -111,6 +112,8 @@ public:
 class CDisplay
 {
 public:
+    void CDisplay::CreatePlayerActor(DWORD spawnInfo, int a2, int a3, int a4, int a5);
+    void CDisplay::DeleteActor(DWORD actorInstance);
     static int __cdecl CDisplay::WriteTextHD2(const char* text, int x, int y, int color);
 };
 
@@ -133,6 +136,8 @@ public:
     void CEverQuest::InterpretCmd(class EQPlayer* spawn, char* text);
     int __cdecl CEverQuest::LMouseUp(int x, int y);
     int __cdecl CEverQuest::RMouseUp(int x, int y);
+    void CEverQuest::MoveToZone(int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8);
+    void CEverQuest::SetGameState(int state);
 };
 
 CEverQuest** EQ_CLASS_ppCEverQuest = (CEverQuest**)EQ_POINTER_CEverQuest;
@@ -146,6 +151,15 @@ public:
 
 CHotButtonWnd** EQ_CLASS_ppCHotButtonWnd = (CHotButtonWnd**)EQ_POINTER_CHotButtonWnd;
 #define EQ_CLASS_CHotButtonWnd (*EQ_CLASS_ppCHotButtonWnd)
+
+class CMapViewWnd : public CSidlScreenWnd
+{
+public:
+    void CMapViewWnd::DrawMap(int a1, int a2, int a3, int a4);
+};
+
+CMapViewWnd** EQ_CLASS_ppCMapViewWnd = (CMapViewWnd**)EQ_POINTER_CMapViewWnd;
+#define EQ_CLASS_CMapViewWnd (*EQ_CLASS_ppCMapViewWnd)
 
 class CTextEntryWnd
 {
@@ -193,8 +207,17 @@ EQ_FUNCTION_TYPE_EQGraphicsDLL__DrawQuad EQGraphicsDLL__DrawQuad = NULL;
 
 /* CDisplay */
 
+#ifdef EQ_FUNCTION_CDisplay__CreatePlayerActor
+typedef int (__thiscall* EQ_FUNCTION_TYPE_CDisplay__CreatePlayerActor)(void* pThis, DWORD spawnInfo, int a2, int a3, int a4, int a5);
+EQ_FUNCTION_AT_ADDRESS(void CDisplay::CreatePlayerActor(DWORD spawnInfo, int a2, int a3, int a4, int a5), EQ_FUNCTION_CDisplay__CreatePlayerActor);
+#endif
+
+#ifdef EQ_FUNCTION_CDisplay__DeleteActor
+typedef int (__thiscall* EQ_FUNCTION_TYPE_CDisplay__DeleteActor)(void* pThis, DWORD actorInstance);
+EQ_FUNCTION_AT_ADDRESS(void CDisplay::DeleteActor(DWORD actorInstance), EQ_FUNCTION_CDisplay__DeleteActor);
+#endif
+
 #ifdef EQ_FUNCTION_CDisplay__WriteTextHD2
-typedef int (__cdecl* EQ_FUNCTION_TYPE_CDisplay__WriteTextHD2)(const char* text, int x, int y, int color);
 EQ_FUNCTION_AT_ADDRESS(int CDisplay::WriteTextHD2(const char* text, int x, int y, int color), EQ_FUNCTION_CDisplay__WriteTextHD2);
 #endif
 
@@ -233,6 +256,23 @@ typedef int (__thiscall* EQ_FUNCTION_TYPE_CEverQuest__RMouseUp)(void* pThis, int
 EQ_FUNCTION_AT_ADDRESS(int __cdecl CEverQuest::RMouseUp(int, int), EQ_FUNCTION_CEverQuest__RMouseUp);
 #endif
 
+#ifdef EQ_FUNCTION_CEverQuest__MoveToZone
+typedef int (__thiscall* EQ_FUNCTION_TYPE_CEverQuest__MoveToZone)(void* pThis, int, int, int, int, int, int, int, int);//, int, int, int, int, int, int);
+EQ_FUNCTION_AT_ADDRESS(void CEverQuest::MoveToZone(int, int, int, int, int, int, int, int), EQ_FUNCTION_CEverQuest__MoveToZone);
+#endif
+
+#ifdef EQ_FUNCTION_CEverQuest__SetGameState
+typedef int (__thiscall* EQ_FUNCTION_TYPE_CEverQuest__SetGameState)(void* pThis, int state);
+EQ_FUNCTION_AT_ADDRESS(void CEverQuest::SetGameState(int state), EQ_FUNCTION_CEverQuest__SetGameState);
+#endif
+
+/* CMapViewWnd */
+
+#ifdef EQ_FUNCTION_CMapViewWnd__DrawMap
+typedef int (__thiscall* EQ_FUNCTION_TYPE_CMapViewWnd__DrawMap)(void* pThis, int a1, int a2, int a3, int a4);
+EQ_FUNCTION_AT_ADDRESS(void CMapViewWnd::DrawMap(int, int, int, int), EQ_FUNCTION_CMapViewWnd__DrawMap);
+#endif
+
 /* CHotButtonWnd */
 
 #ifdef EQ_FUNCTION_CHotButtonWnd__DoHotButton
@@ -260,6 +300,7 @@ EQ_FUNCTION_AT_ADDRESS(void EQPlayer::ChangeHeight(float height), EQ_FUNCTION_EQ
 #endif
 
 #ifdef EQ_FUNCTION_EQPlayer__ChangePosition
+typedef int (__thiscall* EQ_FUNCTION_TYPE_EQPlayer__ChangePosition)(void* pThis, BYTE standingState);
 EQ_FUNCTION_AT_ADDRESS(void EQPlayer::ChangePosition(BYTE standingState), EQ_FUNCTION_EQPlayer__ChangePosition);
 #endif
 
@@ -280,6 +321,11 @@ EQ_FUNCTION_AT_ADDRESS(int EQ_Character::UseSkill(unsigned char, class EQPlayer*
 #endif
 
 /* other */
+
+#ifdef EQ_FUNCTION_Exit
+typedef int (__cdecl* EQ_FUNCTION_TYPE_Exit)();
+EQ_FUNCTION_AT_ADDRESS(void EQ_Exit(), EQ_FUNCTION_Exit);
+#endif
 
 #ifdef EQ_FUNCTION_CastRay
 typedef int (__cdecl* EQ_FUNCTION_TYPE_CastRay)(DWORD originSpawn, float y, float x, float z);
@@ -337,14 +383,12 @@ void EQ_Rotate2d(float cx, float cy, float& x, float& y, float angle)
 bool EQ_IsInGame()
 {
     DWORD everquest = EQ_ReadMemory<DWORD>(EQ_POINTER_CEverQuest);
-
     if (everquest == NULL)
     {
         return false;
     }
 
     DWORD gameState = EQ_ReadMemory<DWORD>(everquest + 0x5C4);
-
     if (gameState != EQ_GAME_STATE_IN_GAME)
     {
         return false;
@@ -374,6 +418,11 @@ bool EQ_IsAutoFireEnabled()
     return (isAutoFireEnabled == 1);
 }
 
+DWORD EQ_GetExitStatus()
+{
+    return EQ_ReadMemory<BYTE>(EQ_EXIT_STATUS);
+}
+
 void EQ_WriteToChat(const char* text)
 {
     if (EQ_IsInGame() == false)
@@ -397,21 +446,18 @@ void EQ_WriteToChat(const char* text, int textColor)
 DWORD EQ_GetCharInfo2()
 {
     DWORD charInfo = EQ_ReadMemory<DWORD>(EQ_POINTER_CHAR_INFO);
-
     if (charInfo == NULL)
     {
         return NULL;
     }
 
     DWORD charInfo2Info = EQ_ReadMemory<DWORD>(charInfo + 0xF1D8);
-
     if (charInfo2Info == NULL)
     {
         return NULL;
     }
 
     DWORD charInfo2 = EQ_ReadMemory<DWORD>(charInfo2Info + 0x04);
-
     if (charInfo2 == NULL)
     {
         return NULL;
@@ -423,7 +469,6 @@ DWORD EQ_GetCharInfo2()
 void EQ_SetSpawnCollisionRadius(DWORD spawnInfo, float radius)
 {
     DWORD actorInfo = EQ_ReadMemory<DWORD>(spawnInfo + 0xF84);
-
     if (actorInfo == NULL)
     {
         return;
@@ -434,7 +479,15 @@ void EQ_SetSpawnCollisionRadius(DWORD spawnInfo, float radius)
 
 DWORD EQ_GetZoneId()
 {
-    return EQ_ReadMemory<DWORD>(EQ_ZONE_ID);
+    DWORD charInfo = EQ_ReadMemory<DWORD>(EQ_POINTER_CHAR_INFO);
+    if (charInfo == NULL)
+    {
+        return NULL;
+    }
+
+    WORD zoneId = EQ_ReadMemory<WORD>(charInfo + 0xF2D4);
+
+    return zoneId;
 }
 
 bool EQ_IsZoneCity()
@@ -443,17 +496,17 @@ bool EQ_IsZoneCity()
 
     if
     (
-        //zoneId == 1   || // south newport
-        //zoneId == 2   || // north newport
-        zoneId == 3   //|| // surefall
-        //zoneId == 23  || // erudin palace
-        //zoneId == 24  || // erudin
-        //zoneId == 29  || // halas
-        //zoneId == 55  || // underhill
-        //zoneId == 61  || // athica a
-        //zoneId == 62  || // athica b
-        //zoneId == 74  || // sadri malath
-        //zoneId == 114    // thurgadin
+        zoneId == 1   || // south newport
+        zoneId == 2   || // north newport
+        zoneId == 3   || // surefall
+        zoneId == 23  || // erudin palace
+        zoneId == 24  || // erudin
+        zoneId == 29  || // halas
+        zoneId == 55  || // underhill
+        zoneId == 61  || // athica a
+        zoneId == 62  || // athica b
+        zoneId == 74  || // sadri malath
+        zoneId == 114    // thurgadin
     )
     {
         return true;
@@ -465,14 +518,12 @@ bool EQ_IsZoneCity()
 bool EQ_IsCastingSpell()
 {
     DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
-
     if (playerSpawn == NULL)
     {
         return false;
     }
 
     DWORD spellCastingTimer = EQ_ReadMemory<DWORD>(playerSpawn + 0x448);
-
     if (spellCastingTimer != 0)
     {
         return true;
@@ -489,14 +540,12 @@ bool EQ_IsSpawnInGroup(DWORD spawnInfo)
     }
 
     DWORD charInfo = EQ_ReadMemory<DWORD>(EQ_POINTER_CHAR_INFO);
-
     if (charInfo == NULL)
     {
         return false;
     }
 
     DWORD group = EQ_ReadMemory<DWORD>(charInfo + 0xF1B8);
-
     if (group == NULL)
     {
         return false;
@@ -505,14 +554,12 @@ bool EQ_IsSpawnInGroup(DWORD spawnInfo)
     for (size_t i = 1; i < 7; i++)
     {
         DWORD groupMember = EQ_ReadMemory<DWORD>(group + (i * 4));
-
         if (groupMember == NULL)
         {
             continue;
         }
 
         DWORD groupMemberSpawn = EQ_ReadMemory<DWORD>(groupMember + 0x28);
-
         if (groupMemberSpawn == NULL)
         {
             continue;
@@ -530,7 +577,6 @@ bool EQ_IsSpawnInGroup(DWORD spawnInfo)
 DWORD EQ_GetTimer()
 {
     DWORD display = EQ_ReadMemory<DWORD>(EQ_POINTER_CDisplay);
-
     if (display == NULL)
     {
         return NULL;
@@ -539,6 +585,37 @@ DWORD EQ_GetTimer()
     DWORD time = EQ_ReadMemory<DWORD>(display + 0x154);
 
     return time;
+}
+
+bool EQ_IsHideCorpseLootedEnabled()
+{
+    DWORD display = EQ_ReadMemory<DWORD>(EQ_POINTER_CDisplay);
+    if (display == NULL)
+    {
+        return NULL;
+    }
+
+    DWORD hideCorpseLooted = EQ_ReadMemory<BYTE>(display + 0x14);
+
+    return (hideCorpseLooted == 1);
+}
+
+void EQ_SetHideCorpseLooted(bool b)
+{
+    DWORD display = EQ_ReadMemory<DWORD>(EQ_POINTER_CDisplay);
+    if (display == NULL)
+    {
+        return;
+    }
+
+    BYTE value = 0x00;
+
+    if (b == true)
+    {
+        value = 0x01;
+    }
+
+    EQ_WriteMemory<BYTE>(display + 0x14, value);
 }
 
 void EQ_DrawText(const char* text, int x, int y, unsigned int color, unsigned int size)
@@ -752,6 +829,128 @@ DWORD EQ_GetNumPlayersInZone()
     }
 
     return numPlayers;
+}
+
+bool EQ_DoesSpawnExist(DWORD spawnInfo)
+{
+    DWORD numPlayers = 0;
+
+    DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_SPAWN_INFO);
+
+    while (spawn)
+    {
+        if (spawn == spawnInfo)
+        {
+            return true;
+        }
+
+        spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+    }
+
+    return false;
+}
+
+struct _EQMAPLABEL* EQ_MapWindow_AddLabel(EQMAPLABEL* mapLabel)
+{
+    DWORD mapViewWnd = EQ_ReadMemory<DWORD>(EQ_POINTER_CMapViewWnd);
+    if (mapViewWnd == NULL)
+    {
+        return NULL;
+    }
+
+    struct _EQMAPLABEL* node = EQ_ReadMemory<struct _EQMAPLABEL*>(mapViewWnd + 0x2D0);
+    if (node == NULL)
+    {
+        return NULL;
+    }
+
+    while (node->Next != NULL)
+    {
+        node = node->Next;
+    }
+
+    node->Next = (struct _EQMAPLABEL*)malloc(sizeof(struct _EQMAPLABEL));
+
+    node->Next->Next = NULL;
+    node->Next->Prev = node;
+
+    node->Next->Location = mapLabel->Location;
+    node->Next->Color = mapLabel->Color;
+    node->Next->Size = mapLabel->Size;
+    node->Next->Label = mapLabel->Label;
+    node->Next->Layer = mapLabel->Layer;
+    node->Next->Width = mapLabel->Width;
+    node->Next->Height = mapLabel->Height;
+
+    node->Next->Data = mapLabel->Data;
+
+    return node;
+}
+
+void EQ_MapWindow_RemoveLabel(DWORD data)
+{
+    DWORD mapViewWnd = EQ_ReadMemory<DWORD>(EQ_POINTER_CMapViewWnd);
+    if (mapViewWnd == NULL)
+    {
+        return;
+    }
+
+    struct _EQMAPLABEL* node = EQ_ReadMemory<struct _EQMAPLABEL*>(mapViewWnd + 0x2D0);
+    if (node == NULL)
+    {
+        return;
+    }
+
+    struct _EQMAPLABEL* first = node;
+
+    //std::cout << "first: " << first->Label << std::endl;
+
+    while (node->Next != NULL)
+    {
+        node = node->Next;
+    }
+
+    struct _EQMAPLABEL* last = node;
+
+    //std::cout << "last: " << last->Label << std::endl;
+
+    node = first;
+
+    while (node != NULL)
+    {
+        struct _EQMAPLABEL* after  = node->Next;
+        struct _EQMAPLABEL* before = node->Prev;
+
+        if (node->Data == data)
+        {
+            //std::cout << "remove: " << node->Label << std::endl;
+
+            if (node == first && node == last)
+            {
+                node = NULL;
+            }
+            else if (node == first)
+            {
+                first = node->Next;
+                first->Prev = NULL;
+            }
+            else if (node == last)
+            {
+                last = node->Prev;
+                last->Next = NULL;
+            }
+            else
+            {
+                before->Next = after;
+                after->Prev  = before;
+            }
+
+            node = NULL;
+            free(node);
+        }
+
+        node = after;
+    }
 }
 
 #endif // EQSOD_FUNCTIONS_H

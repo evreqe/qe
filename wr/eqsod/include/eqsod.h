@@ -16,9 +16,12 @@ const float EQ_PI = 3.14159265358979f;
 #define EQ_WINDOW_WIDTH  0x00AD6950 // DWORD
 #define EQ_WINDOW_HEIGHT 0x00AD6954 // DWORD
 
+#define EQ_EXIT_STATUS 0x00A60A03 // BYTE, 0 = not exiting, 1 or 2 = exiting
+
 #define EQ_BOOL_AUTO_ATTACK    0x00AC1196 // BYTE
 #define EQ_BOOL_AUTO_FIRE      0x00AC1197 // BYTE
 #define EQ_BOOL_NET_STATUS     0x00A603E1 // BYTE
+#define EQ_BOOL_SAFELOCK       0x00A96858 // BYTE
 
 #define EQ_POINTER_GRAPHICS_DLL_BASE_ADDRESS 0x00B112A8 // EQGraphicsDX9.DLL
 
@@ -37,6 +40,7 @@ const float EQ_PI = 3.14159265358979f;
 #define EQ_POINTER_CHotButtonWnd2             0x00B01C10
 #define EQ_POINTER_CHotButtonWnd3             0x00B01C14
 #define EQ_POINTER_CHotButtonWnd4             0x00B01C18
+#define EQ_POINTER_CMapViewWnd                0x00990C0C
 #define EQ_POINTER_CSidlManager               0x00B10A40
 #define EQ_POINTER_CTextEntryWnd              0x00990C90
 #define EQ_POINTER_CTextOverlay               0x00877500
@@ -55,12 +59,20 @@ const float EQ_PI = 3.14159265358979f;
 
 #define EQ_POINTER_GROUP_INFO                 0x00A40ABE // pinstGroup
 
-#define EQ_ZONEINFO_CHARACTER_NAME    0x00A6057C // string 64
-#define EQ_ZONEINFO_SHORT_NAME        0x00A605BC // string 32
-#define EQ_ZONEINFO_LONG_NAME         0x00A6063C // string 128
+#define EQ_ZONEINFO_CHARACTER_NAME    0x00A6057C // string 64  [0x40]
+#define EQ_ZONEINFO_SHORT_NAME        0x00A605BC // string 32  [0x20]
+#define EQ_ZONEINFO_LONG_NAME         0x00A6063C // string 128 [0x80]
+#define EQ_ZONEINFO_FOG_CLIP1         0x00A60760 // FLOAT
+#define EQ_ZONEINFO_FOG_CLIP2         0x00A60764 // FLOAT
+#define EQ_ZONEINFO_FOG_CLIP3         0x00A60768 // FLOAT
+#define EQ_ZONEINFO_FOG_CLIP4         0x00A6076C // FLOAT
+#define EQ_ZONEINFO_FOG_CLIP5         0x00A60770 // FLOAT
+#define EQ_ZONEINFO_FOG_CLIP6         0x00A60774 // FLOAT
 #define EQ_ZONEINFO_GRAVITY           0x00A60780 // FLOAT
 #define EQ_ZONEINFO_MIN_CLIP          0x00A607E0 // FLOAT
 #define EQ_ZONEINFO_MAX_CLIP          0x00A607E4 // FLOAT
+
+#define EQ_FUNCTION_Exit 0x004B06B0 // called by the "/exit" slash command
 
 #define EQ_FUNCTION_CastRay                     0x004C3E40 // __CastRay
 #define EQ_FUNCTION_CXWnd_DrawColoredRect       0x006DBB30
@@ -69,9 +81,9 @@ const float EQ_PI = 3.14159265358979f;
 #define EQ_FUNCTION_get_melee_range             0x004AAA20 // __get_melee_range
 #define EQ_FUNCTION_get_bearing                 0x004B7BF0
 
+#define EQ_FUNCTION_CDisplay__CreatePlayerActor   0x0046E0B0
+#define EQ_FUNCTION_CDisplay__DeleteActor         0x0046F2F0
 #define EQ_FUNCTION_CDisplay__WriteTextHD2        0x0046D880
-
-#define EQ_FUNCTION_CHotButtonWnd__DoHotButton    0x005C5E80
 
 #define EQ_FUNCTION_CEverQuest__dsp_chat          0x004DCD60
 #define EQ_FUNCTION_CEverQuest__dsp_chat__2       0x004DCF30
@@ -80,19 +92,23 @@ const float EQ_PI = 3.14159265358979f;
 #define EQ_FUNCTION_CEverQuest__InterpretCmd      0x004DD7C0
 #define EQ_FUNCTION_CEverQuest__LMouseUp          0x004F3200
 #define EQ_FUNCTION_CEverQuest__RMouseUp          0x004F2A20
+#define EQ_FUNCTION_CEverQuest__MoveToZone        0x004FABE0
+#define EQ_FUNCTION_CEverQuest__SetGameState      0x004D7890
 
-#define EQ_FUNCTION_EQ_Character__eqspa_movement_rate    0x0042D970
-#define EQ_FUNCTION_EQ_Character__UseSkill               0x00441FC0
+#define EQ_FUNCTION_CHotButtonWnd__DoHotButton    0x005C5E80
+
+#define EQ_FUNCTION_CMapViewWnd__DrawMap   0x005F7320
 
 #define EQ_FUNCTION_CTextEntryWnd__Activate    0x00649060
 
 #define EQ_FUNCTION_CTextOverlay__DisplayText     0x0041DB10
 
+#define EQ_FUNCTION_EQ_Character__eqspa_movement_rate    0x0042D970
+#define EQ_FUNCTION_EQ_Character__UseSkill               0x00441FC0
+
 #define EQ_FUNCTION_EQPlayer__ChangeHeight      0x00530900
 #define EQ_FUNCTION_EQPlayer__ChangePosition    0x0052E120
 #define EQ_FUNCTION_EQPlayer__FacePlayer        0x0052C170
-
-#define EQ_ZONE_ID 0x00B01E50 // DWORD
 
 #define EQ_SPAWN_TYPE_PLAYER        0
 #define EQ_SPAWN_TYPE_NPC           1
@@ -127,6 +143,15 @@ const float EQ_PI = 3.14159265358979f;
 #define EQ_TEXT_COLOR_CYAN        0x12
 #define EQ_TEXT_COLOR_GRAY8       0x13
 #define EQ_TEXT_COLOR_BLACK2      0x14
+
+// EQPlayer::ChangePosition(BYTE standingState)
+#define EQ_STANDING_STATE_STANDING 0x64
+#define EQ_STANDING_STATE_FROZEN   0x66 // stunned / mesmerized / feared ; You lose control of yourself!
+#define EQ_STANDING_STATE_LOOTING  0x69 // looting or binding wounds
+#define EQ_STANDING_STATE_SITTING  0x6E
+#define EQ_STANDING_STATE_DUCKING  0x6F // crouching
+#define EQ_STANDING_STATE_FEIGNED  0x73 // feign death
+#define EQ_STANDING_STATE_DEAD     0x78
 
 // EQ_Character::eqspa_movement_rate
 #define EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN1        0.08f
@@ -185,5 +210,67 @@ typedef struct _EQCXRECT
     int X2;
     int Y2;
 } EQCXRECT, *PEQCXRECT;
+
+typedef struct _EQXYZ
+{
+    FLOAT X;
+    FLOAT Y;
+    FLOAT Z;
+} EQXYZ, *PEQXYZ;
+
+typedef struct _EQYXZ
+{
+    FLOAT Y;
+    FLOAT X;
+    FLOAT Z;
+} EQYXZ, *PEQYXZ;
+
+typedef struct _EQARGBCOLOR
+{
+    union
+    {
+        struct
+        {
+            BYTE B;
+            BYTE G;
+            BYTE R;
+            BYTE A;
+        };
+        DWORD Color;
+    };
+} EQARGBCOLOR, *PEQARGBCOLOR;
+
+typedef struct _EQRGBCOLOR
+{
+    BYTE B;
+    BYTE G;
+    BYTE R;
+} EQRGBCOLOR, *PEQRGBCOLOR;
+
+typedef struct _EQMAPLABEL
+{
+/*0x00*/    struct _EQMAPLABEL* Next = NULL;
+/*0x04*/    struct _EQMAPLABEL* Prev;
+/*0x08*/    EQXYZ Location;
+/*0x14*/    EQARGBCOLOR Color;
+/*0x18*/    DWORD Size = 2; // 1-3
+/*0x1C*/    PCHAR Label; // text
+/*0x20*/    DWORD Layer = 0; // 0-3
+/*0x24*/    DWORD Width = 1;
+/*0x28*/    DWORD Height = 12;
+/*0x2C*/    DWORD Unknown0x2C; // BYTE X;
+/*0x30*/    DWORD Unknown0x30; // BYTE Y;
+            DWORD Data = 255; // custom data for identifying labels by value
+} EQMAPLABEL, *PEQMAPLABEL;
+
+typedef struct _EQMAPLINE
+{
+    struct _EQMAPLINE* Next;
+    struct _EQMAPLINE* Prev;
+    EQXYZ Begin;
+    EQXYZ End;
+    EQARGBCOLOR Color;
+    DWORD Layer; // 0-3
+} EQMAPLINE, *PEQMAPLINE;
 
 #endif // EQSOD_H
