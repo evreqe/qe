@@ -10,6 +10,11 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME = "EQGraphicsDX9.dll";
 
 const float EQ_PI = 3.14159265358979f;
 
+const float EQ_FIELD_OF_VIEW_DEFAULT = 45.0f;
+
+const float EQ_DRAW_DISTANCE_DEFAULT = 400.0f;
+const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
+
 #define EQ_BASE_ADDRESS 0x00400000
 
 #define EQ_WINDOW_HWND   0x00AD6974 // DWORD
@@ -17,6 +22,8 @@ const float EQ_PI = 3.14159265358979f;
 #define EQ_WINDOW_HEIGHT 0x00AD6954 // DWORD
 
 #define EQ_EXIT_STATUS 0x00A60A03 // BYTE, 0 = not exiting, 1 or 2 = exiting
+
+#define EQ_RESET_DEVICE_VALUE 0x00AD6DB4
 
 #define EQ_BOOL_AUTO_ATTACK    0x00AC1196 // BYTE
 #define EQ_BOOL_AUTO_FIRE      0x00AC1197 // BYTE
@@ -40,6 +47,7 @@ const float EQ_PI = 3.14159265358979f;
 #define EQ_POINTER_CHotButtonWnd2             0x00B01C10
 #define EQ_POINTER_CHotButtonWnd3             0x00B01C14
 #define EQ_POINTER_CHotButtonWnd4             0x00B01C18
+#define EQ_POINTER_CLootWnd                   0x00990C50
 #define EQ_POINTER_CMapViewWnd                0x00990C0C
 #define EQ_POINTER_CSidlManager               0x00B10A40
 #define EQ_POINTER_CTextEntryWnd              0x00990C90
@@ -48,6 +56,7 @@ const float EQ_PI = 3.14159265358979f;
 #define EQ_POINTER_EQ_Character               0x00A425E4 // pinstCharData
 
 #define EQ_POINTER_SPELL_MANAGER              0x00AD3A90 // pinstSpellManager
+#define EQ_POINTER_SWITCH_MANAGER             0x00A40704 // pinstSwitchManager (doors)
 
 #define EQ_POINTER_CHAR_INFO                  0x00A425E4 // pinstCharData
 
@@ -62,17 +71,16 @@ const float EQ_PI = 3.14159265358979f;
 #define EQ_ZONEINFO_CHARACTER_NAME    0x00A6057C // string 64  [0x40]
 #define EQ_ZONEINFO_SHORT_NAME        0x00A605BC // string 32  [0x20]
 #define EQ_ZONEINFO_LONG_NAME         0x00A6063C // string 128 [0x80]
-#define EQ_ZONEINFO_FOG_CLIP1         0x00A60760 // FLOAT
-#define EQ_ZONEINFO_FOG_CLIP2         0x00A60764 // FLOAT
-#define EQ_ZONEINFO_FOG_CLIP3         0x00A60768 // FLOAT
-#define EQ_ZONEINFO_FOG_CLIP4         0x00A6076C // FLOAT
-#define EQ_ZONEINFO_FOG_CLIP5         0x00A60770 // FLOAT
-#define EQ_ZONEINFO_FOG_CLIP6         0x00A60774 // FLOAT
+#define EQ_ZONEINFO_FOG_MIN_CLIP      0x00A60760 // FLOAT
+#define EQ_ZONEINFO_FOG_MAX_CLIP      0x00A60770 // FLOAT
 #define EQ_ZONEINFO_GRAVITY           0x00A60780 // FLOAT
 #define EQ_ZONEINFO_MIN_CLIP          0x00A607E0 // FLOAT
 #define EQ_ZONEINFO_MAX_CLIP          0x00A607E4 // FLOAT
 
 #define EQ_FUNCTION_Exit 0x004B06B0 // called by the "/exit" slash command
+
+#define EQ_FUNCTION_ResetDevice  0x00561790
+#define EQ_FUNCTION_WindowResize 0x00561840
 
 #define EQ_FUNCTION_CastRay                     0x004C3E40 // __CastRay
 #define EQ_FUNCTION_CXWnd_DrawColoredRect       0x006DBB30
@@ -85,17 +93,24 @@ const float EQ_PI = 3.14159265358979f;
 #define EQ_FUNCTION_CDisplay__DeleteActor         0x0046F2F0
 #define EQ_FUNCTION_CDisplay__WriteTextHD2        0x0046D880
 
-#define EQ_FUNCTION_CEverQuest__dsp_chat          0x004DCD60
-#define EQ_FUNCTION_CEverQuest__dsp_chat__2       0x004DCF30
-#define EQ_FUNCTION_CEverQuest__EnterZone         0x004F2420
-#define EQ_FUNCTION_CEverQuest__GetBodyTypeDesc   0x004D4660
-#define EQ_FUNCTION_CEverQuest__InterpretCmd      0x004DD7C0
-#define EQ_FUNCTION_CEverQuest__LMouseUp          0x004F3200
-#define EQ_FUNCTION_CEverQuest__RMouseUp          0x004F2A20
-#define EQ_FUNCTION_CEverQuest__MoveToZone        0x004FABE0
-#define EQ_FUNCTION_CEverQuest__SetGameState      0x004D7890
+#define EQ_FUNCTION_CEverQuest__dsp_chat                   0x004DCD60
+#define EQ_FUNCTION_CEverQuest__dsp_chat__2                0x004DCF30
+#define EQ_FUNCTION_CEverQuest__EnterZone                  0x004F2420
+#define EQ_FUNCTION_CEverQuest__GetBodyTypeDesc            0x004D4660
+#define EQ_FUNCTION_CEverQuest__GetClassDesc               0x004D3DC0
+#define EQ_FUNCTION_CEverQuest__GetClassThreeLetterCode    0x004D43C0
+#define EQ_FUNCTION_CEverQuest__GetDeityDesc               0x004D4CD0
+#define EQ_FUNCTION_CEverQuest__GetRaceDesc                0x004D4CA0
+#define EQ_FUNCTION_CEverQuest__InterpretCmd               0x004DD7C0
+#define EQ_FUNCTION_CEverQuest__LMouseUp                   0x004F3200
+#define EQ_FUNCTION_CEverQuest__RMouseUp                   0x004F2A20
+#define EQ_FUNCTION_CEverQuest__MoveToZone                 0x004FABE0
+#define EQ_FUNCTION_CEverQuest__SetGameState               0x004D7890
 
 #define EQ_FUNCTION_CHotButtonWnd__DoHotButton    0x005C5E80
+
+#define EQ_FUNCTION_CLootWnd__Deactivate         0x005EAA50
+#define EQ_FUNCTION_CLootWnd__RequestLootSlot    0x005EB430
 
 #define EQ_FUNCTION_CMapViewWnd__DrawMap   0x005F7320
 
@@ -109,6 +124,10 @@ const float EQ_PI = 3.14159265358979f;
 #define EQ_FUNCTION_EQPlayer__ChangeHeight      0x00530900
 #define EQ_FUNCTION_EQPlayer__ChangePosition    0x0052E120
 #define EQ_FUNCTION_EQPlayer__FacePlayer        0x0052C170
+
+#define EQ_FUNCTION_EQSwitch__ChangeState       0x004D0430
+
+#define EQ_DRAW_DISTANCE_MAX 0x00A607E4 // default is 1000.0f
 
 #define EQ_SPAWN_TYPE_PLAYER        0
 #define EQ_SPAWN_TYPE_NPC           1
@@ -144,6 +163,8 @@ const float EQ_PI = 3.14159265358979f;
 #define EQ_TEXT_COLOR_GRAY8       0x13
 #define EQ_TEXT_COLOR_BLACK2      0x14
 
+#define EQ_TOOLTIP_COLOR 0xC8000040 // ARGB color
+
 // EQPlayer::ChangePosition(BYTE standingState)
 #define EQ_STANDING_STATE_STANDING 0x64
 #define EQ_STANDING_STATE_FROZEN   0x66 // stunned / mesmerized / feared ; You lose control of yourself!
@@ -159,6 +180,23 @@ const float EQ_PI = 3.14159265358979f;
 #define EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN3        0.21f
 #define EQ_MOVEMENT_SPEED_MODIFIER_SPIRIT_OF_WOLF 0.30f
 
+#define EQ_ANIMATION_WALKING          17
+#define EQ_ANIMATION_RUNNING          18
+#define EQ_ANIMATION_JUMPING          19
+#define EQ_ANIMATION_DUCKING          24
+#define EQ_ANIMATION_IDLE_ANIMATED    26
+#define EQ_ANIMATION_IDLE             32
+#define EQ_ANIMATION_SITTING          33
+#define EQ_ANIMATION_TURNING          34
+
+#define EQ_ITEM_TYPE_CONTAINER          0x7900
+#define EQ_ITEM_TYPE_CONTAINER_PLAIN    0x7953
+
+#define EQ_NUM_INVENTORY_SLOTS      31 // 23 equipment slots, 8 bag slots
+#define EQ_NUM_BANK_SLOTS           26 // 24 bag slots, 2 shared bag slots
+#define EQ_NUM_CONTAINER_SLOTS      10 // number of items that can fit in a bag, backpack or box
+#define EQ_NUM_LOOT_WINDOW_SLOTS    32
+
 const std::unordered_map<std::string, std::string> EQ_KEYVALUE_ACTOR_DEFINITIONS
 {
     {"IT27_ACTORDEF",    "Book"},
@@ -172,6 +210,41 @@ const std::unordered_map<std::string, std::string> EQ_KEYVALUE_ACTOR_DEFINITIONS
     {"IT74_ACTORDEF",    "Pottery Wheel"},
     {"IT128_ACTORDEF",   "Sewing Kit"},
     {"IT10645_ACTORDEF", "Book"},
+};
+
+const std::vector<std::string> EQ_EQUIPMENT_SLOT_NAMES =
+{
+    "Charm",
+    "Left Ear",
+    "Head",
+    "Face",
+    "Right Ear",
+    "Neck",
+    "Shoulders",
+    "Arms",
+    "Back",
+    "Left Wrist",
+    "Right Wrist",
+    "Range",
+    "Hands",
+    "Primary",
+    "Secondary",
+    "Left Finger",
+    "Right Finger",
+    "Chest",
+    "Legs",
+    "Feet",
+    "Waist",
+    "Power Source",
+    "Ammo",
+    "Bag #1",
+    "Bag #2",
+    "Bag #3",
+    "Bag #4",
+    "Bag #5",
+    "Bag #6",
+    "Bag #7",
+    "Bag #8",
 };
 
 typedef struct _EQLINE

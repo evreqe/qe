@@ -77,10 +77,12 @@ class CXRect;
 class CDisplay;
 class CEverQuest;
 class CHotButtonWnd;
+class CLootWnd;
 class CMapViewWnd;
 class CTextEntryWnd;
 class CTextOverlay;
 class EQPlayer;
+class EQSwitch;
 class EQ_Character;
 
 class EQGraphicsDLL
@@ -133,6 +135,10 @@ public:
     void CEverQuest::dsp_chat(const char* text);
     void CEverQuest::EnterZone(struct HWND__*);
     char* CEverQuest::GetBodyTypeDesc(int bodyType);
+    char* CEverQuest::GetClassDesc(int);
+    char* CEverQuest::GetClassThreeLetterCode(int);
+    char* CEverQuest::GetDeityDesc(int);
+    char* CEverQuest::GetRaceDesc(int);
     void CEverQuest::InterpretCmd(class EQPlayer* spawn, char* text);
     int __cdecl CEverQuest::LMouseUp(int x, int y);
     int __cdecl CEverQuest::RMouseUp(int x, int y);
@@ -151,6 +157,16 @@ public:
 
 CHotButtonWnd** EQ_CLASS_ppCHotButtonWnd = (CHotButtonWnd**)EQ_POINTER_CHotButtonWnd;
 #define EQ_CLASS_CHotButtonWnd (*EQ_CLASS_ppCHotButtonWnd)
+
+class CLootWnd : public CSidlScreenWnd
+{
+public:
+    void CLootWnd::Deactivate(void);
+    void CLootWnd::RequestLootSlot(int slotIndex, bool autoLoot);
+};
+
+CLootWnd** EQ_CLASS_ppCLootWnd = (CLootWnd**)EQ_POINTER_CLootWnd;
+#define EQ_CLASS_CLootWnd (*EQ_CLASS_ppCLootWnd)
 
 class CMapViewWnd : public CSidlScreenWnd
 {
@@ -187,8 +203,11 @@ public:
     void EQPlayer::FacePlayer(DWORD spawnInfo);
 };
 
-EQ_Character** EQ_CLASS_ppEQ_Character = (EQ_Character**)EQ_POINTER_EQ_Character;
-#define EQ_CLASS_EQ_Character (*EQ_CLASS_ppEQ_Character)
+class EQSwitch
+{
+public:
+    void EQSwitch::ChangeState(BYTE state, int a2, int a3);
+};
 
 class EQ_Character
 {
@@ -196,6 +215,9 @@ public:
     void EQ_Character::eqspa_movement_rate(int unknown);
     int EQ_Character::UseSkill(unsigned char skill, class EQPlayer* targetSpawn);
 };
+
+EQ_Character** EQ_CLASS_ppEQ_Character = (EQ_Character**)EQ_POINTER_EQ_Character;
+#define EQ_CLASS_EQ_Character (*EQ_CLASS_ppEQ_Character)
 
 /* EQGraphicsDLL */
 
@@ -241,6 +263,22 @@ EQ_FUNCTION_AT_ADDRESS(void CEverQuest::EnterZone(struct HWND__ *), EQ_FUNCTION_
 EQ_FUNCTION_AT_ADDRESS(char* CEverQuest::GetBodyTypeDesc(int bodyType), EQ_FUNCTION_CEverQuest__GetBodyTypeDesc);
 #endif
 
+#ifdef EQ_FUNCTION_CEverQuest__GetClassDesc
+EQ_FUNCTION_AT_ADDRESS(char* CEverQuest::GetClassDesc(int class_), EQ_FUNCTION_CEverQuest__GetClassDesc);
+#endif
+
+#ifdef EQ_FUNCTION_CEverQuest__GetClassThreeLetterCode
+EQ_FUNCTION_AT_ADDRESS(char* CEverQuest::GetClassThreeLetterCode(int class_), EQ_FUNCTION_CEverQuest__GetClassThreeLetterCode);
+#endif
+
+#ifdef EQ_FUNCTION_CEverQuest__GetDeityDesc
+EQ_FUNCTION_AT_ADDRESS(char* CEverQuest::GetDeityDesc(int deity), EQ_FUNCTION_CEverQuest__GetDeityDesc);
+#endif
+
+#ifdef EQ_FUNCTION_CEverQuest__GetRaceDesc
+EQ_FUNCTION_AT_ADDRESS(char* CEverQuest::GetRaceDesc(int race), EQ_FUNCTION_CEverQuest__GetRaceDesc);
+#endif
+
 #ifdef EQ_FUNCTION_CEverQuest__InterpretCmd
 typedef int (__thiscall* EQ_FUNCTION_TYPE_CEverQuest__InterpretCmd)(void* pThis, class EQPlayer* spawn, char* text);
 EQ_FUNCTION_AT_ADDRESS(void CEverQuest::InterpretCmd(class EQPlayer*, char*), EQ_FUNCTION_CEverQuest__InterpretCmd);
@@ -257,7 +295,7 @@ EQ_FUNCTION_AT_ADDRESS(int __cdecl CEverQuest::RMouseUp(int, int), EQ_FUNCTION_C
 #endif
 
 #ifdef EQ_FUNCTION_CEverQuest__MoveToZone
-typedef int (__thiscall* EQ_FUNCTION_TYPE_CEverQuest__MoveToZone)(void* pThis, int, int, int, int, int, int, int, int);//, int, int, int, int, int, int);
+typedef int (__thiscall* EQ_FUNCTION_TYPE_CEverQuest__MoveToZone)(void* pThis, int, int, int, int, int, int, int, int);
 EQ_FUNCTION_AT_ADDRESS(void CEverQuest::MoveToZone(int, int, int, int, int, int, int, int), EQ_FUNCTION_CEverQuest__MoveToZone);
 #endif
 
@@ -277,6 +315,16 @@ EQ_FUNCTION_AT_ADDRESS(void CMapViewWnd::DrawMap(int, int, int, int), EQ_FUNCTIO
 
 #ifdef EQ_FUNCTION_CHotButtonWnd__DoHotButton
 EQ_FUNCTION_AT_ADDRESS(void CHotButtonWnd::DoHotButton(unsigned int buttonIndex, bool allowAutoRightClick), EQ_FUNCTION_CHotButtonWnd__DoHotButton);
+#endif
+
+/* CLootWnd */
+
+#ifdef EQ_FUNCTION_CLootWnd__Deactivate
+EQ_FUNCTION_AT_ADDRESS(void CLootWnd::Deactivate(void), EQ_FUNCTION_CLootWnd__Deactivate);
+#endif
+
+#ifdef EQ_FUNCTION_CLootWnd__RequestLootSlot
+EQ_FUNCTION_AT_ADDRESS(void CLootWnd::RequestLootSlot(int slotIndex, bool autoLoot), EQ_FUNCTION_CLootWnd__RequestLootSlot);
 #endif
 
 /* CTextEntryWnd */
@@ -308,6 +356,12 @@ EQ_FUNCTION_AT_ADDRESS(void EQPlayer::ChangePosition(BYTE standingState), EQ_FUN
 EQ_FUNCTION_AT_ADDRESS(void EQPlayer::FacePlayer(DWORD spawnInfo), EQ_FUNCTION_EQPlayer__FacePlayer);
 #endif
 
+/* EQSwitch */
+
+#ifdef EQ_FUNCTION_EQSwitch__ChangeState
+EQ_FUNCTION_AT_ADDRESS(void EQSwitch::ChangeState(BYTE state, int a2, int a3), EQ_FUNCTION_EQSwitch__ChangeState);
+#endif
+
 /* EQ_Character */
 
 #ifdef EQ_FUNCTION_EQ_Character__eqspa_movement_rate
@@ -325,6 +379,14 @@ EQ_FUNCTION_AT_ADDRESS(int EQ_Character::UseSkill(unsigned char, class EQPlayer*
 #ifdef EQ_FUNCTION_Exit
 typedef int (__cdecl* EQ_FUNCTION_TYPE_Exit)();
 EQ_FUNCTION_AT_ADDRESS(void EQ_Exit(), EQ_FUNCTION_Exit);
+#endif
+
+#ifdef EQ_FUNCTION_ResetDevice
+EQ_FUNCTION_AT_ADDRESS(int __cdecl EQ_ResetDevice(), EQ_FUNCTION_ResetDevice);
+#endif
+
+#ifdef EQ_FUNCTION_WindowResize
+EQ_FUNCTION_AT_ADDRESS(int __cdecl EQ_WindowResize(WPARAM wparam, LPARAM lparam), EQ_FUNCTION_WindowResize);
 #endif
 
 #ifdef EQ_FUNCTION_CastRay
@@ -721,15 +783,26 @@ bool EQ_DrawLine(float x1, float y1, float z1, float x2, float y2, float z2, uns
     return true;
 }
 
-bool EQ_WorldSpaceToScreenSpace(float worldX, float worldY, float worldZ, int& screenX, int& screenY)
+DWORD EQ_GetCameraData()
 {
     DWORD display = EQ_ReadMemory<DWORD>(EQ_POINTER_CDisplay);
     if (display == NULL)
     {
-        return false;
+        return NULL;
     }
 
     DWORD cameraData = EQ_ReadMemory<DWORD>(display + 0x118);
+    if (cameraData == NULL)
+    {
+        return NULL;
+    }
+
+    return cameraData;
+}
+
+bool EQ_WorldSpaceToScreenSpace(float worldX, float worldY, float worldZ, int& screenX, int& screenY)
+{
+    DWORD cameraData = EQ_GetCameraData();
     if (cameraData == NULL)
     {
         return false;
@@ -778,6 +851,46 @@ bool EQ_WorldSpaceToScreenSpace(float worldX, float worldY, float worldZ, int& s
     screenY = (int)a4;
 
     return true;
+}
+
+void EQ_SetFieldOfView(float fov)
+{
+    DWORD cameraData = EQ_GetCameraData();
+    if (cameraData == NULL)
+    {
+        return;
+    }
+
+    if (fov <= 0.0f)
+    {
+        fov = EQ_FIELD_OF_VIEW_DEFAULT;
+    }
+
+    EQ_WriteMemory<FLOAT>(cameraData + 0x04, fov);
+}
+
+void EQ_SetDrawDistance(float distance)
+{
+    DWORD cameraData = EQ_GetCameraData();
+    if (cameraData == NULL)
+    {
+        return;
+    }
+
+    if (distance <= 0.0f)
+    {
+        distance = EQ_DRAW_DISTANCE_DEFAULT;
+    }
+
+    EQ_WriteMemory<FLOAT>(EQ_ZONEINFO_MIN_CLIP, distance);
+    EQ_WriteMemory<FLOAT>(EQ_ZONEINFO_MAX_CLIP, distance);
+
+    EQ_WriteMemory<FLOAT>(EQ_ZONEINFO_FOG_MIN_CLIP, distance);
+    EQ_WriteMemory<FLOAT>(EQ_ZONEINFO_FOG_MAX_CLIP, distance);
+
+    EQ_WriteMemory<FLOAT>(EQ_DRAW_DISTANCE_MAX, distance);
+
+    EQ_WriteMemory<FLOAT>(cameraData + 0x14, distance);
 }
 
 std::string EQ_GetSpellNameById(int spellId)
@@ -848,6 +961,36 @@ bool EQ_DoesSpawnExist(DWORD spawnInfo)
     }
 
     return false;
+}
+
+DWORD EQ_GetSpawnByName(const char* name)
+{
+    DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_SPAWN_INFO);
+
+    while (spawn)
+    {
+        char spawnName[0x40] = {0};
+        memcpy(spawnName, (LPVOID)(spawn + 0xA4), sizeof(spawnName)); // 0xA4 Name, not 0xE4 DisplayName
+
+        if (strcmp(spawnName, name) == 0)
+        {
+            return spawn;
+        }
+
+        spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+    }
+
+    return false;
+}
+
+DWORD EQ_GetSpawnAnimation(DWORD spawnInfo)
+{
+    if (spawnInfo == NULL)
+    {
+        return NULL;
+    }
+
+    return EQ_ReadMemory<DWORD>(spawnInfo + 0x1004);
 }
 
 struct _EQMAPLABEL* EQ_MapWindow_AddLabel(EQMAPLABEL* mapLabel)
@@ -951,6 +1094,52 @@ void EQ_MapWindow_RemoveLabel(DWORD data)
 
         node = after;
     }
+}
+
+bool EQ_LootItemByName(const char* name)
+{
+    DWORD lootWindow = EQ_ReadMemory<DWORD>(EQ_POINTER_CLootWnd);
+    if (lootWindow == NULL)
+    {
+        return false;
+    }
+
+    DWORD lootWindowIsVisible = EQ_ReadMemory<BYTE>(lootWindow + 0x124);
+    if (lootWindowIsVisible == 0)
+    {
+        return false;
+    }
+
+    bool result = false;
+
+    for (size_t i = 0; i < EQ_NUM_LOOT_WINDOW_SLOTS; i++)
+    {
+        DWORD itemInfo = EQ_ReadMemory<DWORD>(lootWindow + (0x228 + (i * 4)));
+        if (itemInfo == NULL)
+        {
+            continue;
+        }
+
+        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + 0xB8);
+        if (itemName == NULL)
+        {
+            continue;
+        }
+
+        if (strlen(itemName) == 0)
+        {
+            continue;
+        }
+
+        if (strstr(itemName, name) != NULL)
+        {
+            EQ_CLASS_CLootWnd->RequestLootSlot(i, true);
+
+            result = true;
+        }
+    }
+
+    return result;
 }
 
 #endif // EQSOD_FUNCTIONS_H

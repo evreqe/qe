@@ -5,11 +5,9 @@ Your spell did not take hold
 Your target resisted
 You resist
 has worn off
-You are too fatigued to jump
-YOU were injured by falling
 You feel yourself starting to appear
-You cannot see your target
 You have no more room
 You must be standing to forage
 You can't fish without fishing bait
 Your fishing pole broke
+There are

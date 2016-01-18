@@ -4,7 +4,7 @@
     <CheatEntry>
       <ID>153</ID>
       <Description>"No description"</Description>
-      <LastState Value="3D483BB8" Activated="0" RealAddress="04EE90BC"/>
+      <LastState Value="3D483BB8" Activated="0" RealAddress="04AD90BC"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -13,7 +13,7 @@
     <CheatEntry>
       <ID>119</ID>
       <Description>"No description"</Description>
-      <LastState Value="02B5AEB8" Activated="0" RealAddress="04CEF0EC"/>
+      <LastState Value="04CDAEB8" Activated="0" RealAddress="048DF0EC"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -22,7 +22,7 @@
     <CheatEntry>
       <ID>106</ID>
       <Description>"No description"</Description>
-      <LastState Value="00000000" Activated="0" RealAddress="04CEF0E4"/>
+      <LastState Value="00000000" Activated="0" RealAddress="048DF0E4"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -44,7 +44,7 @@
     <CheatEntry>
       <ID>148</ID>
       <Description>"No description"</Description>
-      <LastState Value="00000000" Activated="0" RealAddress="04CEFDE4"/>
+      <LastState Value="00000000" Activated="0" RealAddress="048DFDE4"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -66,7 +66,7 @@
     <CheatEntry>
       <ID>6</ID>
       <Description>"No description"</Description>
-      <LastState Value="0" Activated="0" RealAddress="04CEF0E8"/>
+      <LastState Value="0" Activated="0" RealAddress="048DF0E8"/>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
       <Address>eqmain.dll+FF0E8</Address>
@@ -74,7 +74,7 @@
     <CheatEntry>
       <ID>7</ID>
       <Description>"LoginClient class"</Description>
-      <LastState Value="02B5AEB8" Activated="0" RealAddress="04CEF0EC"/>
+      <LastState Value="04CDAEB8" Activated="0" RealAddress="048DF0EC"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -83,7 +83,7 @@
         <CheatEntry>
           <ID>16</ID>
           <Description>"0x00"</Description>
-          <LastState Value="04CB4D20" Activated="0" RealAddress="02B5AEB8"/>
+          <LastState Value="048A4D20" Activated="0" RealAddress="04CDAEB8"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -95,7 +95,7 @@
         <CheatEntry>
           <ID>125</ID>
           <Description>"0x04"</Description>
-          <LastState Value="04CB4CF0" Activated="0" RealAddress="02B5AEBC"/>
+          <LastState Value="048A4CF0" Activated="0" RealAddress="04CDAEBC"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -107,7 +107,7 @@
         <CheatEntry>
           <ID>51</ID>
           <Description>"0x08"</Description>
-          <LastState Value="00AD4EE0" Activated="0" RealAddress="02B5AEC0"/>
+          <LastState Value="00AD4EE0" Activated="0" RealAddress="04CDAEC0"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -135,7 +135,7 @@
             <CheatEntry>
               <ID>173</ID>
               <Description>"0x404"</Description>
-              <LastState Value="000B19D4" Activated="0" RealAddress="00AD52E4"/>
+              <LastState Value="0045046C" Activated="0" RealAddress="00AD52E4"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -150,7 +150,7 @@
         <CheatEntry>
           <ID>124</ID>
           <Description>"0x0C"</Description>
-          <LastState Value="04CB4BA8" Activated="0" RealAddress="02B5AEC4"/>
+          <LastState Value="048A4BA8" Activated="0" RealAddress="04CDAEC4"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -162,7 +162,7 @@
         <CheatEntry>
           <ID>126</ID>
           <Description>"0x10"</Description>
-          <LastState Value="04A17D80" Activated="0" RealAddress="02B5AEC8"/>
+          <LastState Value="046C7D68" Activated="0" RealAddress="04CDAEC8"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -174,7 +174,7 @@
         <CheatEntry>
           <ID>50</ID>
           <Description>"0x14"</Description>
-          <LastState Value="128" Activated="0" RealAddress="02B5AECC"/>
+          <LastState Value="104" Activated="0" RealAddress="04CDAECC"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -185,7 +185,7 @@
         <CheatEntry>
           <ID>127</ID>
           <Description>"0x15"</Description>
-          <LastState Value="125" Activated="0" RealAddress="02B5AECD"/>
+          <LastState Value="125" Activated="0" RealAddress="04CDAECD"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -196,7 +196,7 @@
         <CheatEntry>
           <ID>53</ID>
           <Description>"0x16"</Description>
-          <LastState Value="161" Activated="0" RealAddress="02B5AECE"/>
+          <LastState Value="108" Activated="0" RealAddress="04CDAECE"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -207,7 +207,7 @@
         <CheatEntry>
           <ID>52</ID>
           <Description>"0x17"</Description>
-          <LastState Value="4" Activated="0" RealAddress="02B5AECF"/>
+          <LastState Value="4" Activated="0" RealAddress="04CDAECF"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -218,7 +218,7 @@
         <CheatEntry>
           <ID>54</ID>
           <Description>"0x18"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5AED0"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDAED0"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -229,7 +229,7 @@
         <CheatEntry>
           <ID>55</ID>
           <Description>"0x19"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5AED1"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDAED1"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -240,7 +240,7 @@
         <CheatEntry>
           <ID>128</ID>
           <Description>"0x24"</Description>
-          <LastState Value="1" Activated="0" RealAddress="02B5AEDC"/>
+          <LastState Value="1" Activated="0" RealAddress="04CDAEDC"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -251,7 +251,7 @@
         <CheatEntry>
           <ID>49</ID>
           <Description>"0x30"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5AEE8"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDAEE8"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -262,7 +262,7 @@
         <CheatEntry>
           <ID>129</ID>
           <Description>"0x34"</Description>
-          <LastState Value="04CB6E0C" Activated="0" RealAddress="02B5AEEC"/>
+          <LastState Value="048A6E0C" Activated="0" RealAddress="04CDAEEC"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -274,7 +274,7 @@
         <CheatEntry>
           <ID>130</ID>
           <Description>"0x38"</Description>
-          <LastState Value="02B5B220" Activated="0" RealAddress="02B5AEF0"/>
+          <LastState Value="04CDB220" Activated="0" RealAddress="04CDAEF0"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -286,7 +286,7 @@
         <CheatEntry>
           <ID>131</ID>
           <Description>"0x3C"</Description>
-          <LastState Value="211" Activated="0" RealAddress="02B5AEF4"/>
+          <LastState Value="211" Activated="0" RealAddress="04CDAEF4"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -297,7 +297,7 @@
         <CheatEntry>
           <ID>133</ID>
           <Description>"0x4C"</Description>
-          <LastState Value="04A113B8" Activated="0" RealAddress="02B5AF04"/>
+          <LastState Value="046C13B8" Activated="0" RealAddress="04CDAF04"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -309,7 +309,7 @@
         <CheatEntry>
           <ID>134</ID>
           <Description>"0x50"</Description>
-          <LastState Value="04A113B8" Activated="0" RealAddress="02B5AF08"/>
+          <LastState Value="046C13B8" Activated="0" RealAddress="04CDAF08"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -321,7 +321,7 @@
         <CheatEntry>
           <ID>132</ID>
           <Description>"0x54"</Description>
-          <LastState Value="1.661534995E35" Activated="0" RealAddress="02B5AF0C"/>
+          <LastState Value="1.661534995E35" Activated="0" RealAddress="04CDAF0C"/>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -332,7 +332,7 @@
         <CheatEntry>
           <ID>135</ID>
           <Description>"0x58"</Description>
-          <LastState Value="04CB6E0C" Activated="0" RealAddress="02B5AF10"/>
+          <LastState Value="048A6E0C" Activated="0" RealAddress="04CDAF10"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -344,7 +344,7 @@
         <CheatEntry>
           <ID>136</ID>
           <Description>"0x5C"</Description>
-          <LastState Value="02B5B578" Activated="0" RealAddress="02B5AF14"/>
+          <LastState Value="04CDB578" Activated="0" RealAddress="04CDAF14"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -356,7 +356,7 @@
         <CheatEntry>
           <ID>137</ID>
           <Description>"0x7C"</Description>
-          <LastState Value="04CB6E0C" Activated="0" RealAddress="02B5AF34"/>
+          <LastState Value="048A6E0C" Activated="0" RealAddress="04CDAF34"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -368,7 +368,7 @@
         <CheatEntry>
           <ID>138</ID>
           <Description>"0x80"</Description>
-          <LastState Value="02B5B8D0" Activated="0" RealAddress="02B5AF38"/>
+          <LastState Value="04CDB8D0" Activated="0" RealAddress="04CDAF38"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -380,7 +380,7 @@
         <CheatEntry>
           <ID>102</ID>
           <Description>"0xA0"</Description>
-          <LastState Value="6.950434845E13" Activated="0" RealAddress="02B5AF58"/>
+          <LastState Value="7.623196174E13" Activated="0" RealAddress="04CDAF58"/>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -391,7 +391,7 @@
         <CheatEntry>
           <ID>140</ID>
           <Description>"0xA0"</Description>
-          <LastState Value="1451023096" Activated="0" RealAddress="02B5AF58"/>
+          <LastState Value="1451928134" Activated="0" RealAddress="04CDAF58"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -402,7 +402,7 @@
         <CheatEntry>
           <ID>139</ID>
           <Description>"0xB0"</Description>
-          <LastState Value="04A0BE20" Activated="0" RealAddress="02B5AF68"/>
+          <LastState Value="046BBDA0" Activated="0" RealAddress="04CDAF68"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -414,7 +414,7 @@
         <CheatEntry>
           <ID>141</ID>
           <Description>"0xB4"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5AF6C"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDAF6C"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -425,7 +425,7 @@
         <CheatEntry>
           <ID>103</ID>
           <Description>"0xC0"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5AF78"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDAF78"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -436,7 +436,7 @@
         <CheatEntry>
           <ID>155</ID>
           <Description>"0xC4"</Description>
-          <LastState Value="24000000" Activated="0" RealAddress="02B5AF7C"/>
+          <LastState Value="24000000" Activated="0" RealAddress="04CDAF7C"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -448,7 +448,7 @@
         <CheatEntry>
           <ID>15</ID>
           <Description>"0xD1"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5AF89"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDAF89"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -459,7 +459,7 @@
         <CheatEntry>
           <ID>154</ID>
           <Description>"0xF8"</Description>
-          <LastState Value="1" Activated="0" RealAddress="02B5AFB0"/>
+          <LastState Value="1" Activated="0" RealAddress="04CDAFB0"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -470,7 +470,7 @@
         <CheatEntry>
           <ID>18</ID>
           <Description>"0x12C"</Description>
-          <LastState Value="90" Activated="0" RealAddress="02B5AFE4"/>
+          <LastState Value="90" Activated="0" RealAddress="04CDAFE4"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -481,7 +481,7 @@
         <CheatEntry>
           <ID>32</ID>
           <Description>"0x140"</Description>
-          <LastState Value="117" Activated="0" RealAddress="02B5AFF8"/>
+          <LastState Value="117" Activated="0" RealAddress="04CDAFF8"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -492,7 +492,7 @@
         <CheatEntry>
           <ID>17</ID>
           <Description>"0x144"</Description>
-          <LastState Value="121" Activated="0" RealAddress="02B5AFFC"/>
+          <LastState Value="121" Activated="0" RealAddress="04CDAFFC"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -503,7 +503,7 @@
         <CheatEntry>
           <ID>45</ID>
           <Description>"0x18C"</Description>
-          <LastState Value="101" Activated="0" RealAddress="02B5B044"/>
+          <LastState Value="101" Activated="0" RealAddress="04CDB044"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -514,7 +514,7 @@
         <CheatEntry>
           <ID>46</ID>
           <Description>"0x194"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5B04C"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDB04C"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -525,7 +525,7 @@
         <CheatEntry>
           <ID>33</ID>
           <Description>"0x278"</Description>
-          <LastState Value="00000000" Activated="0" RealAddress="02B5B130"/>
+          <LastState Value="00000000" Activated="0" RealAddress="04CDB130"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -537,7 +537,7 @@
         <CheatEntry>
           <ID>40</ID>
           <Description>"0x288"</Description>
-          <LastState Value="00000000" Activated="0" RealAddress="02B5B140"/>
+          <LastState Value="00000000" Activated="0" RealAddress="04CDB140"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -549,7 +549,7 @@
         <CheatEntry>
           <ID>41</ID>
           <Description>"0x28C"</Description>
-          <LastState Value="00000000" Activated="0" RealAddress="02B5B144"/>
+          <LastState Value="00000000" Activated="0" RealAddress="04CDB144"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -561,7 +561,7 @@
         <CheatEntry>
           <ID>38</ID>
           <Description>"0x290"</Description>
-          <LastState Value="00000000" Activated="0" RealAddress="02B5B148"/>
+          <LastState Value="00000000" Activated="0" RealAddress="04CDB148"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -573,7 +573,7 @@
         <CheatEntry>
           <ID>42</ID>
           <Description>"0x294"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5B14C"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDB14C"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -584,7 +584,7 @@
         <CheatEntry>
           <ID>39</ID>
           <Description>"0x298"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5B150"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDB150"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -595,7 +595,7 @@
         <CheatEntry>
           <ID>43</ID>
           <Description>"0x29C"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5B154"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDB154"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -606,7 +606,7 @@
         <CheatEntry>
           <ID>36</ID>
           <Description>"0x2A0 No description"</Description>
-          <LastState Value="-1" Activated="0" RealAddress="02B5B158"/>
+          <LastState Value="-1" Activated="0" RealAddress="04CDB158"/>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
@@ -618,7 +618,7 @@
         <CheatEntry>
           <ID>150</ID>
           <Description>"0x2A4"</Description>
-          <LastState Value="04BF0000" Activated="0" RealAddress="02B5B15C"/>
+          <LastState Value="047E0000" Activated="0" RealAddress="04CDB15C"/>
           <ShowAsHex>1</ShowAsHex>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
@@ -631,7 +631,7 @@
         <CheatEntry>
           <ID>151</ID>
           <Description>"0x2A4"</Description>
-          <LastState Value="4.49038842E-36" Activated="0" RealAddress="02B5B15C"/>
+          <LastState Value="2.985755651E-36" Activated="0" RealAddress="04CDB15C"/>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
@@ -643,7 +643,7 @@
         <CheatEntry>
           <ID>13</ID>
           <Description>"0x2AC quick login if set to 1"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5B164"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDB164"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -654,7 +654,7 @@
         <CheatEntry>
           <ID>44</ID>
           <Description>"0x2D8"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5B190"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDB190"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -665,7 +665,7 @@
         <CheatEntry>
           <ID>14</ID>
           <Description>"0x2F0"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5B1A8"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDB1A8"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -676,7 +676,7 @@
         <CheatEntry>
           <ID>47</ID>
           <Description>"0x2F1"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5B1A9"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDB1A9"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -687,7 +687,7 @@
         <CheatEntry>
           <ID>9</ID>
           <Description>"0x305"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5B1BD"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDB1BD"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -698,7 +698,7 @@
         <CheatEntry>
           <ID>10</ID>
           <Description>"0x306"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5B1BE"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDB1BE"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0EC</Address>
@@ -709,7 +709,7 @@
         <CheatEntry>
           <ID>147</ID>
           <Description>"0x308"</Description>
-          <LastState Value="04CB6C84" Activated="0" RealAddress="02B5B1C0"/>
+          <LastState Value="048A6C84" Activated="0" RealAddress="04CDB1C0"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -721,7 +721,7 @@
         <CheatEntry>
           <ID>37</ID>
           <Description>"0x338"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5B1F0"/>
+          <LastState Value="1" Activated="0" RealAddress="04CDB1F0"/>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
@@ -733,7 +733,7 @@
         <CheatEntry>
           <ID>166</ID>
           <Description>"0x340"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5B1F8"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDB1F8"/>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
@@ -745,7 +745,7 @@
         <CheatEntry>
           <ID>142</ID>
           <Description>"0x354 0 makes game close"</Description>
-          <LastState Value="1" Activated="0" RealAddress="02B5B20C"/>
+          <LastState Value="1" Activated="0" RealAddress="04CDB20C"/>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
@@ -757,7 +757,7 @@
         <CheatEntry>
           <ID>19</ID>
           <Description>"0x358 No description"</Description>
-          <LastState Value="-1" Activated="0" RealAddress="02B5B210"/>
+          <LastState Value="-1" Activated="0" RealAddress="04CDB210"/>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -769,7 +769,7 @@
         <CheatEntry>
           <ID>143</ID>
           <Description>"0x360"</Description>
-          <LastState Value="735AB0D3" Activated="0" RealAddress="02B5B218"/>
+          <LastState Value="1E7EE71B" Activated="0" RealAddress="04CDB218"/>
           <ShowAsHex>1</ShowAsHex>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
@@ -782,7 +782,7 @@
         <CheatEntry>
           <ID>144</ID>
           <Description>"0x360"</Description>
-          <LastState Value="1.732646387E31" Activated="0" RealAddress="02B5B218"/>
+          <LastState Value="1.349443953E-20" Activated="0" RealAddress="04CDB218"/>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
@@ -794,7 +794,7 @@
         <CheatEntry>
           <ID>145</ID>
           <Description>"0x364"</Description>
-          <LastState Value="0C008C20" Activated="0" RealAddress="02B5B21C"/>
+          <LastState Value="0C002DFF" Activated="0" RealAddress="04CDB21C"/>
           <ShowAsHex>1</ShowAsHex>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
@@ -807,7 +807,7 @@
         <CheatEntry>
           <ID>146</ID>
           <Description>"0x364"</Description>
-          <LastState Value="9.902928649E-32" Activated="0" RealAddress="02B5B21C"/>
+          <LastState Value="9.874602761E-32" Activated="0" RealAddress="04CDB21C"/>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
@@ -821,7 +821,7 @@
     <CheatEntry>
       <ID>3</ID>
       <Description>"LoginViewManager class"</Description>
-      <LastState Value="02B5CCB0" Activated="0" RealAddress="04CEF0F0"/>
+      <LastState Value="04CDCCB0" Activated="0" RealAddress="048DF0F0"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -830,7 +830,7 @@
         <CheatEntry>
           <ID>34</ID>
           <Description>"0x00"</Description>
-          <LastState Value="04CB6B40" Activated="0" RealAddress="02B5CCB0"/>
+          <LastState Value="048A6B40" Activated="0" RealAddress="04CDCCB0"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -842,7 +842,7 @@
             <CheatEntry>
               <ID>92</ID>
               <Description>"0x14"</Description>
-              <LastState Value="04BF8080" Activated="0" RealAddress="04CB6B54"/>
+              <LastState Value="047E8080" Activated="0" RealAddress="048A6B54"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -855,7 +855,7 @@
             <CheatEntry>
               <ID>91</ID>
               <Description>"0x18"</Description>
-              <LastState Value="04BF8080" Activated="0" RealAddress="04CB6B58"/>
+              <LastState Value="047E8080" Activated="0" RealAddress="048A6B58"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -868,7 +868,7 @@
             <CheatEntry>
               <ID>87</ID>
               <Description>"0x1C"</Description>
-              <LastState Value="04BF7F00" Activated="0" RealAddress="04CB6B5C"/>
+              <LastState Value="047E7F00" Activated="0" RealAddress="048A6B5C"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -881,7 +881,7 @@
                 <CheatEntry>
                   <ID>88</ID>
                   <Description>"0x34"</Description>
-                  <LastState Value="0" Activated="0" RealAddress="04BF7F34"/>
+                  <LastState Value="0" Activated="0" RealAddress="047E7F34"/>
                   <Color>80000008</Color>
                   <VariableType>Byte</VariableType>
                   <Address>eqmain.dll+FF0F0</Address>
@@ -894,7 +894,7 @@
                 <CheatEntry>
                   <ID>89</ID>
                   <Description>"0x38"</Description>
-                  <LastState Value="C7C08518" Activated="0" RealAddress="04BF7F38"/>
+                  <LastState Value="C7C08518" Activated="0" RealAddress="047E7F38"/>
                   <ShowAsHex>1</ShowAsHex>
                   <Color>80000008</Color>
                   <VariableType>4 Bytes</VariableType>
@@ -908,7 +908,7 @@
                 <CheatEntry>
                   <ID>90</ID>
                   <Description>"0x3C"</Description>
-                  <LastState Value="00082444" Activated="0" RealAddress="04BF7F3C"/>
+                  <LastState Value="00082444" Activated="0" RealAddress="047E7F3C"/>
                   <ShowAsHex>1</ShowAsHex>
                   <Color>80000008</Color>
                   <VariableType>4 Bytes</VariableType>
@@ -924,7 +924,7 @@
             <CheatEntry>
               <ID>83</ID>
               <Description>"0x50"</Description>
-              <LastState Value="04BF80A0" Activated="0" RealAddress="04CB6B90"/>
+              <LastState Value="047E80A0" Activated="0" RealAddress="048A6B90"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -937,7 +937,7 @@
             <CheatEntry>
               <ID>156</ID>
               <Description>"0x60"</Description>
-              <LastState Value="04BF80C0" Activated="0" RealAddress="04CB6BA0"/>
+              <LastState Value="047E80C0" Activated="0" RealAddress="048A6BA0"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -952,7 +952,7 @@
         <CheatEntry>
           <ID>35</ID>
           <Description>"0x04"</Description>
-          <LastState Value="02B5CD28" Activated="0" RealAddress="02B5CCB4"/>
+          <LastState Value="04CDCD28" Activated="0" RealAddress="04CDCCB4"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -964,7 +964,7 @@
         <CheatEntry>
           <ID>72</ID>
           <Description>"0x07"</Description>
-          <LastState Value="25858" Activated="0" RealAddress="02B5CCB7"/>
+          <LastState Value="25860" Activated="0" RealAddress="04CDCCB7"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0F0</Address>
@@ -975,7 +975,7 @@
         <CheatEntry>
           <ID>164</ID>
           <Description>"0x08"</Description>
-          <LastState Value="101" Activated="0" RealAddress="02B5CCB8"/>
+          <LastState Value="101" Activated="0" RealAddress="04CDCCB8"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0F0</Address>
@@ -986,7 +986,7 @@
         <CheatEntry>
           <ID>73</ID>
           <Description>"0x0C"</Description>
-          <LastState Value="15" Activated="0" RealAddress="02B5CCBC"/>
+          <LastState Value="15" Activated="0" RealAddress="04CDCCBC"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0F0</Address>
@@ -997,7 +997,7 @@
         <CheatEntry>
           <ID>74</ID>
           <Description>"0x10"</Description>
-          <LastState Value="12" Activated="0" RealAddress="02B5CCC0"/>
+          <LastState Value="12" Activated="0" RealAddress="04CDCCC0"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0F0</Address>
@@ -1007,8 +1007,8 @@
         </CheatEntry>
         <CheatEntry>
           <ID>75</ID>
-          <Description>"0x14 Current Window"</Description>
-          <LastState Value="081B87C8" Activated="0" RealAddress="02B5CCC4"/>
+          <Description>"0x14 Current CXWnd Window"</Description>
+          <LastState Value="083F6688" Activated="0" RealAddress="04CDCCC4"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1020,7 +1020,7 @@
             <CheatEntry>
               <ID>160</ID>
               <Description>"0x00"</Description>
-              <LastState Value="04CB7F48" Activated="0" RealAddress="081B87C8"/>
+              <LastState Value="048A9068" Activated="0" RealAddress="083F6688"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -1033,7 +1033,7 @@
             <CheatEntry>
               <ID>186</ID>
               <Description>"0x04"</Description>
-              <LastState Value="04CB92BC" Activated="0" RealAddress="081B87CC"/>
+              <LastState Value="048A92BC" Activated="0" RealAddress="083F668C"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -1044,9 +1044,9 @@
               </Offsets>
             </CheatEntry>
             <CheatEntry>
-              <ID>187</ID>
-              <Description>"0x08"</Description>
-              <LastState Value="049EF150" Activated="0" RealAddress="081B87D0"/>
+              <ID>199</ID>
+              <Description>"0x08 CXStr"</Description>
+              <LastState Value="0469F490" Activated="0" RealAddress="083F6690"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -1055,13 +1055,96 @@
                 <Offset>8</Offset>
                 <Offset>14</Offset>
               </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>200</ID>
+                  <Description>"0x14"</Description>
+                  <LastState Activated="0" RealAddress="0469F4A4"/>
+                  <ShowAsHex>1</ShowAsHex>
+                  <Color>80000008</Color>
+                  <VariableType>String</VariableType>
+                  <Length>32</Length>
+                  <Unicode>0</Unicode>
+                  <ZeroTerminate>1</ZeroTerminate>
+                  <Address>eqmain.dll+FF0F0</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>8</Offset>
+                    <Offset>14</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>203</ID>
+              <Description>"0x0C"</Description>
+              <LastState Value="08303BD0" Activated="0" RealAddress="083F6694"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>eqmain.dll+FF0F0</Address>
+              <Offsets>
+                <Offset>C</Offset>
+                <Offset>14</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>204</ID>
+                  <Description>"0x14"</Description>
+                  <LastState Activated="0" RealAddress="08303BE4"/>
+                  <ShowAsHex>1</ShowAsHex>
+                  <Color>80000008</Color>
+                  <VariableType>String</VariableType>
+                  <Length>32</Length>
+                  <Unicode>0</Unicode>
+                  <ZeroTerminate>1</ZeroTerminate>
+                  <Address>eqmain.dll+FF0F0</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>C</Offset>
+                    <Offset>14</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>197</ID>
+              <Description>"0xE4 CXStr"</Description>
+              <LastState Value="00000001" Activated="0" RealAddress="083F676C"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>eqmain.dll+FF0F0</Address>
+              <Offsets>
+                <Offset>E4</Offset>
+                <Offset>14</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>198</ID>
+                  <Description>"0x14"</Description>
+                  <LastState Activated="0" RealAddress="00000015"/>
+                  <ShowAsHex>1</ShowAsHex>
+                  <Color>80000008</Color>
+                  <VariableType>String</VariableType>
+                  <Length>32</Length>
+                  <Unicode>0</Unicode>
+                  <ZeroTerminate>1</ZeroTerminate>
+                  <Address>eqmain.dll+FF0F0</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>E4</Offset>
+                    <Offset>14</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
           <ID>76</ID>
           <Description>"0x18"</Description>
-          <LastState Value="00000000" Activated="0" RealAddress="02B5CCC8"/>
+          <LastState Value="00000000" Activated="0" RealAddress="04CDCCC8"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1073,7 +1156,7 @@
         <CheatEntry>
           <ID>80</ID>
           <Description>"0x1C"</Description>
-          <LastState Value="00000000" Activated="0" RealAddress="02B5CCCC"/>
+          <LastState Value="00000000" Activated="0" RealAddress="04CDCCCC"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1085,7 +1168,7 @@
         <CheatEntry>
           <ID>188</ID>
           <Description>"0x20"</Description>
-          <LastState Value="085C9968" Activated="0" RealAddress="02B5CCD0"/>
+          <LastState Value="08459190" Activated="0" RealAddress="04CDCCD0"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1097,7 +1180,7 @@
         <CheatEntry>
           <ID>189</ID>
           <Description>"0x24"</Description>
-          <LastState Value="08413CC8" Activated="0" RealAddress="02B5CCD4"/>
+          <LastState Value="082A3D50" Activated="0" RealAddress="04CDCCD4"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1109,7 +1192,7 @@
         <CheatEntry>
           <ID>190</ID>
           <Description>"0x28"</Description>
-          <LastState Value="00000000" Activated="0" RealAddress="02B5CCD8"/>
+          <LastState Value="00000000" Activated="0" RealAddress="04CDCCD8"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1121,7 +1204,7 @@
         <CheatEntry>
           <ID>165</ID>
           <Description>"0x2C"</Description>
-          <LastState Value="02B5CEC8" Activated="0" RealAddress="02B5CCDC"/>
+          <LastState Value="04CDCEC8" Activated="0" RealAddress="04CDCCDC"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1133,7 +1216,7 @@
         <CheatEntry>
           <ID>58</ID>
           <Description>"0x30"</Description>
-          <LastState Value="101" Activated="0" RealAddress="02B5CCE0"/>
+          <LastState Value="101" Activated="0" RealAddress="04CDCCE0"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0F0</Address>
@@ -1144,7 +1227,7 @@
         <CheatEntry>
           <ID>163</ID>
           <Description>"0x34"</Description>
-          <LastState Value="28 0 0 0" Activated="0" RealAddress="02B5CCE4"/>
+          <LastState Value="28 0 0 0" Activated="0" RealAddress="04CDCCE4"/>
           <Color>80000008</Color>
           <VariableType>Array of byte</VariableType>
           <ByteLength>4</ByteLength>
@@ -1156,7 +1239,7 @@
         <CheatEntry>
           <ID>161</ID>
           <Description>"0x38"</Description>
-          <LastState Value="22" Activated="0" RealAddress="02B5CCE8"/>
+          <LastState Value="22" Activated="0" RealAddress="04CDCCE8"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0F0</Address>
@@ -1167,7 +1250,7 @@
         <CheatEntry>
           <ID>162</ID>
           <Description>"0x3C Window CXStr"</Description>
-          <LastState Value="0845C620" Activated="0" RealAddress="02B5CCEC"/>
+          <LastState Value="082EC5D0" Activated="0" RealAddress="04CDCCEC"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1179,7 +1262,7 @@
             <CheatEntry>
               <ID>177</ID>
               <Description>"0x14 text"</Description>
-              <LastState Activated="0" RealAddress="0845C634"/>
+              <LastState Activated="0" RealAddress="082EC5E4"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>String</VariableType>
@@ -1195,7 +1278,7 @@
             <CheatEntry>
               <ID>178</ID>
               <Description>"0x14 text"</Description>
-              <LastState Value="616C7565" Activated="0" RealAddress="0845C634"/>
+              <LastState Value="616C7565" Activated="0" RealAddress="082EC5E4"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -1210,7 +1293,7 @@
         <CheatEntry>
           <ID>77</ID>
           <Description>"0x40"</Description>
-          <LastState Value="04A11660" Activated="0" RealAddress="02B5CCF0"/>
+          <LastState Value="046C1638" Activated="0" RealAddress="04CDCCF0"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1222,7 +1305,7 @@
         <CheatEntry>
           <ID>78</ID>
           <Description>"0x44 Window ID?"</Description>
-          <LastState Value="0847B8A0" Activated="0" RealAddress="02B5CCF4"/>
+          <LastState Value="0830B6F0" Activated="0" RealAddress="04CDCCF4"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1234,7 +1317,7 @@
         <CheatEntry>
           <ID>68</ID>
           <Description>"0x50 Window Is Visible/Drawn"</Description>
-          <LastState Value="1" Activated="0" RealAddress="02B5CD00"/>
+          <LastState Value="1" Activated="0" RealAddress="04CDCD00"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0F0</Address>
@@ -1245,7 +1328,7 @@
         <CheatEntry>
           <ID>82</ID>
           <Description>"0x51"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5CD01"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDCD01"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0F0</Address>
@@ -1256,7 +1339,7 @@
         <CheatEntry>
           <ID>81</ID>
           <Description>"0x52"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5CD02"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDCD02"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0F0</Address>
@@ -1267,7 +1350,7 @@
         <CheatEntry>
           <ID>67</ID>
           <Description>"0x60"</Description>
-          <LastState Value="0" Activated="0" RealAddress="02B5CD10"/>
+          <LastState Value="0" Activated="0" RealAddress="04CDCD10"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+FF0F0</Address>
@@ -1276,9 +1359,53 @@
           </Offsets>
         </CheatEntry>
         <CheatEntry>
+          <ID>191</ID>
+          <Description>"0x7D"</Description>
+          <LastState Value="0" Activated="0" RealAddress="04CDCD2D"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>7D</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>194</ID>
+          <Description>"0x7E"</Description>
+          <LastState Value="0" Activated="0" RealAddress="04CDCD2E"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>7E</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>192</ID>
+          <Description>"0x7F"</Description>
+          <LastState Value="0" Activated="0" RealAddress="04CDCD2F"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>7F</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>193</ID>
+          <Description>"0x80"</Description>
+          <LastState Value="0" Activated="0" RealAddress="04CDCD30"/>
+          <Color>80000008</Color>
+          <VariableType>Byte</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>80</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
           <ID>79</ID>
           <Description>"0x8C"</Description>
-          <LastState Value="00000000" Activated="0" RealAddress="02B5CD3C"/>
+          <LastState Value="00000000" Activated="0" RealAddress="04CDCD3C"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1287,12 +1414,36 @@
             <Offset>8C</Offset>
           </Offsets>
         </CheatEntry>
+        <CheatEntry>
+          <ID>206</ID>
+          <Description>"0x1CC"</Description>
+          <LastState Value="08310318" Activated="0" RealAddress="04CDCE7C"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>1CC</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>207</ID>
+          <Description>"0x1D0"</Description>
+          <LastState Value="00000000" Activated="0" RealAddress="04CDCE80"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>eqmain.dll+FF0F0</Address>
+          <Offsets>
+            <Offset>1D0</Offset>
+          </Offsets>
+        </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
       <ID>2</ID>
       <Description>"window list?"</Description>
-      <LastState Value="04CB6E7C" Activated="0" RealAddress="04CEF180"/>
+      <LastState Value="048A6E7C" Activated="0" RealAddress="048DF180"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1301,7 +1452,7 @@
     <CheatEntry>
       <ID>70</ID>
       <Description>"No description"</Description>
-      <LastState Value="049EFFB8" Activated="0" RealAddress="04CEF0F4"/>
+      <LastState Value="0469FFB8" Activated="0" RealAddress="048DF0F4"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1310,7 +1461,7 @@
         <CheatEntry>
           <ID>98</ID>
           <Description>"0x14"</Description>
-          <LastState Value="00010000" Activated="0" RealAddress="049EFFCC"/>
+          <LastState Value="00010000" Activated="0" RealAddress="0469FFCC"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1322,7 +1473,7 @@
         <CheatEntry>
           <ID>99</ID>
           <Description>"0x1C"</Description>
-          <LastState Value="00000000" Activated="0" RealAddress="049EFFD4"/>
+          <LastState Value="00000000" Activated="0" RealAddress="0469FFD4"/>
           <ShowAsHex>1</ShowAsHex>
           <ShowAsSigned>0</ShowAsSigned>
           <Color>80000008</Color>
@@ -1335,7 +1486,7 @@
         <CheatEntry>
           <ID>101</ID>
           <Description>"0x20 Mouse X"</Description>
-          <LastState Value="796" Activated="0" RealAddress="049EFFD8"/>
+          <LastState Value="579" Activated="0" RealAddress="0469FFD8"/>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1347,7 +1498,7 @@
         <CheatEntry>
           <ID>100</ID>
           <Description>"0x24 Mouse Y"</Description>
-          <LastState Value="920" Activated="0" RealAddress="049EFFDC"/>
+          <LastState Value="1022" Activated="0" RealAddress="0469FFDC"/>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1361,7 +1512,7 @@
     <CheatEntry>
       <ID>4</ID>
       <Description>"Timer #2?"</Description>
-      <LastState Value="0" Activated="0" RealAddress="04CEF0DC"/>
+      <LastState Value="0" Activated="0" RealAddress="048DF0DC"/>
       <Color>80000008</Color>
       <VariableType>8 Bytes</VariableType>
       <Address>eqmain.dll+FF0DC</Address>
@@ -1369,7 +1520,7 @@
     <CheatEntry>
       <ID>182</ID>
       <Description>"Timer"</Description>
-      <LastState Value="1451023134" Activated="0" RealAddress="04CEF0D8"/>
+      <LastState Value="1451928144" Activated="0" RealAddress="048DF0D8"/>
       <Color>80000008</Color>
       <VariableType>8 Bytes</VariableType>
       <Address>eqmain.dll+FF0D8</Address>
@@ -1377,7 +1528,7 @@
     <CheatEntry>
       <ID>5</ID>
       <Description>"No description"</Description>
-      <LastState Value="0" Activated="0" RealAddress="04CEF0DC"/>
+      <LastState Value="0" Activated="0" RealAddress="048DF0DC"/>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
       <Address>eqmain.dll+FF0DC</Address>
@@ -1394,7 +1545,7 @@
     <CheatEntry>
       <ID>12</ID>
       <Description>"No description"</Description>
-      <LastState Value="02B5AEB8" Activated="0" RealAddress="04CEF0EC"/>
+      <LastState Value="04CDAEB8" Activated="0" RealAddress="048DF0EC"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1403,7 +1554,7 @@
     <CheatEntry>
       <ID>22</ID>
       <Description>"logo timer thing"</Description>
-      <LastState Value="081B8630" Activated="0" RealAddress="04EE0A6C"/>
+      <LastState Value="00000000" Activated="0" RealAddress="04AD0A6C"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1412,7 +1563,7 @@
         <CheatEntry>
           <ID>23</ID>
           <Description>"No description"</Description>
-          <LastState Value="00000000" Activated="0" RealAddress="0858B304"/>
+          <LastState Value="??" Activated="0" RealAddress="00000000"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1425,7 +1576,7 @@
         <CheatEntry>
           <ID>24</ID>
           <Description>"No description"</Description>
-          <LastState Value="0858C1C0" Activated="0" RealAddress="081B87FC"/>
+          <LastState Value="??" Activated="0" RealAddress="000001CC"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1439,7 +1590,7 @@
     <CheatEntry>
       <ID>25</ID>
       <Description>""</Description>
-      <LastState Value="3" Activated="0" RealAddress="046888AC"/>
+      <LastState Value="4" Activated="0" RealAddress="043388AC"/>
       <Color>80000008</Color>
       <VariableType>Byte</VariableType>
       <Address>nvspcap.dll+E88AC</Address>
@@ -1447,7 +1598,7 @@
     <CheatEntry>
       <ID>26</ID>
       <Description>"No description"</Description>
-      <LastState Value="24" Activated="0" RealAddress="04EEC0E0"/>
+      <LastState Value="0" Activated="0" RealAddress="04EEC0E0"/>
       <Color>80000008</Color>
       <VariableType>Byte</VariableType>
       <Address>04EEC0E0</Address>
@@ -1455,7 +1606,7 @@
     <CheatEntry>
       <ID>27</ID>
       <Description>"No description"</Description>
-      <LastState Value="60" Activated="0" RealAddress="04EEC0E4"/>
+      <LastState Value="0" Activated="0" RealAddress="04EEC0E4"/>
       <Color>80000008</Color>
       <VariableType>Byte</VariableType>
       <Address>04EEC0E4</Address>
@@ -1463,7 +1614,7 @@
     <CheatEntry>
       <ID>28</ID>
       <Description>"No description"</Description>
-      <LastState Value="48" Activated="0" RealAddress="04EE0A6C"/>
+      <LastState Value="0" Activated="0" RealAddress="04AD0A6C"/>
       <Color>80000008</Color>
       <VariableType>Byte</VariableType>
       <Address>eqmain.dll+2F0A6C</Address>
@@ -1471,7 +1622,7 @@
     <CheatEntry>
       <ID>29</ID>
       <Description>"No description"</Description>
-      <LastState Value="134" Activated="0" RealAddress="04EE0A6D"/>
+      <LastState Value="0" Activated="0" RealAddress="04AD0A6D"/>
       <Color>80000008</Color>
       <VariableType>Byte</VariableType>
       <Address>eqmain.dll+2F0A6D</Address>
@@ -1479,7 +1630,7 @@
     <CheatEntry>
       <ID>30</ID>
       <Description>"No description"</Description>
-      <LastState Value="27" Activated="0" RealAddress="04EE0A6E"/>
+      <LastState Value="0" Activated="0" RealAddress="04AD0A6E"/>
       <Color>80000008</Color>
       <VariableType>Byte</VariableType>
       <Address>eqmain.dll+2F0A6E</Address>
@@ -1487,7 +1638,7 @@
     <CheatEntry>
       <ID>48</ID>
       <Description>"important?"</Description>
-      <LastState Value="1" Activated="0" RealAddress="04CF7890"/>
+      <LastState Value="1" Activated="0" RealAddress="048E7890"/>
       <Color>80000008</Color>
       <VariableType>Byte</VariableType>
       <Address>eqmain.dll+107890</Address>
@@ -1495,7 +1646,7 @@
     <CheatEntry>
       <ID>56</ID>
       <Description>"No description"</Description>
-      <LastState Value="074A8E68" Activated="0" RealAddress="04EE097C"/>
+      <LastState Value="06C98E68" Activated="0" RealAddress="04AD097C"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1504,7 +1655,7 @@
         <CheatEntry>
           <ID>57</ID>
           <Description>"No description"</Description>
-          <LastState Value="04CBD2CC" Activated="0" RealAddress="074A8E68"/>
+          <LastState Value="048AD2CC" Activated="0" RealAddress="06C98E68"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1518,7 +1669,7 @@
     <CheatEntry>
       <ID>59</ID>
       <Description>"No description"</Description>
-      <LastState Value="38" Activated="0" RealAddress="035FD0DC"/>
+      <LastState Value="27" Activated="0" RealAddress="032AD0DC"/>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
       <Address>EQGraphicsDX9.DLL+13D0DC</Address>
@@ -1526,7 +1677,7 @@
     <CheatEntry>
       <ID>60</ID>
       <Description>"No description"</Description>
-      <LastState Value="40" Activated="0" RealAddress="035FD198"/>
+      <LastState Value="29" Activated="0" RealAddress="032AD198"/>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
       <Address>EQGraphicsDX9.DLL+13D198</Address>
@@ -1534,7 +1685,7 @@
     <CheatEntry>
       <ID>61</ID>
       <Description>"No description"</Description>
-      <LastState Value="40" Activated="0" RealAddress="035FD19C"/>
+      <LastState Value="29" Activated="0" RealAddress="032AD19C"/>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
       <Address>EQGraphicsDX9.DLL+13D19C</Address>
@@ -1542,7 +1693,7 @@
     <CheatEntry>
       <ID>62</ID>
       <Description>"No description"</Description>
-      <LastState Value="38" Activated="0" RealAddress="0364BB14"/>
+      <LastState Value="27" Activated="0" RealAddress="032FBB14"/>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
       <Address>EQGraphicsDX9.DLL+18BB14</Address>
@@ -1558,7 +1709,7 @@
     <CheatEntry>
       <ID>64</ID>
       <Description>"No description"</Description>
-      <LastState Value="??" Activated="0" RealAddress="04FE0100"/>
+      <LastState Value="0" Activated="0" RealAddress="04FE0100"/>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
       <Address>04FE0100</Address>
@@ -1566,7 +1717,7 @@
     <CheatEntry>
       <ID>65</ID>
       <Description>"No description"</Description>
-      <LastState Value="??" Activated="0" RealAddress="050648A0"/>
+      <LastState Value="4294967295" Activated="0" RealAddress="050648A0"/>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
       <Address>050648A0</Address>
@@ -1574,7 +1725,7 @@
     <CheatEntry>
       <ID>66</ID>
       <Description>"No description"</Description>
-      <LastState Value="F7F6F5F4" Activated="0" RealAddress="77694234"/>
+      <LastState Value="F7F6F5F4" Activated="0" RealAddress="76FB4234"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1583,7 +1734,7 @@
     <CheatEntry>
       <ID>69</ID>
       <Description>"No description"</Description>
-      <LastState Value="049EF290" Activated="0" RealAddress="04EE03A0"/>
+      <LastState Value="0469F290" Activated="0" RealAddress="04AD03A0"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1592,7 +1743,7 @@
     <CheatEntry>
       <ID>71</ID>
       <Description>"No description"</Description>
-      <LastState Value="244" Activated="0" RealAddress="77694234"/>
+      <LastState Value="244" Activated="0" RealAddress="76FB4234"/>
       <Color>80000008</Color>
       <VariableType>Byte</VariableType>
       <Address>ntdll.dll+104234</Address>
@@ -1600,7 +1751,7 @@
     <CheatEntry>
       <ID>93</ID>
       <Description>"No description"</Description>
-      <LastState Value="074A8E68" Activated="0" RealAddress="04EE097C"/>
+      <LastState Value="06C98E68" Activated="0" RealAddress="04AD097C"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1609,7 +1760,7 @@
         <CheatEntry>
           <ID>94</ID>
           <Description>"0x81"</Description>
-          <LastState Value="0" Activated="0" RealAddress="074A8EE9"/>
+          <LastState Value="0" Activated="0" RealAddress="06C98EE9"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>eqmain.dll+2F097C</Address>
@@ -1620,7 +1771,7 @@
         <CheatEntry>
           <ID>185</ID>
           <Description>"0x84 Mouse Cursor ID"</Description>
-          <LastState Value="0" Activated="0" RealAddress="074A8EEC"/>
+          <LastState Value="0" Activated="0" RealAddress="06C98EEC"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+2F097C</Address>
@@ -1633,7 +1784,7 @@
     <CheatEntry>
       <ID>95</ID>
       <Description>"No description"</Description>
-      <LastState Value="03BD0050" Activated="0" RealAddress="04EE11FC"/>
+      <LastState Value="03880050" Activated="0" RealAddress="04AD11FC"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1642,7 +1793,7 @@
         <CheatEntry>
           <ID>96</ID>
           <Description>"No description"</Description>
-          <LastState Value="3619102270" Activated="0" RealAddress="03BD00F4"/>
+          <LastState Value="3619102270" Activated="0" RealAddress="038800F4"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+2F11FC</Address>
@@ -1653,7 +1804,7 @@
         <CheatEntry>
           <ID>97</ID>
           <Description>"No description"</Description>
-          <LastState Value="35C4C21C" Activated="0" RealAddress="03BD0100"/>
+          <LastState Value="35C4C21C" Activated="0" RealAddress="03880100"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -1667,7 +1818,7 @@
     <CheatEntry>
       <ID>104</ID>
       <Description>"No description"</Description>
-      <LastState Value="1" Activated="0" RealAddress="04CF7890"/>
+      <LastState Value="1" Activated="0" RealAddress="048E7890"/>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
       <Address>eqmain.dll+107890</Address>
@@ -1675,7 +1826,7 @@
     <CheatEntry>
       <ID>105</ID>
       <Description>"No description"</Description>
-      <LastState Activated="0" RealAddress="04CB4BDC"/>
+      <LastState Activated="0" RealAddress="048A4BDC"/>
       <Color>80000008</Color>
       <VariableType>String</VariableType>
       <Length>7</Length>
@@ -1697,7 +1848,7 @@
     <CheatEntry>
       <ID>109</ID>
       <Description>"No description"</Description>
-      <LastState Value="489094935" Activated="0" RealAddress="0920F2E0"/>
+      <LastState Value="0" Activated="0" RealAddress="0920F2E0"/>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
       <Address>0920F2E0</Address>
@@ -1705,7 +1856,7 @@
     <CheatEntry>
       <ID>110</ID>
       <Description>"No description"</Description>
-      <LastState Value="??" Activated="0" RealAddress="04F9AEB8"/>
+      <LastState Value="00000000" Activated="0" RealAddress="04F9AEB8"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1714,7 +1865,7 @@
     <CheatEntry>
       <ID>111</ID>
       <Description>"No description"</Description>
-      <LastState Value="??" Activated="0" RealAddress="00000000"/>
+      <LastState Value="??" Activated="0" RealAddress="000002F1"/>
       <Color>80000008</Color>
       <VariableType>Byte</VariableType>
       <Address>04F9AEB8</Address>
@@ -1725,7 +1876,7 @@
     <CheatEntry>
       <ID>112</ID>
       <Description>"No description"</Description>
-      <LastState Value="??" Activated="0" RealAddress="00000000"/>
+      <LastState Value="??" Activated="0" RealAddress="000002F1"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1754,7 +1905,7 @@
     <CheatEntry>
       <ID>114</ID>
       <Description>"LoginViewManager???"</Description>
-      <LastState Value="57018B09" Activated="0" RealAddress="04C19740"/>
+      <LastState Value="??" Activated="0" RealAddress="04C19740"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1763,7 +1914,7 @@
     <CheatEntry>
       <ID>115</ID>
       <Description>"EULA Window???"</Description>
-      <LastState Value="??" Activated="0" RealAddress="04F18A08"/>
+      <LastState Value="00000000" Activated="0" RealAddress="04F18A08"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1772,7 +1923,7 @@
     <CheatEntry>
       <ID>117</ID>
       <Description>"boolean for showing the eula window???"</Description>
-      <LastState Value="1" Activated="0" RealAddress="04CF7890"/>
+      <LastState Value="1" Activated="0" RealAddress="048E7890"/>
       <Color>80000008</Color>
       <VariableType>Byte</VariableType>
       <Address>eqmain.dll+107890</Address>
@@ -1789,7 +1940,7 @@
     <CheatEntry>
       <ID>120</ID>
       <Description>"No description"</Description>
-      <LastState Value="049EFFB8" Activated="0" RealAddress="04CEF0F4"/>
+      <LastState Value="0469FFB8" Activated="0" RealAddress="048DF0F4"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1798,7 +1949,7 @@
         <CheatEntry>
           <ID>121</ID>
           <Description>"No description"</Description>
-          <LastState Value="796" Activated="0" RealAddress="049EFFD8"/>
+          <LastState Value="579" Activated="0" RealAddress="0469FFD8"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>eqmain.dll+FF0F4</Address>
@@ -1820,7 +1971,7 @@
     <CheatEntry>
       <ID>123</ID>
       <Description>"No description"</Description>
-      <LastState Value="A4000000" Activated="0" RealAddress="0838A4E4"/>
+      <LastState Value="00000000" Activated="0" RealAddress="0838A4E4"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1846,7 +1997,7 @@
     <CheatEntry>
       <ID>159</ID>
       <Description>"points to 0x04A3FFB8"</Description>
-      <LastState Value="049EFFB8" Activated="0" RealAddress="04CEF0F4"/>
+      <LastState Value="0469FFB8" Activated="0" RealAddress="048DF0F4"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1855,7 +2006,7 @@
     <CheatEntry>
       <ID>170</ID>
       <Description>"points to main window string"</Description>
-      <LastState Value="049EF490" Activated="0" RealAddress="04EE0410"/>
+      <LastState Value="0469F490" Activated="0" RealAddress="04AD0410"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1864,7 +2015,7 @@
     <CheatEntry>
       <ID>167</ID>
       <Description>"points to EULA window string"</Description>
-      <LastState Value="049EF290" Activated="0" RealAddress="04EE03A0"/>
+      <LastState Value="0469F290" Activated="0" RealAddress="04AD03A0"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1873,7 +2024,7 @@
     <CheatEntry>
       <ID>168</ID>
       <Description>"EULA function"</Description>
-      <LastState Value="CB8B5C68" Activated="0" RealAddress="04CB0650"/>
+      <LastState Value="8A8B5C68" Activated="0" RealAddress="048A0650"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1882,7 +2033,7 @@
     <CheatEntry>
       <ID>169</ID>
       <Description>"Pointer to EULA function"</Description>
-      <LastState Value="04CB0650" Activated="0" RealAddress="04CD00A4"/>
+      <LastState Value="048A0650" Activated="0" RealAddress="048C00A4"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1891,7 +2042,7 @@
     <CheatEntry>
       <ID>171</ID>
       <Description>"eqmain.dll base address"</Description>
-      <LastState Value="04BF0000" Activated="0" RealAddress="00AD6DBC"/>
+      <LastState Value="047E0000" Activated="0" RealAddress="00AD6DBC"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -1900,7 +2051,7 @@
     <CheatEntry>
       <ID>172</ID>
       <Description>"No description"</Description>
-      <LastState Value="0" Activated="0" RealAddress="04EDFE1C"/>
+      <LastState Value="0" Activated="0" RealAddress="04ACFE1C"/>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
       <Address>eqmain.dll+2EFE1C</Address>
@@ -1908,7 +2059,7 @@
     <CheatEntry>
       <ID>174</ID>
       <Description>"No description"</Description>
-      <LastState Value="136021552" Activated="0" RealAddress="04EE0A6C"/>
+      <LastState Value="0" Activated="0" RealAddress="04AD0A6C"/>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
       <Address>eqmain.dll+2F0A6C</Address>
@@ -2091,7 +2242,7 @@ dealloc(newmem)
     <CheatEntry>
       <ID>183</ID>
       <Description>"No description"</Description>
-      <LastState Value="074A8E68" Activated="0" RealAddress="04EE097C"/>
+      <LastState Value="06C98E68" Activated="0" RealAddress="04AD097C"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -2100,11 +2251,39 @@ dealloc(newmem)
     <CheatEntry>
       <ID>184</ID>
       <Description>"No description"</Description>
-      <LastState Value="074A8E68" Activated="0" RealAddress="04EE097C"/>
+      <LastState Value="06C98E68" Activated="0" RealAddress="04AD097C"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
       <Address>eqmain.dll+2F097C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>195</ID>
+      <Description>"No description"</Description>
+      <LastState Activated="0" RealAddress="06F6C264"/>
+      <Color>80000008</Color>
+      <VariableType>String</VariableType>
+      <Length>15</Length>
+      <Unicode>0</Unicode>
+      <ZeroTerminate>1</ZeroTerminate>
+      <Address>06F6C264</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>196</ID>
+      <Description>"No description"</Description>
+      <LastState Value="0" Activated="0" RealAddress="06F6C250"/>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>06F6C264-14</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>205</ID>
+      <Description>"No description"</Description>
+      <LastState Value="047E4350" Activated="0" RealAddress="048A8A08"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>eqmain.dll+C8A08</Address>
     </CheatEntry>
   </CheatEntries>
   <CheatCodes>
@@ -3234,7 +3413,7 @@ dealloc(newmem)
     </CodeEntry>
     <CodeEntry>
       <Description>Code :push eqmain.dll+C8B50 EulaWindow</Description>
-      <Address>0475007B</Address>
+      <Address>047C007B</Address>
       <ModuleName>eqmain.dll</ModuleName>
       <ModuleNameOffset>3007B</ModuleNameOffset>
       <Before>
