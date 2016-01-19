@@ -30,6 +30,16 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_BOOL_NET_STATUS     0x00A603E1 // BYTE
 #define EQ_BOOL_SAFELOCK       0x00A96858 // BYTE
 
+#define EQ_BOOL_KEYBOARD_SHIFT           0x00A609B0 // BYTE
+#define EQ_BOOL_KEYBOARD_CONTROL         0x00A609B1 // BYTE
+#define EQ_BOOL_KEYBOARD_ALT             0x00A609B2 // BYTE
+#define EQ_BOOL_KEYBOARD_LEFT_SHIFT      0x00A609B3 // BYTE
+#define EQ_BOOL_KEYBOARD_LEFT_CONTROL    0x00A609B4 // BYTE
+#define EQ_BOOL_KEYBOARD_LEFT_ALT        0x00A609B5 // BYTE
+#define EQ_BOOL_KEYBOARD_RIGHT_SHIFT     0x00A609B6 // BYTE
+#define EQ_BOOL_KEYBOARD_RIGHT_CONTROL   0x00A609B7 // BYTE
+#define EQ_BOOL_KEYBOARD_RIGHT_ALT       0x00A609B8 // BYTE
+
 #define EQ_POINTER_GRAPHICS_DLL_BASE_ADDRESS 0x00B112A8 // EQGraphicsDX9.DLL
 
 #define EQ_GRAPHICS_DLL_OFFSET_DrawLine  0x7A850
@@ -68,6 +78,8 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 
 #define EQ_POINTER_GROUP_INFO                 0x00A40ABE // pinstGroup
 
+#define EQ_GUILDS 0x00A42640
+
 #define EQ_ZONEINFO_CHARACTER_NAME    0x00A6057C // string 64  [0x40]
 #define EQ_ZONEINFO_SHORT_NAME        0x00A605BC // string 32  [0x20]
 #define EQ_ZONEINFO_LONG_NAME         0x00A6063C // string 128 [0x80]
@@ -89,9 +101,11 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_FUNCTION_get_melee_range             0x004AAA20 // __get_melee_range
 #define EQ_FUNCTION_get_bearing                 0x004B7BF0
 
-#define EQ_FUNCTION_CDisplay__CreatePlayerActor   0x0046E0B0
-#define EQ_FUNCTION_CDisplay__DeleteActor         0x0046F2F0
-#define EQ_FUNCTION_CDisplay__WriteTextHD2        0x0046D880
+#define EQ_FUNCTION_EQ_Guilds__GetGuildNameById    0x00421930 // GetPlayerGuildName
+
+#define EQ_FUNCTION_CDisplay__CreatePlayerActor    0x0046E0B0
+#define EQ_FUNCTION_CDisplay__DeleteActor          0x0046F2F0
+#define EQ_FUNCTION_CDisplay__WriteTextHD2         0x0046D880
 
 #define EQ_FUNCTION_CEverQuest__dsp_chat                   0x004DCD60
 #define EQ_FUNCTION_CEverQuest__dsp_chat__2                0x004DCF30
@@ -127,12 +141,26 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 
 #define EQ_FUNCTION_EQSwitch__ChangeState       0x004D0430
 
+#define EQ_CAMERA_VIEW 0x00990CF0 // DWORD
+
+#define EQ_CAMERA_VIEW_FIRST_PERSON          0
+#define EQ_CAMERA_VIEW_THIRD_PERSON_OVERHEAD 1
+#define EQ_CAMERA_VIEW_THIRD_PERSON2         2
+#define EQ_CAMERA_VIEW_THIRD_PERSON3         3
+#define EQ_CAMERA_VIEW_THIRD_PERSON4         4
+#define EQ_CAMERA_VIEW_THIRD_PERSON_CHASE    5
+
+#define EQ_CAMERA_PITCH_DEFAULT -8.5
+
 #define EQ_DRAW_DISTANCE_MAX 0x00A607E4 // default is 1000.0f
 
 #define EQ_SPAWN_TYPE_PLAYER        0
 #define EQ_SPAWN_TYPE_NPC           1
 #define EQ_SPAWN_TYPE_NPC_CORPSE    2
 #define EQ_SPAWN_TYPE_PLAYER_CORPSE 3
+
+#define EQ_DOOR_STATE_OPEN  2
+#define EQ_DOOR_STATE_CLOSE 3
 
 #define EQ_GAME_STATE_CHARACTER_SELECT 1
 #define EQ_GAME_STATE_ZONING           3
@@ -196,6 +224,7 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_NUM_BANK_SLOTS           26 // 24 bag slots, 2 shared bag slots
 #define EQ_NUM_CONTAINER_SLOTS      10 // number of items that can fit in a bag, backpack or box
 #define EQ_NUM_LOOT_WINDOW_SLOTS    32
+#define EQ_NUM_GUILDS               1500
 
 const std::unordered_map<std::string, std::string> EQ_KEYVALUE_ACTOR_DEFINITIONS
 {

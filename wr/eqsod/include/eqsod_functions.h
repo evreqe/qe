@@ -66,6 +66,7 @@ void EQ_WriteMemory(DWORD address, T value)
 //#define EQ_IDirectInputDevice8_Mouse (*EQ_ppIDirectInputDevice8_Mouse)
 
 class EQGraphicsDLL;
+class EQ_Guilds;
 
 class CXStr;
 class CSidlScreenWnd;
@@ -92,8 +93,17 @@ public:
     int EQGraphicsDLL::DrawQuad(EQRECT* rect, DWORD argbColor);
 };
 
-EQGraphicsDLL** EQ_CLASS_ppEQGraphicsDLL = (EQGraphicsDLL**)EQ_POINTER_EQGraphicsDLL;
-#define EQ_CLASS_EQGraphicsDLL (*EQ_CLASS_ppEQGraphicsDLL)
+EQGraphicsDLL** EQ_ppEQGraphicsDLL = (EQGraphicsDLL**)EQ_POINTER_EQGraphicsDLL;
+#define EQ_EQGraphicsDLL (*EQ_ppEQGraphicsDLL)
+
+class EQ_Guilds
+{
+public:
+    char* EQ_Guilds::GetGuildNameById(DWORD id);
+};
+
+EQ_Guilds* EQ_ppEQ_Guilds = (EQ_Guilds*)EQ_GUILDS;
+#define EQ_EQ_Guilds (*EQ_ppEQ_Guilds)
 
 class CXStr
 {
@@ -119,8 +129,8 @@ public:
     static int __cdecl CDisplay::WriteTextHD2(const char* text, int x, int y, int color);
 };
 
-CDisplay** EQ_CLASS_ppCDisplay = (CDisplay**)EQ_POINTER_CDisplay;
-#define EQ_CLASS_CDisplay (*EQ_CLASS_ppCDisplay)
+CDisplay** EQ_ppCDisplay = (CDisplay**)EQ_POINTER_CDisplay;
+#define EQ_CDisplay (*EQ_ppCDisplay)
 
 class CButtonWnd
 {
@@ -146,8 +156,8 @@ public:
     void CEverQuest::SetGameState(int state);
 };
 
-CEverQuest** EQ_CLASS_ppCEverQuest = (CEverQuest**)EQ_POINTER_CEverQuest;
-#define EQ_CLASS_CEverQuest (*EQ_CLASS_ppCEverQuest)
+CEverQuest** EQ_ppCEverQuest = (CEverQuest**)EQ_POINTER_CEverQuest;
+#define EQ_CEverQuest (*EQ_ppCEverQuest)
 
 class CHotButtonWnd : public CSidlScreenWnd
 {
@@ -155,8 +165,8 @@ public:
     void CHotButtonWnd::DoHotButton(unsigned int buttonIndex, bool allowAutoRightClick);
 };
 
-CHotButtonWnd** EQ_CLASS_ppCHotButtonWnd = (CHotButtonWnd**)EQ_POINTER_CHotButtonWnd;
-#define EQ_CLASS_CHotButtonWnd (*EQ_CLASS_ppCHotButtonWnd)
+CHotButtonWnd** EQ_ppCHotButtonWnd = (CHotButtonWnd**)EQ_POINTER_CHotButtonWnd;
+#define EQ_CHotButtonWnd (*EQ_ppCHotButtonWnd)
 
 class CLootWnd : public CSidlScreenWnd
 {
@@ -165,8 +175,8 @@ public:
     void CLootWnd::RequestLootSlot(int slotIndex, bool autoLoot);
 };
 
-CLootWnd** EQ_CLASS_ppCLootWnd = (CLootWnd**)EQ_POINTER_CLootWnd;
-#define EQ_CLASS_CLootWnd (*EQ_CLASS_ppCLootWnd)
+CLootWnd** EQ_ppCLootWnd = (CLootWnd**)EQ_POINTER_CLootWnd;
+#define EQ_CLootWnd (*EQ_ppCLootWnd)
 
 class CMapViewWnd : public CSidlScreenWnd
 {
@@ -174,8 +184,8 @@ public:
     void CMapViewWnd::DrawMap(int a1, int a2, int a3, int a4);
 };
 
-CMapViewWnd** EQ_CLASS_ppCMapViewWnd = (CMapViewWnd**)EQ_POINTER_CMapViewWnd;
-#define EQ_CLASS_CMapViewWnd (*EQ_CLASS_ppCMapViewWnd)
+CMapViewWnd** EQ_ppCMapViewWnd = (CMapViewWnd**)EQ_POINTER_CMapViewWnd;
+#define EQ_CMapViewWnd (*EQ_ppCMapViewWnd)
 
 class CTextEntryWnd
 {
@@ -183,8 +193,8 @@ public:
     void CTextEntryWnd::Activate(void* parentWindow, int a2, char* displayText, int a4, int a5, char* defaultText);
 };
 
-CTextEntryWnd** EQ_CLASS_ppCTextEntryWnd = (CTextEntryWnd**)EQ_POINTER_CTextEntryWnd;
-#define EQ_CLASS_CTextEntryWnd (*EQ_CLASS_ppCTextEntryWnd)
+CTextEntryWnd** EQ_ppCTextEntryWnd = (CTextEntryWnd**)EQ_POINTER_CTextEntryWnd;
+#define EQ_CTextEntryWnd (*EQ_ppCTextEntryWnd)
 
 class CTextOverlay
 {
@@ -192,8 +202,8 @@ public:
     void CTextOverlay::DisplayText(const char* text, int textColor, int font, int alpha, int x,int y, int duration); // alpha is 0-255, duration is in milliseconds
 };
 
-CTextOverlay** EQ_CLASS_ppCTextOverlay = (CTextOverlay**)EQ_POINTER_CTextOverlay;
-#define EQ_CLASS_CTextOverlay (*EQ_CLASS_ppCTextOverlay)
+CTextOverlay** EQ_ppCTextOverlay = (CTextOverlay**)EQ_POINTER_CTextOverlay;
+#define EQ_CTextOverlay (*EQ_ppCTextOverlay)
 
 class EQPlayer
 {
@@ -216,8 +226,8 @@ public:
     int EQ_Character::UseSkill(unsigned char skill, class EQPlayer* targetSpawn);
 };
 
-EQ_Character** EQ_CLASS_ppEQ_Character = (EQ_Character**)EQ_POINTER_EQ_Character;
-#define EQ_CLASS_EQ_Character (*EQ_CLASS_ppEQ_Character)
+EQ_Character** EQ_ppEQ_Character = (EQ_Character**)EQ_POINTER_EQ_Character;
+#define EQ_EQ_Character (*EQ_ppEQ_Character)
 
 /* EQGraphicsDLL */
 
@@ -226,6 +236,12 @@ EQ_FUNCTION_TYPE_EQGraphicsDLL__DrawLine EQGraphicsDLL__DrawLine = NULL;
 
 typedef int (__thiscall* EQ_FUNCTION_TYPE_EQGraphicsDLL__DrawQuad)(void* pThis, EQRECT* rect, DWORD argbColor);
 EQ_FUNCTION_TYPE_EQGraphicsDLL__DrawQuad EQGraphicsDLL__DrawQuad = NULL;
+
+/* EQ_Guilds */
+
+#ifdef EQ_FUNCTION_EQ_Guilds__GetGuildNameById
+EQ_FUNCTION_AT_ADDRESS(char* EQ_Guilds::GetGuildNameById(DWORD id), EQ_FUNCTION_EQ_Guilds__GetGuildNameById);
+#endif
 
 /* CDisplay */
 
@@ -461,23 +477,44 @@ bool EQ_IsInGame()
 
 bool EQ_IsNetStatusEnabled()
 {
-    DWORD isNetStatusEnabled = EQ_ReadMemory<BYTE>(EQ_BOOL_NET_STATUS);
+    DWORD b = EQ_ReadMemory<BYTE>(EQ_BOOL_NET_STATUS);
 
-    return (isNetStatusEnabled == 1);
+    return (b == 1);
 }
 
 bool EQ_IsAutoAttackEnabled()
 {
-    DWORD isAutoAttackEnabled = EQ_ReadMemory<BYTE>(EQ_BOOL_AUTO_ATTACK);
+    DWORD b = EQ_ReadMemory<BYTE>(EQ_BOOL_AUTO_ATTACK);
 
-    return (isAutoAttackEnabled == 1);
+    return (b == 1);
 }
 
 bool EQ_IsAutoFireEnabled()
 {
-    DWORD isAutoFireEnabled = EQ_ReadMemory<BYTE>(EQ_BOOL_AUTO_FIRE);
+    DWORD b = EQ_ReadMemory<BYTE>(EQ_BOOL_AUTO_FIRE);
 
-    return (isAutoFireEnabled == 1);
+    return (b == 1);
+}
+
+bool EQ_IsKeyShiftPressed()
+{
+    DWORD b = EQ_ReadMemory<BYTE>(EQ_BOOL_KEYBOARD_SHIFT);
+
+    return (b == 1);
+}
+
+bool EQ_IsKeyAltPressed()
+{
+    DWORD b = EQ_ReadMemory<BYTE>(EQ_BOOL_KEYBOARD_ALT);
+
+    return (b == 1);
+}
+
+bool EQ_IsKeyControlPressed()
+{
+    DWORD b = EQ_ReadMemory<BYTE>(EQ_BOOL_KEYBOARD_CONTROL);
+
+    return (b == 1);
 }
 
 DWORD EQ_GetExitStatus()
@@ -492,7 +529,7 @@ void EQ_WriteToChat(const char* text)
         return;
     }
 
-    EQ_CLASS_CEverQuest->dsp_chat(text);
+    EQ_CEverQuest->dsp_chat(text);
 }
 
 void EQ_WriteToChat(const char* text, int textColor)
@@ -502,7 +539,7 @@ void EQ_WriteToChat(const char* text, int textColor)
         return;
     }
 
-    EQ_CLASS_CEverQuest->dsp_chat(text, textColor, false);
+    EQ_CEverQuest->dsp_chat(text, textColor, false);
 }
 
 DWORD EQ_GetCharInfo2()
@@ -711,7 +748,7 @@ void EQ_DrawText(const char* text, int x, int y, unsigned int color, unsigned in
 
     EQ_WriteMemory<DWORD>(font2 + 0x04, size); // write new font size
 
-    EQ_CLASS_CDisplay->WriteTextHD2(text, x, y, 0); // 0 is the color index that gets overwritten
+    EQ_CDisplay->WriteTextHD2(text, x, y, 0); // 0 is the color index that gets overwritten
 
     EQ_WriteMemory<DWORD>(0x0046D8FF, 0xFF000000); // restore old color
 
@@ -758,7 +795,7 @@ void EQ_DrawQuad(float x, float y, float width, float height, unsigned int argbC
     rect.Y4 = y + height;
     rect.Z4 = 0.0f;
 
-    EQGraphicsDLL__DrawQuad(EQ_CLASS_EQGraphicsDLL, &rect, argbColor);
+    EQGraphicsDLL__DrawQuad(EQ_EQGraphicsDLL, &rect, argbColor);
 }
 
 bool EQ_DrawLine(float x1, float y1, float z1, float x2, float y2, float z2, unsigned int argbColor)
@@ -778,7 +815,7 @@ bool EQ_DrawLine(float x1, float y1, float z1, float x2, float y2, float z2, uns
     lineEnd.Y = y2;
     lineEnd.Z = z2;
 
-    EQGraphicsDLL__DrawLine(EQ_CLASS_EQGraphicsDLL, &lineBegin, &lineEnd, argbColor);
+    EQGraphicsDLL__DrawLine(EQ_EQGraphicsDLL, &lineBegin, &lineEnd, argbColor);
 
     return true;
 }
@@ -1133,13 +1170,23 @@ bool EQ_LootItemByName(const char* name)
 
         if (strstr(itemName, name) != NULL)
         {
-            EQ_CLASS_CLootWnd->RequestLootSlot(i, true);
+            EQ_CLootWnd->RequestLootSlot(i, true);
 
             result = true;
         }
     }
 
     return result;
+}
+
+DWORD EQ_GetFontHeight(int fontSize)
+{
+    if (fontSize == 2)
+    {
+        return 13;
+    }
+
+    return 13;
 }
 
 #endif // EQSOD_FUNCTIONS_H
