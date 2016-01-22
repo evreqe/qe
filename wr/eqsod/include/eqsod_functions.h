@@ -83,6 +83,7 @@ class CMapViewWnd;
 class CTextEntryWnd;
 class CTextOverlay;
 class EQPlayer;
+class EQPlayerManager;
 class EQSwitch;
 class EQ_Character;
 
@@ -154,6 +155,7 @@ public:
     int __cdecl CEverQuest::RMouseUp(int x, int y);
     void CEverQuest::MoveToZone(int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8);
     void CEverQuest::SetGameState(int state);
+    void CEverQuest::StartCasting(int a1);
 };
 
 CEverQuest** EQ_ppCEverQuest = (CEverQuest**)EQ_POINTER_CEverQuest;
@@ -212,6 +214,16 @@ public:
     void EQPlayer::ChangePosition(BYTE standingState);
     void EQPlayer::FacePlayer(DWORD spawnInfo);
 };
+
+class EQPlayerManager
+{
+public:
+    DWORD EQPlayerManager::GetSpawnByID(int spawnId);
+    DWORD EQPlayerManager::GetSpawnByName(char* spawnName);
+};
+
+EQPlayerManager** EQ_ppEQPlayerManager = (EQPlayerManager**)EQ_POINTER_EQPlayerManager;
+#define EQ_EQPlayerManager (*EQ_ppEQPlayerManager)
 
 class EQSwitch
 {
@@ -320,6 +332,11 @@ typedef int (__thiscall* EQ_FUNCTION_TYPE_CEverQuest__SetGameState)(void* pThis,
 EQ_FUNCTION_AT_ADDRESS(void CEverQuest::SetGameState(int state), EQ_FUNCTION_CEverQuest__SetGameState);
 #endif
 
+#ifdef EQ_FUNCTION_CEverQuest__StartCasting
+typedef int (__thiscall* EQ_FUNCTION_TYPE_CEverQuest__StartCasting)(void* pThis, int a1);
+EQ_FUNCTION_AT_ADDRESS(void CEverQuest::StartCasting(int a1), EQ_FUNCTION_CEverQuest__StartCasting);
+#endif
+
 /* CMapViewWnd */
 
 #ifdef EQ_FUNCTION_CMapViewWnd__DrawMap
@@ -370,6 +387,16 @@ EQ_FUNCTION_AT_ADDRESS(void EQPlayer::ChangePosition(BYTE standingState), EQ_FUN
 
 #ifdef EQ_FUNCTION_EQPlayer__FacePlayer
 EQ_FUNCTION_AT_ADDRESS(void EQPlayer::FacePlayer(DWORD spawnInfo), EQ_FUNCTION_EQPlayer__FacePlayer);
+#endif
+
+/* EQPlayerManager */
+
+#ifdef EQ_FUNCTION_EQPlayerManager__GetSpawnByID
+EQ_FUNCTION_AT_ADDRESS(DWORD EQPlayerManager::GetSpawnByID(int spawnId), EQ_FUNCTION_EQPlayerManager__GetSpawnByID);
+#endif
+
+#ifdef EQ_FUNCTION_EQPlayerManager__GetSpawnByName
+EQ_FUNCTION_AT_ADDRESS(DWORD EQPlayerManager::GetSpawnByName(char* spawnName), EQ_FUNCTION_EQPlayerManager__GetSpawnByName);
 #endif
 
 /* EQSwitch */
@@ -798,6 +825,33 @@ void EQ_DrawQuad(float x, float y, float width, float height, unsigned int argbC
     EQGraphicsDLL__DrawQuad(EQ_EQGraphicsDLL, &rect, argbColor);
 }
 
+void EQ_DrawQuadEx(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, unsigned int argbColor)
+{
+    EQRECT rect;
+
+    // top left
+    rect.X1 = x1;
+    rect.Y1 = y1;
+    rect.Z1 = 0.0f;
+
+    // top right
+    rect.X2 = x2;
+    rect.Y2 = y2;
+    rect.Z2 = 0.0f;
+
+    // bottom right
+    rect.X3 = x3;
+    rect.Y3 = y3;
+    rect.Z3 = 0.0f;
+
+    // bottom left
+    rect.X4 = x4;
+    rect.Y4 = y4;
+    rect.Z4 = 0.0f;
+
+    EQGraphicsDLL__DrawQuad(EQ_EQGraphicsDLL, &rect, argbColor);
+}
+
 bool EQ_DrawLine(float x1, float y1, float z1, float x2, float y2, float z2, unsigned int argbColor)
 {
     if (EQGraphicsDLL__DrawLine == NULL)
@@ -1187,6 +1241,32 @@ DWORD EQ_GetFontHeight(int fontSize)
     }
 
     return 13;
+}
+
+FLOAT EQ_GetAverageFps()
+{
+    // average frames per second
+
+    DWORD baseAddress = EQ_ReadMemory<DWORD>(EQ_POINTER_GRAPHICS_DLL_BASE_ADDRESS);
+    if (baseAddress == NULL)
+    {
+        return 0.0f;
+    }
+
+    return EQ_ReadMemory<FLOAT>(baseAddress + 0x173CB0);
+}
+
+bool EQ_HasTimePassed(DWORD& timer, DWORD& delay)
+{
+    DWORD currentTime = EQ_GetTimer();
+
+    if ((currentTime - timer) > delay)
+    {
+        timer = currentTime;
+        return true;
+    }
+
+    return false;
 }
 
 #endif // EQSOD_FUNCTIONS_H

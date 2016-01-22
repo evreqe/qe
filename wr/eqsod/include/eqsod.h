@@ -64,6 +64,7 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_POINTER_CTextOverlay               0x00877500
 #define EQ_POINTER_CXWndManager               0x00B10A38
 #define EQ_POINTER_EQ_Character               0x00A425E4 // pinstCharData
+#define EQ_POINTER_EQPlayerManager            0x00AD3A0C // pinstSpawnManager
 
 #define EQ_POINTER_SPELL_MANAGER              0x00AD3A90 // pinstSpellManager
 #define EQ_POINTER_SWITCH_MANAGER             0x00A40704 // pinstSwitchManager (doors)
@@ -120,6 +121,7 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_FUNCTION_CEverQuest__RMouseUp                   0x004F2A20
 #define EQ_FUNCTION_CEverQuest__MoveToZone                 0x004FABE0
 #define EQ_FUNCTION_CEverQuest__SetGameState               0x004D7890
+#define EQ_FUNCTION_CEverQuest__StartCasting               0x004E1280
 
 #define EQ_FUNCTION_CHotButtonWnd__DoHotButton    0x005C5E80
 
@@ -138,6 +140,9 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_FUNCTION_EQPlayer__ChangeHeight      0x00530900
 #define EQ_FUNCTION_EQPlayer__ChangePosition    0x0052E120
 #define EQ_FUNCTION_EQPlayer__FacePlayer        0x0052C170
+
+#define EQ_FUNCTION_EQPlayerManager__GetSpawnByID      0x5287B0
+#define EQ_FUNCTION_EQPlayerManager__GetSpawnByName    0x528990
 
 #define EQ_FUNCTION_EQSwitch__ChangeState       0x004D0430
 
