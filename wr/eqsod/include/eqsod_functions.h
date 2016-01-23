@@ -213,6 +213,8 @@ public:
     void EQPlayer::ChangeHeight(float height);
     void EQPlayer::ChangePosition(BYTE standingState);
     void EQPlayer::FacePlayer(DWORD spawnInfo);
+    void EQPlayer::SetRace(int raceId);
+    void EQPlayer::do_change_form(int changeForm);
 };
 
 class EQPlayerManager
@@ -387,6 +389,16 @@ EQ_FUNCTION_AT_ADDRESS(void EQPlayer::ChangePosition(BYTE standingState), EQ_FUN
 
 #ifdef EQ_FUNCTION_EQPlayer__FacePlayer
 EQ_FUNCTION_AT_ADDRESS(void EQPlayer::FacePlayer(DWORD spawnInfo), EQ_FUNCTION_EQPlayer__FacePlayer);
+#endif
+
+#ifdef EQ_FUNCTION_EQPlayer__SetRace
+typedef int (__thiscall* EQ_FUNCTION_TYPE_EQPlayer__SetRace)(void* pThis, int raceId);
+EQ_FUNCTION_AT_ADDRESS(void EQPlayer::SetRace(int raceId), EQ_FUNCTION_EQPlayer__SetRace);
+#endif
+
+#ifdef EQ_FUNCTION_EQPlayer__do_change_form
+typedef int (__thiscall* EQ_FUNCTION_TYPE_EQPlayer__do_change_form)(void* pThis, int changeForm);
+EQ_FUNCTION_AT_ADDRESS(void EQPlayer::do_change_form(int changeForm), EQ_FUNCTION_EQPlayer__do_change_form);
 #endif
 
 /* EQPlayerManager */

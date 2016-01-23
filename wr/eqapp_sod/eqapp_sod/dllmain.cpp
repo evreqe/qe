@@ -65,6 +65,8 @@ EQ_FUNCTION_TYPE_CEverQuest__StartCasting EQAPP_REAL_CEverQuest__StartCasting = 
 EQ_FUNCTION_TYPE_CMapViewWnd__DrawMap EQAPP_REAL_CMapViewWnd__DrawMap = NULL;
 EQ_FUNCTION_TYPE_EQ_Character__eqspa_movement_rate EQAPP_REAL_EQ_Character__eqspa_movement_rate = NULL;
 EQ_FUNCTION_TYPE_EQPlayer__ChangePosition EQAPP_REAL_EQPlayer__ChangePosition = NULL;
+EQ_FUNCTION_TYPE_EQPlayer__do_change_form EQAPP_REAL_EQPlayer__do_change_form = NULL;
+EQ_FUNCTION_TYPE_EQPlayer__SetRace EQAPP_REAL_EQPlayer__SetRace = NULL;
 
 // types
 typedef struct _EQAPPMEMORY
@@ -80,6 +82,7 @@ typedef struct _EQAPPSPAWNCASTSPELL
 {
     DWORD spawnInfo;
     std::string spellName;
+    DWORD spellCastTime;
     DWORD timer = 0;
 } EQAPPSPAWNCASTSPELL, *PEQAPPSPAWNCASTSPELL;
 
@@ -194,6 +197,8 @@ DWORD g_autoLootDelay = 1000;
 bool g_freeCameraIsEnabled = false;
 float g_freeCameraMultiplier = 1.0f;
 
+bool g_replaceRacesIsEnabled = true;
+
 // slash commands
 const std::vector<std::string> g_slashCommands
 {
@@ -260,7 +265,7 @@ void EQAPP_DoHideCorpseLooted();
 void EQAPP_DoMapLabels();
 void EQAPP_RemoveMapLabels();
 void EQAPP_DoSpawnCastSpell();
-void EQAPP_DoSpawnCastSpellAddToList(DWORD spawnInfo, DWORD spellId);
+void EQAPP_DoSpawnCastSpellAddToList(DWORD spawnInfo, DWORD spellId, DWORD spellCastTime);
 void EQAPP_DoInterpretCommand(const char* command);
 void EQAPP_DoSpawnList(const char* filterSpawnName);
 void EQAPP_DoAutoLoot();
@@ -272,11 +277,6 @@ void EQAPP_ToggleFreeCamera(bool b);
 void EQAPP_DoFreeCameraKeys();
 void EQAPP_DoOnScreenText();
 void EQAPP_DoOnScreenTextAddToList(std::string str);
-int __cdecl EQAPP_DETOUR_DrawNetStatus(int a1, unsigned short a2, unsigned short a3, unsigned short a4, unsigned short a5, int a6, unsigned short a7, unsigned long a8, long a9, unsigned long a10);
-int __fastcall EQAPP_DETOUR_CEverQuest__dsp_chat(void* pThis, void* not_used, const char* a1, int a2, bool a3);
-int __fastcall EQAPP_DETOUR_CEverQuest__EnterZone(void* pThis, void* not_used, struct HWND__* a1);
-int __fastcall EQAPP_DETOUR_CEverQuest__InterpretCmd(void* pThis, void* not_used, class EQPlayer* a1, char* a2);
-int __fastcall EQAPP_DETOUR_EQ_Character__eqspa_movement_rate(void* pThis, void* not_used, int a1);
 void EQAPP_AddDetours();
 void EQAPP_RemoveDetours();
 DWORD WINAPI EQAPP_ThreadLoop(LPVOID param);
@@ -1306,6 +1306,11 @@ void EQAPP_DoSpawnMessage(DWORD spawnInfo)
         return;
     }
 
+    if (EQ_IsInGame() == false)
+    {
+        return;
+    }
+
     char spawnName[0x40] = {0};
     memcpy(spawnName, (LPVOID)(spawnInfo + 0xE4), sizeof(spawnName));
 
@@ -1313,10 +1318,13 @@ void EQAPP_DoSpawnMessage(DWORD spawnInfo)
 
     if (spawnType == EQ_SPAWN_TYPE_PLAYER)
     {
-        std::stringstream ss;
-        ss << spawnName << " has entered the zone.";
+        if (strlen(spawnName) > 2)
+        {
+            std::stringstream ss;
+            ss << spawnName << " has entered the zone.";
 
-        EQAPP_DoOnScreenTextAddToList(ss.str());
+            EQAPP_DoOnScreenTextAddToList(ss.str());
+        }
     }
     else if (spawnType == EQ_SPAWN_TYPE_NPC)
     {
@@ -1342,6 +1350,11 @@ void EQAPP_DoDespawnMessage(DWORD spawnInfo)
         return;
     }
 
+    if (EQ_IsInGame() == false)
+    {
+        return;
+    }
+
     char spawnName[0x40] = {0};
     memcpy(spawnName, (LPVOID)(spawnInfo + 0xE4), sizeof(spawnName));
 
@@ -1351,10 +1364,13 @@ void EQAPP_DoDespawnMessage(DWORD spawnInfo)
     {
         if (EQ_IsSpawnInGroup(spawnInfo) == false)
         {
+            if (strlen(spawnName) > 2)
+            {
                 std::stringstream ss;
                 ss << spawnName << " has left the zone.";
 
                 EQAPP_DoOnScreenTextAddToList(ss.str());
+            }
         }
     }
     else if (spawnType == EQ_SPAWN_TYPE_NPC)
@@ -1919,11 +1935,14 @@ void EQAPP_DoEsp()
 
             ss << " L" << spawnLevel;
 
-            if (spawnType == EQ_SPAWN_TYPE_PLAYER || (spawnType == EQ_SPAWN_TYPE_NPC && EQ_IsKeyControlPressed() == true))
+            if (spawnClass > EQ_CLASS_UNKNOWN && spawnClass < EQ_CLASS_BANKER)
             {
-                const char* spawnClassThreeLetterCode = EQ_CEverQuest->GetClassThreeLetterCode(spawnClass);
+                if (spawnType == EQ_SPAWN_TYPE_PLAYER || (spawnType == EQ_SPAWN_TYPE_NPC && EQ_IsKeyControlPressed() == true))
+                {
+                    const char* spawnClassThreeLetterCode = EQ_CEverQuest->GetClassThreeLetterCode(spawnClass);
 
-                ss << " " << spawnClassThreeLetterCode;
+                    ss << " " << spawnClassThreeLetterCode;
+                }
             }
 
             ss << " (" << (int)spawnDistance << ")";
@@ -2155,19 +2174,22 @@ void EQAPP_DoSpawnCastSpell()
     for (auto spawnCastSpellList_it = g_spawnCastSpellList.begin(); spawnCastSpellList_it != g_spawnCastSpellList.end(); spawnCastSpellList_it++)
     {
         PEQAPPSPAWNCASTSPELL spawnCastSpell = spawnCastSpellList_it->get();
-
         if (spawnCastSpell == nullptr)
         {
             continue;
         }
 
-        DWORD spawnAnimation = EQ_GetSpawnAnimation(spawnCastSpell->spawnInfo);
+        DWORD delay = spawnCastSpell->spellCastTime;
+        if (delay < g_spawnCastSpellDelay)
+        {
+            delay = g_spawnCastSpellDelay;
+        }
+
+        DWORD spawnStandingState = EQ_ReadMemory<BYTE>(spawnCastSpell->spawnInfo + 0x278);
 
         if
         (
-            ((currentTime - spawnCastSpell->timer) > g_spawnCastSpellDelay) ||
-
-            (spawnAnimation != EQ_ANIMATION_IDLE && spawnAnimation != EQ_ANIMATION_IDLE_ANIMATED && spawnAnimation != EQ_ANIMATION_TURNING)
+            ((currentTime - spawnCastSpell->timer) > delay) || spawnStandingState == EQ_STANDING_STATE_DUCKING
         )
         {
             spawnCastSpellList_it = g_spawnCastSpellList.erase(spawnCastSpellList_it);
@@ -2177,47 +2199,38 @@ void EQAPP_DoSpawnCastSpell()
     }
 }
 
-void EQAPP_DoSpawnCastSpellAddToList(DWORD spawnInfo, DWORD spellId)
+void EQAPP_DoSpawnCastSpellAddToList(DWORD spawnInfo, DWORD spellId, DWORD spellCastTime)
 {
     if (spawnInfo == NULL)
     {
         return;
     }
 
-    char spawnName[0x40] = {0};
-    memcpy(spawnName, (LPVOID)(spawnInfo + 0xE4), sizeof(spawnName));
-
     std::string spellName = EQ_GetSpellNameById(spellId);
-
-    if (spawnName == NULL || spellName.size() == 0)
+    if (spellName.size() == 0)
     {
         return;
     }
-
-    bool alreadyExists = false;
 
     for (auto& spawnCastSpell : g_spawnCastSpellList)
     {
         if (spawnCastSpell->spawnInfo == spawnInfo)
         {
-            spawnCastSpell->spellName = spellName;
-            spawnCastSpell->timer     = EQ_GetTimer();
-
-            alreadyExists = true;
-            break;
+            spawnCastSpell->spellName     = spellName;
+            spawnCastSpell->spellCastTime = spellCastTime;
+            spawnCastSpell->timer         = EQ_GetTimer();
+            return;
         }
     }
 
-    if (alreadyExists == false)
-    {
-        SPEQAPPSPAWNCASTSPELL spawnCastSpell = std::make_shared<EQAPPSPAWNCASTSPELL>();
+    SPEQAPPSPAWNCASTSPELL spawnCastSpell = std::make_shared<EQAPPSPAWNCASTSPELL>();
 
-        spawnCastSpell->spawnInfo = spawnInfo;
-        spawnCastSpell->spellName = spellName;
-        spawnCastSpell->timer     = EQ_GetTimer();
+    spawnCastSpell->spawnInfo     = spawnInfo;
+    spawnCastSpell->spellName     = spellName;
+    spawnCastSpell->spellCastTime = spellCastTime;
+    spawnCastSpell->timer         = EQ_GetTimer();
 
-        g_spawnCastSpellList.push_back(std::move(spawnCastSpell));
-    }
+    g_spawnCastSpellList.push_back(std::move(spawnCastSpell));
 }
 
 void EQAPP_DoSpawnList(const char* filterSpawnName)
@@ -2277,7 +2290,7 @@ void EQAPP_DoSpawnList(const char* filterSpawnName)
 
         std::cout << "L" << std::setfill('0') << std::setw(2) << spawnLevel << " ";
 
-        if (spawnType == EQ_SPAWN_TYPE_PLAYER)
+        if (spawnClass > EQ_CLASS_UNKNOWN && spawnClass < EQ_CLASS_BANKER && spawnType == EQ_SPAWN_TYPE_PLAYER)
         {
             const char* spawnClassThreeLetterCode = EQ_CEverQuest->GetClassThreeLetterCode(spawnClass);
 
@@ -4174,20 +4187,23 @@ int __fastcall EQAPP_DETOUR_CEverQuest__StartCasting(void* pThis, void* not_used
     DWORD spellId = EQ_ReadMemory<WORD>(a1 + 2);
     //EQAPP_Log("(WORD)(a1 + 2) Spell ID: ", spellId);
 
-    DWORD unknown = EQ_ReadMemory<DWORD>(a1 + 4);
-    //EQAPP_Log("(DWORD)(a1 + 4) Unknown: ", unknown);
+    DWORD spellCastTime = EQ_ReadMemory<DWORD>(a1 + 4);
+    //EQAPP_Log("(DWORD)(a1 + 4) Spell Cast Time: ", spellCastTime);
+
+    DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
 
     DWORD spawnInfo = EQ_EQPlayerManager->GetSpawnByID(spawnId);
-    if (spawnInfo != NULL)
+
+    if (spawnInfo != NULL && spawnInfo != playerSpawn)
     {
         char spawnName[0x40] = {0};
         memcpy(spawnName, (LPVOID)(spawnInfo + 0xE4), sizeof(spawnName));
-        //EQAPP_Log("Spawn Name:", unknown);
-        //EQAPP_Log(spawnName, unknown);
+        //EQAPP_Log("Spawn Name:", 0);
+        //EQAPP_Log(spawnName, 0);
 
         std::string spellName = EQ_GetSpellNameById(spellId);
-        //EQAPP_Log("Spell Name:", unknown);
-        //EQAPP_Log(spellName, unknown);
+        //EQAPP_Log("Spell Name:", 0);
+        //EQAPP_Log(spellName, 0);
 
         if (g_debugIsEnabled == true)
         {
@@ -4200,7 +4216,7 @@ int __fastcall EQAPP_DETOUR_CEverQuest__StartCasting(void* pThis, void* not_used
             ss << spawnName << " (" << spellName << ")";
             EQAPP_DoOnScreenTextAddToList(ss.str());
 
-            EQAPP_DoSpawnCastSpellAddToList(spawnInfo, spellId);
+            EQAPP_DoSpawnCastSpellAddToList(spawnInfo, spellId, spellCastTime);
         }
     }
 
@@ -4493,6 +4509,53 @@ int __fastcall EQAPP_DETOUR_EQPlayer__ChangePosition(void* pThis, void* not_used
     return EQAPP_REAL_EQPlayer__ChangePosition(pThis, a1);
 }
 
+int __fastcall EQAPP_DETOUR_EQPlayer__do_change_form(void* pThis, void* not_used, int a1)
+{
+    // a1 = change form structure
+
+    if (g_bExit == 1)
+    {
+        return EQAPP_REAL_EQPlayer__do_change_form(pThis, a1);
+    }
+
+    //std::cout << "EQPlayer::do_change_form():" << std::endl;
+    //std::cout << "a1: " << std::hex << a1 << std::dec << std::endl;
+
+    //std::cout << "a: " << ((EQCHANGEFORM*)a1)->a << std::endl;
+    //std::cout << "b: " << ((EQCHANGEFORM*)a1)->b << std::endl;
+    //std::cout << "c: " << ((EQCHANGEFORM*)a1)->c << std::endl;
+    //std::cout << "d: " << ((EQCHANGEFORM*)a1)->d << std::endl;
+    //std::cout << "e: " << ((EQCHANGEFORM*)a1)->e << std::endl;
+    //std::cout << "f: " << ((EQCHANGEFORM*)a1)->f << std::endl;
+    //std::cout << "g: " << ((EQCHANGEFORM*)a1)->g << std::endl;
+
+    return EQAPP_REAL_EQPlayer__do_change_form(pThis, a1);
+}
+
+int __fastcall EQAPP_DETOUR_EQPlayer__SetRace(void* pThis, void* not_used, int a1)
+{
+    // a1 = race id
+
+    if (g_bExit == 1)
+    {
+        return EQAPP_REAL_EQPlayer__SetRace(pThis, a1);
+    }
+
+    if (g_replaceRacesIsEnabled == true)
+    {
+        if (a1 == EQ_RACE_INVISIBLE_MAN)
+        {
+            a1 = EQ_RACE_HUMAN;
+        }
+        else if (a1 == EQ_RACE_SKELETON)
+        {
+            a1 = EQ_RACE_SKELETON2;
+        }
+    }
+
+    return EQAPP_REAL_EQPlayer__SetRace(pThis, a1);
+}
+
 void EQAPP_AddDetours()
 {
     EQAPP_REAL_Exit = (EQ_FUNCTION_TYPE_Exit)DetourFunction((PBYTE)EQ_FUNCTION_Exit, (PBYTE)EQAPP_DETOUR_Exit);
@@ -4514,6 +4577,8 @@ void EQAPP_AddDetours()
     EQAPP_REAL_EQ_Character__eqspa_movement_rate = (EQ_FUNCTION_TYPE_EQ_Character__eqspa_movement_rate)DetourFunction((PBYTE)EQ_FUNCTION_EQ_Character__eqspa_movement_rate, (PBYTE)EQAPP_DETOUR_EQ_Character__eqspa_movement_rate);
 
     EQAPP_REAL_EQPlayer__ChangePosition = (EQ_FUNCTION_TYPE_EQPlayer__ChangePosition)DetourFunction((PBYTE)EQ_FUNCTION_EQPlayer__ChangePosition, (PBYTE)EQAPP_DETOUR_EQPlayer__ChangePosition);
+    //EQAPP_REAL_EQPlayer__do_change_form = (EQ_FUNCTION_TYPE_EQPlayer__do_change_form)DetourFunction((PBYTE)EQ_FUNCTION_EQPlayer__do_change_form, (PBYTE)EQAPP_DETOUR_EQPlayer__do_change_form);
+    EQAPP_REAL_EQPlayer__SetRace = (EQ_FUNCTION_TYPE_EQPlayer__SetRace)DetourFunction((PBYTE)EQ_FUNCTION_EQPlayer__SetRace, (PBYTE)EQAPP_DETOUR_EQPlayer__SetRace);
 }
 
 void EQAPP_RemoveDetours()
@@ -4537,6 +4602,8 @@ void EQAPP_RemoveDetours()
     DetourRemove((PBYTE)EQAPP_REAL_EQ_Character__eqspa_movement_rate, (PBYTE)EQAPP_DETOUR_EQ_Character__eqspa_movement_rate);
 
     DetourRemove((PBYTE)EQAPP_REAL_EQPlayer__ChangePosition, (PBYTE)EQAPP_DETOUR_EQPlayer__ChangePosition);
+    //DetourRemove((PBYTE)EQAPP_REAL_EQPlayer__do_change_form, (PBYTE)EQAPP_DETOUR_EQPlayer__do_change_form);
+    DetourRemove((PBYTE)EQAPP_REAL_EQPlayer__SetRace, (PBYTE)EQAPP_DETOUR_EQPlayer__SetRace);
 }
 
 void EQAPP_LoadGraphicsDllFunctions()

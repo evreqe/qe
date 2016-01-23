@@ -140,6 +140,8 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_FUNCTION_EQPlayer__ChangeHeight      0x00530900
 #define EQ_FUNCTION_EQPlayer__ChangePosition    0x0052E120
 #define EQ_FUNCTION_EQPlayer__FacePlayer        0x0052C170
+#define EQ_FUNCTION_EQPlayer__SetRace           0x0052BE50
+#define EQ_FUNCTION_EQPlayer__do_change_form    0x00527E60
 
 #define EQ_FUNCTION_EQPlayerManager__GetSpawnByID      0x5287B0
 #define EQ_FUNCTION_EQPlayerManager__GetSpawnByName    0x528990
@@ -230,6 +232,45 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_NUM_CONTAINER_SLOTS      10 // number of items that can fit in a bag, backpack or box
 #define EQ_NUM_LOOT_WINDOW_SLOTS    32
 #define EQ_NUM_GUILDS               1500
+
+#define EQ_RACE_UNKNOWN          0
+#define EQ_RACE_HUMAN            1
+#define EQ_RACE_BARBARIAN        2
+#define EQ_RACE_ERUDITE          3
+#define EQ_RACE_WOOD_ELF         4
+#define EQ_RACE_HIGH_ELF         5
+#define EQ_RACE_DARK_ELF         6
+#define EQ_RACE_HALF_ELF         7
+#define EQ_RACE_DWARF            8
+#define EQ_RACE_TROLL            9
+#define EQ_RACE_OGRE             10
+#define EQ_RACE_HALFLING         11
+#define EQ_RACE_GNOME            12
+#define EQ_RACE_SKELETON         60
+#define EQ_RACE_INVISIBLE_MAN    127
+#define EQ_RACE_IKSAR            128
+#define EQ_RACE_VAH_SHIR         130
+#define EQ_RACE_FROGLOK          330
+#define EQ_RACE_SKELETON2        367
+#define EQ_RACE_SKELETON3        484
+
+#define EQ_CLASS_UNKNOWN                  0
+#define EQ_CLASS_WARRIOR                  1
+#define EQ_CLASS_CLERIC                   2
+#define EQ_CLASS_PALADIN                  3
+#define EQ_CLASS_RANGER                   4
+#define EQ_CLASS_SHADOWKNIGHT             5
+#define EQ_CLASS_DRUID                    6
+#define EQ_CLASS_MONK                     7
+#define EQ_CLASS_BARD                     8
+#define EQ_CLASS_ROGUE                    9
+#define EQ_CLASS_SHAMAN                   10
+#define EQ_CLASS_NECROMANCER              11
+#define EQ_CLASS_WIZARD                   12
+#define EQ_CLASS_MAGICIAN                 13
+#define EQ_CLASS_ENCHANTER                14
+#define EQ_CLASS_BEASTLORD                15
+#define EQ_CLASS_BANKER                   16
 
 const std::unordered_map<std::string, std::string> EQ_KEYVALUE_ACTOR_DEFINITIONS
 {
@@ -379,5 +420,16 @@ typedef struct _EQMAPLINE
     EQARGBCOLOR Color;
     DWORD Layer; // 0-3
 } EQMAPLINE, *PEQMAPLINE;
+
+typedef struct _EQCHANGEFORM
+{
+    BYTE a;
+    BYTE b;
+    BYTE c;
+    BYTE d;
+    BYTE e;
+    BYTE f;
+    BYTE g;
+} EQCHANGEFORM, *PEQCHANGEFORM;
 
 #endif // EQSOD_H
