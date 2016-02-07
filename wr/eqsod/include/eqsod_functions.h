@@ -86,6 +86,7 @@ class EQPlayer;
 class EQPlayerManager;
 class EQSwitch;
 class EQ_Character;
+class MapViewMap;
 
 class EQGraphicsDLL
 {
@@ -127,6 +128,8 @@ class CDisplay
 public:
     void CDisplay::CreatePlayerActor(DWORD spawnInfo, int a2, int a3, int a4, int a5);
     void CDisplay::DeleteActor(DWORD actorInstance);
+    void CDisplay::SetViewActor(DWORD actorInstance);
+    void CDisplay::SetViewActorByName(const char* spawnName);
     static int __cdecl CDisplay::WriteTextHD2(const char* text, int x, int y, int color);
 };
 
@@ -150,7 +153,7 @@ public:
     char* CEverQuest::GetClassThreeLetterCode(int);
     char* CEverQuest::GetDeityDesc(int);
     char* CEverQuest::GetRaceDesc(int);
-    void CEverQuest::InterpretCmd(class EQPlayer* spawn, char* text);
+    void CEverQuest::InterpretCmd(DWORD spawnInfo, const char* text);
     int __cdecl CEverQuest::LMouseUp(int x, int y);
     int __cdecl CEverQuest::RMouseUp(int x, int y);
     void CEverQuest::MoveToZone(int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8);
@@ -183,6 +186,7 @@ CLootWnd** EQ_ppCLootWnd = (CLootWnd**)EQ_POINTER_CLootWnd;
 class CMapViewWnd : public CSidlScreenWnd
 {
 public:
+    CMapViewWnd::~CMapViewWnd();
     void CMapViewWnd::DrawMap(int a1, int a2, int a3, int a4);
 };
 
@@ -243,6 +247,15 @@ public:
 EQ_Character** EQ_ppEQ_Character = (EQ_Character**)EQ_POINTER_EQ_Character;
 #define EQ_EQ_Character (*EQ_ppEQ_Character)
 
+class MapViewMap
+{
+public:
+    DWORD MapViewMap::AddLabel(float x, float y, float z, DWORD argbColor, int size, const char* text);
+    void MapViewMap::RemoveLabel(DWORD mapLabelInfo);
+    void MapViewMap::Save(char* shortZoneName);
+    void MapViewMap::SaveEx(char* shortZoneName, int layer);
+};
+
 /* EQGraphicsDLL */
 
 typedef int (__thiscall* EQ_FUNCTION_TYPE_EQGraphicsDLL__DrawLine)(void* pThis, EQLINE* lineBegin, EQLINE* lineEnd, DWORD argbColor);
@@ -267,6 +280,16 @@ EQ_FUNCTION_AT_ADDRESS(void CDisplay::CreatePlayerActor(DWORD spawnInfo, int a2,
 #ifdef EQ_FUNCTION_CDisplay__DeleteActor
 typedef int (__thiscall* EQ_FUNCTION_TYPE_CDisplay__DeleteActor)(void* pThis, DWORD actorInstance);
 EQ_FUNCTION_AT_ADDRESS(void CDisplay::DeleteActor(DWORD actorInstance), EQ_FUNCTION_CDisplay__DeleteActor);
+#endif
+
+#ifdef EQ_FUNCTION_CDisplay__SetViewActor
+typedef int (__thiscall* EQ_FUNCTION_TYPE_CDisplay__SetViewActor)(void* pThis, DWORD actorInstance);
+EQ_FUNCTION_AT_ADDRESS(void CDisplay::SetViewActor(DWORD actorInstance), EQ_FUNCTION_CDisplay__SetViewActor);
+#endif
+
+#ifdef EQ_FUNCTION_CDisplay__SetViewActorByName
+typedef int (__thiscall* EQ_FUNCTION_TYPE_CDisplay__SetViewActorByName)(void* pThis, const char* spawnName);
+EQ_FUNCTION_AT_ADDRESS(void CDisplay::SetViewActorByName(const char* spawnName), EQ_FUNCTION_CDisplay__SetViewActorByName);
 #endif
 
 #ifdef EQ_FUNCTION_CDisplay__WriteTextHD2
@@ -310,8 +333,8 @@ EQ_FUNCTION_AT_ADDRESS(char* CEverQuest::GetRaceDesc(int race), EQ_FUNCTION_CEve
 #endif
 
 #ifdef EQ_FUNCTION_CEverQuest__InterpretCmd
-typedef int (__thiscall* EQ_FUNCTION_TYPE_CEverQuest__InterpretCmd)(void* pThis, class EQPlayer* spawn, char* text);
-EQ_FUNCTION_AT_ADDRESS(void CEverQuest::InterpretCmd(class EQPlayer*, char*), EQ_FUNCTION_CEverQuest__InterpretCmd);
+typedef int (__thiscall* EQ_FUNCTION_TYPE_CEverQuest__InterpretCmd)(void* pThis, DWORD spawnInfo, const char* text);
+EQ_FUNCTION_AT_ADDRESS(void CEverQuest::InterpretCmd(DWORD spawnInfo, const char* text), EQ_FUNCTION_CEverQuest__InterpretCmd);
 #endif
 
 #ifdef EQ_FUNCTION_CEverQuest__LMouseUp
@@ -340,6 +363,11 @@ EQ_FUNCTION_AT_ADDRESS(void CEverQuest::StartCasting(int a1), EQ_FUNCTION_CEverQ
 #endif
 
 /* CMapViewWnd */
+
+#ifdef EQ_FUNCTION_CMapViewWnd__dCMapViewWnd
+typedef int (__thiscall* EQ_FUNCTION_TYPE_CMapViewWnd__dCMapViewWnd)(void* pThis);
+EQ_FUNCTION_AT_ADDRESS(CMapViewWnd::~CMapViewWnd(), EQ_FUNCTION_CMapViewWnd__dCMapViewWnd);
+#endif
 
 #ifdef EQ_FUNCTION_CMapViewWnd__DrawMap
 typedef int (__thiscall* EQ_FUNCTION_TYPE_CMapViewWnd__DrawMap)(void* pThis, int a1, int a2, int a3, int a4);
@@ -429,6 +457,28 @@ typedef int (__thiscall* EQ_FUNCTION_TYPE_EQ_Character__UseSkill)(void* pThis, u
 EQ_FUNCTION_AT_ADDRESS(int EQ_Character::UseSkill(unsigned char, class EQPlayer*), EQ_FUNCTION_EQ_Character__UseSkill);
 #endif
 
+/* MapViewMap */
+
+#ifdef EQ_FUNCTION_MapViewMap__AddLabel
+typedef int (__thiscall* EQ_FUNCTION_TYPE_MapViewMap__AddLabel)(void* pThis, float x, float y, float z, DWORD argbColor, int size, const char* text);
+EQ_FUNCTION_AT_ADDRESS(DWORD MapViewMap::AddLabel(float x, float y, float z, DWORD argbColor, int size, const char* text), EQ_FUNCTION_MapViewMap__AddLabel);
+#endif
+
+#ifdef EQ_FUNCTION_MapViewMap__RemoveLabel
+typedef int (__thiscall* EQ_FUNCTION_TYPE_MapViewMap__RemoveLabel)(void* pThis, DWORD mapLabelInfo);
+EQ_FUNCTION_AT_ADDRESS(void MapViewMap::RemoveLabel(DWORD mapLabelInfo), EQ_FUNCTION_MapViewMap__RemoveLabel);
+#endif
+
+#ifdef EQ_FUNCTION_MapViewMap__Save
+typedef int (__thiscall* EQ_FUNCTION_TYPE_MapViewMap__Save)(void* pThis, char* shortZoneName);
+EQ_FUNCTION_AT_ADDRESS(void MapViewMap::Save(char* shortZoneName), EQ_FUNCTION_MapViewMap__Save);
+#endif
+
+#ifdef EQ_FUNCTION_MapViewMap__SaveEx
+typedef int (__thiscall* EQ_FUNCTION_TYPE_MapViewMap__SaveEx)(void* pThis, char* shortZoneName, int layer);
+EQ_FUNCTION_AT_ADDRESS(void MapViewMap::SaveEx(char* shortZoneName, int layer), EQ_FUNCTION_MapViewMap__SaveEx);
+#endif
+
 /* other */
 
 #ifdef EQ_FUNCTION_Exit
@@ -464,6 +514,11 @@ EQ_FUNCTION_AT_ADDRESS(float __cdecl EQ_get_melee_range(DWORD spawn1, DWORD spaw
 
 #ifdef EQ_FUNCTION_get_bearing
 EQ_FUNCTION_AT_ADDRESS(float __cdecl EQ_get_bearing(float y1, float x1, float y2, float x2), EQ_FUNCTION_get_bearing);
+#endif
+
+#ifdef EQ_FUNCTION_ExecuteCmd
+typedef int (__cdecl* EQ_FUNCTION_TYPE_ExecuteCmd)(DWORD command, BOOL hold, PVOID unknown);
+EQ_FUNCTION_AT_ADDRESS(void EQ_ExecuteCmd(DWORD command, BOOL hold, PVOID unknown), EQ_FUNCTION_ExecuteCmd);
 #endif
 
 /* functions */
@@ -517,6 +572,20 @@ bool EQ_IsInGame()
 bool EQ_IsNetStatusEnabled()
 {
     DWORD b = EQ_ReadMemory<BYTE>(EQ_BOOL_NET_STATUS);
+
+    return (b == 1);
+}
+
+bool EQ_IsSafeLockEnabled()
+{
+    DWORD b = EQ_ReadMemory<BYTE>(EQ_BOOL_SAFELOCK);
+
+    return (b == 1);
+}
+
+bool EQ_IsScreenshotBeingTaken()
+{
+    DWORD b = EQ_ReadMemory<BYTE>(EQ_BOOL_SCREENSHOT);
 
     return (b == 1);
 }
@@ -756,6 +825,32 @@ void EQ_SetHideCorpseLooted(bool b)
     EQ_WriteMemory<BYTE>(display + 0x14, value);
 }
 
+void EQ_StringReplaceUnderscoresWithSpaces(char* str)
+{
+    while (*str)
+    {
+        if (*str == '_')
+        {
+            *str = ' ';
+        }
+
+        str++;
+    }
+}
+
+void EQ_StringReplaceSpacesWithUnderscores(char* str)
+{
+    while (*str)
+    {
+        if (*str == ' ')
+        {
+            *str = '_';
+        }
+
+        str++;
+    }
+}
+
 void EQ_DrawText(const char* text, int x, int y, unsigned int color, unsigned int size)
 {
     // color is ARGB format: 0xAARRGGBB
@@ -937,6 +1032,7 @@ bool EQ_WorldSpaceToScreenSpace(float worldX, float worldY, float worldZ, int& s
     float v11 = v6 * cameraData_0x274 + v5 * cameraData_0x270 + v4 * cameraData_0x26C;
     float v7  = v6 * cameraData_0x244 + v5 * cameraData_0x238 + v4 * cameraData_0x22C;
 
+    // point is offscreen
     if (v7 >= cameraData_0x1A0) // changed <= to >= because Seeds of Destruction has backwards coordinates
     {
         screenX = -1;
@@ -1279,6 +1375,113 @@ bool EQ_HasTimePassed(DWORD& timer, DWORD& delay)
     }
 
     return false;
+}
+
+void EQ_SetViewActorBySpawn(DWORD spawnInfo)
+{
+    if (spawnInfo == NULL)
+    {
+        return;
+    }
+
+    DWORD actorInstance = EQ_ReadMemory<DWORD>(spawnInfo + 0xF84);
+    if (actorInstance == NULL)
+    {
+        return;
+    }
+
+    EQ_CDisplay->SetViewActor(actorInstance);
+}
+
+void EQ_ResetViewActor()
+{
+    DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
+    if (playerSpawn == NULL)
+    {
+        return;
+    }
+
+    EQ_SetViewActorBySpawn(playerSpawn);
+}
+
+std::string EQ_GetSpawnMapLocationString(DWORD spawnInfo)
+{
+    char spawnName[0x40] = {0};
+    memcpy(spawnName, (LPVOID)(spawnInfo + 0xE4), sizeof(spawnName));
+
+    EQ_StringReplaceSpacesWithUnderscores(spawnName);
+
+    FLOAT spawnY = EQ_ReadMemory<FLOAT>(spawnInfo + 0x64);
+    FLOAT spawnX = EQ_ReadMemory<FLOAT>(spawnInfo + 0x68);
+    FLOAT spawnZ = EQ_ReadMemory<FLOAT>(spawnInfo + 0x6C);
+
+    // -X, -Y, Z, red, green, blue, size, name
+    std::stringstream ss;
+    ss.precision(5);
+    ss << "P " <<  -spawnX << ", " << -spawnY << ", " << spawnZ << ", 192, 0, 0, 2, " << spawnName;
+
+    return ss.str();
+}
+
+void EQ_CopyTargetMapLocationToClipboard()
+{
+    DWORD targetSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_TARGET_SPAWN_INFO);
+
+    if (targetSpawn == NULL)
+    {
+        return;
+    }
+
+    std::string mapLocation = EQ_GetSpawnMapLocationString(targetSpawn);
+
+    HGLOBAL mem = GlobalAlloc(GMEM_MOVEABLE, mapLocation.size());
+    memcpy(GlobalLock(mem), mapLocation.c_str(), mapLocation.size());
+    GlobalUnlock(mem);
+
+    OpenClipboard(0);
+    EmptyClipboard();
+    SetClipboardData(CF_TEXT, mem);
+    CloseClipboard();
+}
+
+DWORD EQ_GetMapViewMap()
+{
+    DWORD mapViewWnd = EQ_ReadMemory<DWORD>(EQ_POINTER_CMapViewWnd);
+    if (mapViewWnd == NULL)
+    {
+        return NULL;
+    }
+
+    return mapViewWnd + 0x28C;
+}
+
+void EQ_UpdateMap()
+{
+    DWORD mapViewWnd = EQ_ReadMemory<DWORD>(EQ_POINTER_CMapViewWnd);
+    if (mapViewWnd == NULL)
+    {
+        return;
+    }
+
+    // force map to update
+    EQ_WriteMemory<BYTE>(mapViewWnd + 0x312, 0x01);
+}
+
+bool EQ_IsWindowVisible(DWORD windowPointer)
+{
+    DWORD window = EQ_ReadMemory<DWORD>(windowPointer);
+    if (window == NULL)
+    {
+        return false;
+    }
+
+    DWORD isVisible = EQ_ReadMemory<BYTE>(window + 0x124);
+    if (isVisible == 0)
+    {
+        return false;
+    }
+
+    return true;
 }
 
 #endif // EQSOD_FUNCTIONS_H

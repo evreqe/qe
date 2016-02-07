@@ -13,16 +13,19 @@
 #include <cstdint>
 #include <cstring>
 #include <cmath>
-
-// console
-#include <fcntl.h>
-#include <io.h>
+#include <ctime>
 
 #include <windows.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 #include <tlhelp32.h>
 
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
+
+// console
+#include <fcntl.h>
+#include <io.h>
 
 //#define DIRECTINPUT_VERSION 0x0800
 //#include "dinput.h"
@@ -30,6 +33,9 @@
 
 #include "detours.h"
 #pragma comment(lib, "detours.lib")
+
+#include "jansson.h"
+#pragma comment(lib, "jansson.lib")
 
 #include "eqsod.h"
 #include "eqsod_functions.h"
@@ -52,6 +58,7 @@ HANDLE g_handleThreadLoop;
 // detours
 EQ_FUNCTION_TYPE_Exit EQAPP_REAL_Exit = NULL;
 EQ_FUNCTION_TYPE_DrawNetStatus EQAPP_REAL_DrawNetStatus = NULL;
+EQ_FUNCTION_TYPE_ExecuteCmd EQAPP_REAL_ExecuteCmd = NULL;
 EQ_FUNCTION_TYPE_CDisplay__CreatePlayerActor EQAPP_REAL_CDisplay__CreatePlayerActor = NULL;
 EQ_FUNCTION_TYPE_CDisplay__DeleteActor EQAPP_REAL_CDisplay__DeleteActor = NULL;
 //EQ_FUNCTION_TYPE_CDisplay__SetNameSpriteState EQAPP_REAL_CDisplay__SetNameSpriteState = NULL;
@@ -62,11 +69,14 @@ EQ_FUNCTION_TYPE_CEverQuest__InterpretCmd EQAPP_REAL_CEverQuest__InterpretCmd = 
 EQ_FUNCTION_TYPE_CEverQuest__MoveToZone EQAPP_REAL_CEverQuest__MoveToZone = NULL;
 EQ_FUNCTION_TYPE_CEverQuest__SetGameState EQAPP_REAL_CEverQuest__SetGameState = NULL;
 EQ_FUNCTION_TYPE_CEverQuest__StartCasting EQAPP_REAL_CEverQuest__StartCasting = NULL;
+EQ_FUNCTION_TYPE_CMapViewWnd__dCMapViewWnd EQAPP_REAL_CMapViewWnd__dCMapViewWnd = NULL;
 EQ_FUNCTION_TYPE_CMapViewWnd__DrawMap EQAPP_REAL_CMapViewWnd__DrawMap = NULL;
 EQ_FUNCTION_TYPE_EQ_Character__eqspa_movement_rate EQAPP_REAL_EQ_Character__eqspa_movement_rate = NULL;
 EQ_FUNCTION_TYPE_EQPlayer__ChangePosition EQAPP_REAL_EQPlayer__ChangePosition = NULL;
 EQ_FUNCTION_TYPE_EQPlayer__do_change_form EQAPP_REAL_EQPlayer__do_change_form = NULL;
 EQ_FUNCTION_TYPE_EQPlayer__SetRace EQAPP_REAL_EQPlayer__SetRace = NULL;
+EQ_FUNCTION_TYPE_MapViewMap__Save EQAPP_REAL_MapViewMap__Save = NULL;
+EQ_FUNCTION_TYPE_MapViewMap__SaveEx EQAPP_REAL_MapViewMap__SaveEx = NULL;
 
 // types
 typedef struct _EQAPPMEMORY
@@ -77,6 +87,14 @@ typedef struct _EQAPPMEMORY
     std::string description;
     bool isEnabled;
 } EQAPPMEMORY, *PEQAPPMEMORY;
+
+typedef struct _EQAPPSOUND
+{
+    size_t index;
+    std::string text;
+    std::string filename;
+    bool isEnabled;
+} EQAPPSOUND, *PEQAPPSOUND;
 
 typedef struct _EQAPPSPAWNCASTSPELL
 {
@@ -94,17 +112,18 @@ std::ios g_coutFlags(NULL);
 bool g_debugIsEnabled = false;
 
 bool g_onScreenTextIsEnabled = true;
-std::vector<std::string> g_onScreenTextList;
+std::list<std::string> g_onScreenTextList;
 unsigned int g_onScreenTextMax = 10;
 unsigned int g_onScreenTextX = 1200;
-unsigned int g_onScreenTextY = 400;
-float g_onScreenTextWidth  = 256.0f;
-float g_onScreenTextHeight = 0.0f;
+unsigned int g_onScreenTextY = 500;
 DWORD g_onScreenTextTimer = 0;
 DWORD g_onScreenTextDelay = 5000;
 
 bool g_memoryIsEnabled = true;
 std::vector<EQAPPMEMORY> g_memoryList;
+
+bool g_soundsIsEnabled = true;
+std::vector<EQAPPSOUND> g_soundsList;
 
 bool g_espIsEnabled = true;
 bool g_espSpawnIsEnabled = true;
@@ -179,9 +198,11 @@ float g_healthBarsHeight = 512.0f;
 std::vector<std::string> g_healthBarsSpawnNamesList;
 
 bool g_mapLabelsIsEnabled = false;
+bool g_mapLabelsFilterIsEnabled = false;
 DWORD g_mapLabelsData = 255;
 DWORD g_mapLabelsTimer = 0;
-DWORD g_mapLabelsDelay = 5000;
+DWORD g_mapLabelsDelay = 10000;
+std::string g_mapLabelsFilterName;
 
 bool g_neverFrozenIsEnabled = true;
 
@@ -199,8 +220,33 @@ float g_freeCameraMultiplier = 1.0f;
 
 bool g_replaceRacesIsEnabled = true;
 
+bool g_autoScreenshotIsEnabled = false;
+
+bool g_censusIsActive = false;
+std::vector<std::string> g_shortZoneNamesList;
+
+// important windows
+const std::vector<DWORD> g_importantWindowsList
+{
+    EQ_POINTER_CAAWnd,
+    EQ_POINTER_CBankWnd,
+    EQ_POINTER_CBazaarWnd,
+    EQ_POINTER_CBazaarSearchWnd,
+    EQ_POINTER_CInspectWnd,
+    EQ_POINTER_CInventoryWnd,
+    EQ_POINTER_CLootWnd,
+    EQ_POINTER_CMapViewWnd,
+    EQ_POINTER_CMerchantWnd,
+    EQ_POINTER_CSocialEditWnd,
+    EQ_POINTER_CSpellBookWnd,
+    EQ_POINTER_CTextEntryWnd,
+    EQ_POINTER_CTrackingWnd,
+    EQ_POINTER_CTradeWnd
+};
+
 // slash commands
-const std::vector<std::string> g_slashCommands
+// TODO
+const std::vector<std::string> g_slashCommandsList
 {
     "//help",
     "//unload",
@@ -233,16 +279,18 @@ void EQAPP_EnableDebugPrivileges();
 void EQAPP_LoadConsole();
 void EQAPP_CoutSaveFlags();
 void EQAPP_CoutRestoreFlags();
-void EQAPP_StringReplaceUnderscoresWithSpaces(char* str);
 void EQAPP_DoWindowTitles();
 bool EQAPP_IsForegroundWindowCurrentProcessId();
 DWORD EQAPP_GetModuleBaseAddress(const wchar_t* moduleName);
 void EQAPP_LoadGraphicsDllFunctions();
 void EQAPP_DoLoad();
 void EQAPP_DoUnload();
+void EQAPP_AddDetours();
+void EQAPP_RemoveDetours();
 void EQAPP_LoadMemory();
 void EQAPP_UnloadMemory();
 void EQAPP_ToggleMemory(PEQAPPMEMORY pMemory, bool bEnabled);
+void EQAPP_LoadSounds();
 void EQAPP_LoadNamedSpawns();
 void EQAPP_DoNamedSpawns();
 void EQAPP_LoadTextOverlayChatText();
@@ -272,13 +320,16 @@ void EQAPP_DoAutoLoot();
 void EQAPP_DoBankList(const char* filterItemName);
 void EQAPP_DoInventoryList(const char* filterItemName);
 void EQAPP_WriteCharacterFile();
+void EQAPP_WriteCharacterFileJson();
 void EQAPP_DoOpenAllDoors();
 void EQAPP_ToggleFreeCamera(bool b);
 void EQAPP_DoFreeCameraKeys();
 void EQAPP_DoOnScreenText();
 void EQAPP_DoOnScreenTextAddToList(std::string str);
-void EQAPP_AddDetours();
-void EQAPP_RemoveDetours();
+void EQAPP_DoMapLocations();
+void EQAPP_LoadShortZoneNames();
+void EQAPP_DoCensus();
+bool EQAPP_AreImportantWindowsOpen();
 DWORD WINAPI EQAPP_ThreadLoop(LPVOID param);
 DWORD WINAPI EQAPP_ThreadLoad(LPVOID param);
 DWORD WINAPI EQAPP_ThreadConsole(LPVOID param);
@@ -370,10 +421,13 @@ void EQAPP_LoadConsole()
 
     std::ios::sync_with_stdio();
 
-    // disable the close button
     HWND hwnd = GetConsoleWindow();
     if (hwnd != NULL)
     {
+        SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)LoadIcon(0, IDI_APPLICATION));
+        SendMessage(hwnd, WM_SETICON, ICON_BIG  , (LPARAM)LoadIcon(0, IDI_APPLICATION));
+
+        // disable the close button
         HMENU hMenu = GetSystemMenu(hwnd, FALSE);
         if (hMenu != NULL)
         {
@@ -392,19 +446,6 @@ void EQAPP_CoutSaveFlags()
 void EQAPP_CoutRestoreFlags()
 {
     std::cout.copyfmt(g_coutFlags);
-}
-
-void EQAPP_StringReplaceUnderscoresWithSpaces(char* str)
-{
-    while (*str)
-    {
-        if (*str == '_')
-        {
-            *str = ' ';
-        }
-
-        str++;
-    }
 }
 
 bool EQAPP_IsForegroundWindowCurrentProcessId()
@@ -498,10 +539,13 @@ void EQAPP_DoLoad()
     std::cout << g_applicationName << std::endl;
 
     EQAPP_LoadMemory();
+    EQAPP_LoadSounds();
     EQAPP_LoadNamedSpawns();
     EQAPP_LoadTextOverlayChatText();
+    EQAPP_LoadShortZoneNames();
 
     EQAPP_WriteCharacterFile();
+    EQAPP_WriteCharacterFileJson();
 
     std::cout << "Loaded." << std::endl;
 
@@ -510,6 +554,8 @@ void EQAPP_DoLoad()
 
 void EQAPP_DoUnload()
 {
+    EQ_ResetViewActor();
+
     g_spawnCastSpellList.clear();
 
     EQAPP_RemoveMapLabels();
@@ -547,11 +593,13 @@ void EQAPP_LoadMemory()
         ssFilename << "sFilename" << i;
 
         std::string filename = EQAPP_IniReadString("eqapp/memory.ini", "Memory", ssFilename.str().c_str(), "");
-
         if (filename.size() == 0)
         {
             break;
         }
+
+        std::stringstream filepath;
+        filepath << "eqapp/memory/" << filename;
 
         std::stringstream ssEnabled;
         ssEnabled << "bEnabled" << i;
@@ -560,9 +608,6 @@ void EQAPP_LoadMemory()
         memory.isEnabled = EQAPP_IniReadBool("eqapp/memory.ini", "Memory", ssEnabled.str().c_str(), 0);
 
         std::cout << __FUNCTION__ << ": " << filename << " isEnabled: " << std::boolalpha << memory.isEnabled << std::endl;
-
-        std::stringstream filepath;
-        filepath << "eqapp/memory/" << filename;
 
         memory.index = i;
 
@@ -688,6 +733,58 @@ void EQAPP_ToggleMemory(PEQAPPMEMORY pMemory, bool bEnable)
     }
 }
 
+void EQAPP_LoadSounds()
+{
+    g_soundsList.clear();
+
+    g_soundsIsEnabled = EQAPP_IniReadBool("eqapp/sounds.ini", "Sounds", "bEnabled", 1);
+
+    if (g_soundsIsEnabled == false)
+    {
+        std::cout << "Sounds are disabled." << std::endl;
+        return;
+    }
+
+    for (size_t i = 0; i < 255; i++)
+    {
+        std::stringstream ssFilename;
+        ssFilename << "sFilename" << i;
+
+        std::string filename = EQAPP_IniReadString("eqapp/sounds.ini", "Sounds", ssFilename.str().c_str(), "");
+        if (filename.size() == 0)
+        {
+            break;
+        }
+
+        std::stringstream filepath;
+        filepath << "eqapp\\sounds\\" << filename;
+
+        std::stringstream ssText;
+        ssText << "sText" << i;
+
+        std::string text = EQAPP_IniReadString("eqapp/sounds.ini", "Sounds", ssText.str().c_str(), "");
+        if (text.size() == 0)
+        {
+            break;
+        }
+
+        std::stringstream ssEnabled;
+        ssEnabled << "bEnabled" << i;
+
+        bool isEnabled = EQAPP_IniReadBool("eqapp/sounds.ini", "Sounds", ssEnabled.str().c_str(), 0);
+
+        std::cout << __FUNCTION__ << ": " << filename << " isEnabled: " << std::boolalpha << isEnabled << std::endl;
+
+        EQAPPSOUND sound;
+        sound.index     = i;
+        sound.text      = text;
+        sound.filename  = filepath.str();
+        sound.isEnabled = isEnabled;
+        
+        g_soundsList.push_back(sound);
+    }
+}
+
 void EQAPP_LoadNamedSpawns()
 {
     g_namedSpawnsList.clear();
@@ -744,6 +841,44 @@ void EQAPP_LoadNamedSpawns()
         std::cout << __FUNCTION__ << ": "<< line << std::endl;
 
         g_namedSpawnsList.push_back(line);
+    }
+
+    file.close();
+}
+
+void EQAPP_DoMapLocations()
+{
+    char zoneShortName[0x20] = {0};
+    memcpy(zoneShortName, (LPVOID)(EQ_ZONEINFO_SHORT_NAME), sizeof(zoneShortName));
+
+    if (strlen(zoneShortName) == 0)
+    {
+        return;
+    }
+
+    std::stringstream filePath;
+    filePath << "eqapp/maplocations/" << zoneShortName << ".txt";
+
+    std::fstream file;
+    file.open(filePath.str().c_str(), std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+
+    DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_SPAWN_INFO);
+
+    while (spawn)
+    {
+        int spawnType = EQ_ReadMemory<BYTE>(spawn + 0x125);
+
+        if (spawnType != EQ_SPAWN_TYPE_NPC)
+        {
+            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+            continue;
+        }
+
+        std::string mapLocation = EQ_GetSpawnMapLocationString(spawn);
+
+        file << mapLocation << std::endl;
+
+        spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
     }
 
     file.close();
@@ -846,7 +981,7 @@ void EQAPP_DoOnScreenText()
 
     if (EQ_HasTimePassed(g_onScreenTextTimer, g_onScreenTextDelay) == true)
     {
-        g_onScreenTextList.pop_back();
+        g_onScreenTextList.pop_front();
     }
 
     unsigned int fontSize   = 2;
@@ -854,11 +989,6 @@ void EQAPP_DoOnScreenText()
 
     unsigned int x = g_onScreenTextX;
     unsigned int y = g_onScreenTextY;
-
-    if (g_onScreenTextWidth > 0 && g_onScreenTextHeight > 0)
-    {
-        EQ_DrawQuad((float)x, (float)y, g_onScreenTextWidth, g_onScreenTextHeight, EQ_TOOLTIP_COLOR);
-    }
 
     size_t textCount = 0;
 
@@ -872,27 +1002,13 @@ void EQAPP_DoOnScreenText()
         }
 
         std::stringstream ss;
-
-        if (textCount != 0)
-        {
-            ss << "    ";
-        }
-
         ss << text;
 
         EQ_DrawText(ss.str().c_str(), x, y, 0xFFFFFFFF, fontSize);
-        y += fontHeight;
+        y -= fontHeight;
 
         textCount++;
     }
-
-    size_t heightMultiplier = g_onScreenTextList.size();
-    if (heightMultiplier > g_onScreenTextMax)
-    {
-        heightMultiplier = g_onScreenTextMax;
-    }
-
-    g_onScreenTextHeight = (float)(heightMultiplier * fontHeight);
 }
 
 void EQAPP_LoadTextOverlayChatText()
@@ -921,6 +1037,77 @@ void EQAPP_LoadTextOverlayChatText()
     file.close();
 }
 
+void EQAPP_LoadShortZoneNames()
+{
+    g_shortZoneNamesList.clear();
+
+    std::ifstream file;
+    file.open("eqapp/shortzonenames.txt", std::ios::in);
+
+    if (file.is_open() == false)
+    {
+        std::cout << __FUNCTION__ << ": Failed to open file." << std::endl;
+    }
+
+    std::string line;
+    while (std::getline(file, line))
+    {
+        if (line.size() == 0)
+        {
+            continue;
+        }
+
+        g_shortZoneNamesList.push_back(line);
+    }
+
+    file.close();
+}
+
+bool EQAPP_AreImportantWindowsOpen()
+{
+    for (auto& window : g_importantWindowsList)
+    {
+        if (EQ_IsWindowVisible(window) == true)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void EQAPP_DoCensus()
+{
+    DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
+    if (playerSpawn == NULL)
+    {
+        return;
+    }
+
+    std::srand(unsigned(std::time(0)));
+    std::random_shuffle(g_shortZoneNamesList.begin(), g_shortZoneNamesList.end());
+
+    g_censusIsActive = true;
+
+    for (auto& shortZoneName : g_shortZoneNamesList)
+    {
+        if (g_censusIsActive == false)
+        {
+            break;
+        }
+
+        std::stringstream ss;
+        ss << "/who all " << shortZoneName;
+
+        std::cout << "Census: " << ss.str() << std::endl;
+
+        EQ_CEverQuest->InterpretCmd(playerSpawn, ss.str().c_str());
+        Sleep(1000);
+    }
+
+    g_censusIsActive = false;
+}
+
 void EQAPP_DoHud()
 {
     unsigned int x = 5;
@@ -938,7 +1125,6 @@ void EQAPP_DoHud()
     y += 12;
 
     DWORD numPlayersInZone = EQ_GetNumPlayersInZone();
-
     if (numPlayersInZone != 0)
     {
         std::stringstream ss;
@@ -1208,20 +1394,19 @@ void EQAPP_DoWindowTitles()
     }
 
     HWND window = EQ_ReadMemory<HWND>(EQ_WINDOW_HWND);
-
     if (window == NULL)
     {
         return;
     }
 
     DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
-
     if (playerSpawn == NULL)
     {
         SetWindowTextA(window, EQ_STRING_WINDOW_TITLE);
 
         SetConsoleTitleA(g_applicationName);
     }
+    else
     {
         char playerName[0x40] = {0};
         memcpy(playerName, (LPVOID)(playerSpawn + 0xE4), sizeof(playerName));
@@ -1247,14 +1432,13 @@ void EQAPP_DoTargetBeep()
         return;
     }
 
-    DWORD targetSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_TARGET_SPAWN_INFO);
-
-    if (targetSpawn == NULL)
+    if (EQ_HasTimePassed(g_targetBeepTimer, g_targetBeepDelay) == false)
     {
         return;
     }
 
-    if (EQ_HasTimePassed(g_targetBeepTimer, g_targetBeepDelay) == false)
+    DWORD targetSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_TARGET_SPAWN_INFO);
+    if (targetSpawn == NULL)
     {
         return;
     }
@@ -1450,14 +1634,12 @@ void EQAPP_DoAlwaysAttack()
     }
 
     DWORD targetSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_TARGET_SPAWN_INFO);
-
     if (targetSpawn == NULL)
     {
         return;
     }
 
     int spawnType = EQ_ReadMemory<BYTE>(targetSpawn + 0x125);
-
     if (spawnType != EQ_SPAWN_TYPE_NPC)
     {
         return;
@@ -1479,14 +1661,12 @@ void EQAPP_DoCombatHotbutton()
     }
 
     DWORD targetSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_TARGET_SPAWN_INFO);
-
     if (targetSpawn == NULL)
     {
         return;
     }
 
     int spawnType = EQ_ReadMemory<BYTE>(targetSpawn + 0x125);
-
     if (spawnType != EQ_SPAWN_TYPE_NPC)
     {
         return;
@@ -1523,7 +1703,6 @@ void EQAPP_DoAlwaysHotbutton()
 void EQAPP_DoMaxSwimming()
 {
     DWORD charInfo2 = EQ_GetCharInfo2();
-
     if (charInfo2 == NULL)
     {
         return;
@@ -1540,7 +1719,6 @@ void EQAPP_DoHeight()
     }
 
     DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
-
     if (playerSpawn == NULL)
     {
         return;
@@ -1603,6 +1781,20 @@ void EQAPP_DoMapLabels()
             continue;
         }
 
+        int spawnType = EQ_ReadMemory<BYTE>(spawn + 0x125);
+
+        if (g_mapLabelsFilterIsEnabled == true && spawnType == EQ_SPAWN_TYPE_NPC)
+        {
+            char spawnName[0x40] = {0};
+            memcpy(spawnName, (LPVOID)(spawn + 0xA4), sizeof(spawnName));
+
+            if (strstr(spawnName, g_mapLabelsFilterName.c_str()) == NULL)
+            {
+                spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+                continue;
+            }
+        }
+
         FLOAT spawnY = EQ_ReadMemory<FLOAT>(spawn + 0x64);
         FLOAT spawnX = EQ_ReadMemory<FLOAT>(spawn + 0x68);
         FLOAT spawnZ = EQ_ReadMemory<FLOAT>(spawn + 0x6C);
@@ -1617,9 +1809,7 @@ void EQAPP_DoMapLabels()
         mapLabel.Location = location;
 
         EQARGBCOLOR color;
-        color.A = 255;
-
-        int spawnType = EQ_ReadMemory<BYTE>(spawn + 0x125); 
+        color.A = 255; 
 
         if (spawnType == EQ_SPAWN_TYPE_PLAYER)
         {
@@ -1652,8 +1842,8 @@ void EQAPP_DoMapLabels()
 
         mapLabel.Label = (PCHAR)(spawn + 0xE4); // spawn name
 
-        mapLabel.Layer = 0;
-        mapLabel.Width = 1;
+        mapLabel.Layer = 3;
+        mapLabel.Width = 20;
         mapLabel.Height = 12;
 
         mapLabel.Data = g_mapLabelsData;
@@ -1662,6 +1852,8 @@ void EQAPP_DoMapLabels()
 
         spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
     }
+
+    EQ_UpdateMap();
 }
 
 void EQAPP_DrawSkeleton(DWORD spawnInfo, DWORD argbColor)
@@ -1775,11 +1967,6 @@ void EQAPP_DoEsp()
         return;
     }
 
-    if (EQ_IsInGame() == false)
-    {
-        return;
-    }
-
     DWORD targetSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_TARGET_SPAWN_INFO);
 
     DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
@@ -1832,12 +2019,14 @@ void EQAPP_DoEsp()
 
             int fontSize = 3;
 
-            if (spawnDistance > (g_espSpawnDistance / 2.0f))
+            if (spawnDistance > (g_espSpawnDistance * 0.5f))
             {
                 fontSize = 2;
             }
 
             bool showAtAnyDistance = false;
+
+            bool isFindSpawn = false;
 
             if (g_findIsEnabled == true)
             {
@@ -1845,10 +2034,11 @@ void EQAPP_DoEsp()
                 {
                     fontSize = 5;
                     showAtAnyDistance = true;
+                    isFindSpawn = true;
                 }
             }
 
-            if (spawnIsPet == 0)
+            if (spawnType == EQ_SPAWN_TYPE_NPC && spawnIsPet == 0)
             {
                 for (auto& namedSpawn : g_namedSpawnsList)
                 {
@@ -1904,9 +2094,17 @@ void EQAPP_DoEsp()
                 textColor = 0xFFFFFF00; // yellow
             }
 
-            if (EQ_IsSpawnInGroup(spawn) == true)
+            if (spawnType == EQ_SPAWN_TYPE_PLAYER)
             {
-                textColor = 0xFF00FF00; // green
+                if (EQ_IsSpawnInGroup(spawn) == true)
+                {
+                    textColor = 0xFF00FF00; // green
+                }
+            }
+
+            if (showAtAnyDistance == true)
+            {
+                textColor = 0xFF00FF80; // greenish blue
             }
 
             if (spawn == targetSpawn || spawnIsGm == 1)
@@ -2041,6 +2239,14 @@ void EQAPP_DoEsp()
                 }
             }
 
+            if (g_findIsEnabled == true && isFindSpawn == true)
+            {
+                DWORD windowWidth  = EQ_ReadMemory<DWORD>(EQ_WINDOW_WIDTH);
+                DWORD windowHeight = EQ_ReadMemory<DWORD>(EQ_WINDOW_HEIGHT);
+
+                EQ_DrawLine((float)(windowWidth / 2), (float)windowHeight, 0.0f, (float)screenX, (float)screenY, 0.0f, 0xFF00FF80);
+            }
+
             spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
         }
     }
@@ -2082,12 +2288,12 @@ void EQAPP_DoEsp()
             if (find != EQ_KEYVALUE_ACTOR_DEFINITIONS.end())
             {
                 spawnNameEx = find->second;
+
+                std::stringstream ss;
+                ss << "+ " << spawnNameEx << " (" << (int)spawnDistance << ")";
+
+                EQ_DrawText(ss.str().c_str(), screenX, screenY, 0xFFFFFFFF, 2);
             }
-
-            std::stringstream ss;
-            ss << "+ " << spawnNameEx << " (" << (int)spawnDistance << ")";
-
-            EQ_DrawText(ss.str().c_str(), screenX, screenY, 0xFFFFFFFF, 2);
 
             spawn = EQ_ReadMemory<DWORD>(spawn + 0x04); // next
         }
@@ -2244,6 +2450,12 @@ void EQAPP_DoSpawnList(const char* filterSpawnName)
     }
     std::cout << std::endl;
 
+    DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
+
+    FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
+    FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);
+    FLOAT playerZ = EQ_ReadMemory<FLOAT>(playerSpawn + 0x6C);
+
     DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_SPAWN_INFO);
 
     while (spawn)
@@ -2349,6 +2561,17 @@ void EQAPP_DoSpawnList(const char* filterSpawnName)
             {
                 std::cout << "  *GM*";
             }
+        }
+
+        if (g_debugIsEnabled == true && playerSpawn != NULL)
+        {
+            FLOAT spawnY = EQ_ReadMemory<FLOAT>(spawn + 0x64);
+            FLOAT spawnX = EQ_ReadMemory<FLOAT>(spawn + 0x68);
+            FLOAT spawnZ = EQ_ReadMemory<FLOAT>(spawn + 0x6C);
+
+            float spawnDistance = EQ_CalculateDistance3d(playerX, playerY, playerZ, spawnX, spawnY, spawnZ);
+
+            std::cout << "    (Distance: " << (int)spawnDistance << ")";
         }
 
         std::cout << std::endl;
@@ -2604,15 +2827,15 @@ void EQAPP_WriteCharacterFile()
 
     file << "---------- BANK ----------" << std::endl << std::endl;
 
-    DWORD platinum = EQ_ReadMemory<DWORD>(charInfo + 0xF5A4);
-    DWORD gold     = EQ_ReadMemory<DWORD>(charInfo + 0xF5A8);
-    DWORD silver   = EQ_ReadMemory<DWORD>(charInfo + 0xF5AC);
-    DWORD copper   = EQ_ReadMemory<DWORD>(charInfo + 0xF5B0);
+    DWORD bankPlatinum = EQ_ReadMemory<DWORD>(charInfo + 0xF5A4);
+    DWORD bankGold     = EQ_ReadMemory<DWORD>(charInfo + 0xF5A8);
+    DWORD bankSilver   = EQ_ReadMemory<DWORD>(charInfo + 0xF5AC);
+    DWORD bankCopper   = EQ_ReadMemory<DWORD>(charInfo + 0xF5B0);
 
-    file << "Platinum: " << platinum << std::endl;
-    file << "Gold:     " << gold     << std::endl;
-    file << "Silver:   " << silver   << std::endl;
-    file << "Copper:   " << copper   << std::endl;
+    file << "Platinum: " << bankPlatinum << std::endl;
+    file << "Gold:     " << bankGold     << std::endl;
+    file << "Silver:   " << bankSilver   << std::endl;
+    file << "Copper:   " << bankCopper   << std::endl;
 
     file << std::endl;
 
@@ -2670,6 +2893,18 @@ void EQAPP_WriteCharacterFile()
 
     file << "---------- INVENTORY ----------" << std::endl << std::endl;
 
+    DWORD inventoryPlatinum = EQ_ReadMemory<DWORD>(charInfo2 + 0x1654);
+    DWORD inventoryGold     = EQ_ReadMemory<DWORD>(charInfo2 + 0x1658);
+    DWORD inventorySilver   = EQ_ReadMemory<DWORD>(charInfo2 + 0x165C);
+    DWORD inventoryCopper   = EQ_ReadMemory<DWORD>(charInfo2 + 0x1660);
+
+    file << "Platinum: " << inventoryPlatinum << std::endl;
+    file << "Gold:     " << inventoryGold     << std::endl;
+    file << "Silver:   " << inventorySilver   << std::endl;
+    file << "Copper:   " << inventoryCopper   << std::endl;
+
+    file << std::endl;
+
     for (size_t i = 0; i < EQ_NUM_INVENTORY_SLOTS; i++)
     {
         std::string slotName = EQ_EQUIPMENT_SLOT_NAMES.at(i);
@@ -2725,6 +2960,181 @@ void EQAPP_WriteCharacterFile()
     file << std::endl;
 
     file.close();
+}
+
+void EQAPP_WriteCharacterFileJson()
+{
+    DWORD charInfo = EQ_ReadMemory<DWORD>(EQ_POINTER_CHAR_INFO);
+    if (charInfo == NULL)
+    {
+        return;
+    }
+
+    DWORD charInfo2 = EQ_GetCharInfo2();
+    if (charInfo2 == NULL)
+    {
+        return;
+    }
+
+    char characterName[0x40] = {0};
+    memcpy(characterName, (LPVOID)(charInfo + 0xF210), sizeof(characterName));
+
+    std::stringstream filePath;
+    filePath << "eqapp/characters/" << characterName << ".json";
+
+    std::cout << "Writing character file: " << filePath.str() << std::endl;
+
+    json_t* j_root = json_object();
+
+    json_object_set_new(j_root, "name", json_string(characterName));
+
+    json_t* j_bank_root = json_object();
+    json_object_set_new(j_root, "bank", j_bank_root);
+
+    DWORD bankPlatinum = EQ_ReadMemory<DWORD>(charInfo + 0xF5A4);
+    DWORD bankGold     = EQ_ReadMemory<DWORD>(charInfo + 0xF5A8);
+    DWORD bankSilver   = EQ_ReadMemory<DWORD>(charInfo + 0xF5AC);
+    DWORD bankCopper   = EQ_ReadMemory<DWORD>(charInfo + 0xF5B0);
+
+    json_t* j_bank_currency_node = json_pack("{s: i, s: i, s: i, s: i}", "platinum", bankPlatinum, "gold", bankGold, "silver", bankSilver, "copper", bankCopper);
+    json_object_set_new(j_bank_root, "currency", j_bank_currency_node);
+
+    json_t* j_bank_items_root = json_array();
+    json_object_set_new(j_bank_root, "items", j_bank_items_root);
+
+    for (size_t i = 0; i < EQ_NUM_BANK_SLOTS; i++)
+    {
+        json_t* j_bank_item_node = json_object();
+
+        DWORD itemInfo = EQ_ReadMemory<DWORD>(charInfo + (0x1128 + (i * 4)));
+        if (itemInfo == NULL)
+        {
+            j_bank_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", i + 1, "name", "(empty)", "count", -1, "id", -1, "icon", -1);
+            json_array_append_new(j_bank_items_root, j_bank_item_node);
+            continue;
+        }
+
+        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + 0xB8);
+        if (itemName != NULL)
+        {
+            DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + 0xD0);
+
+            DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + 0xB8);
+
+            DWORD itemId   = EQ_ReadMemory<DWORD>(itemSubInfo + 0xD0);
+            DWORD itemIcon = EQ_ReadMemory<DWORD>(itemSubInfo + 0xDC);
+
+            j_bank_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", i + 1, "name", itemName, "count", itemCount, "id", itemId, "icon", itemIcon);
+            json_array_append_new(j_bank_items_root, j_bank_item_node);
+        }
+
+        json_t* j_bank_item_node_container_items_root = json_array();
+        json_object_set_new(j_bank_item_node, "containerItems", j_bank_item_node_container_items_root);
+
+        for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
+        {
+            json_t* j_bank_container_item_node = json_object();
+
+            DWORD containerItemInfo = EQ_ReadMemory<DWORD>(itemInfo + (0x0C + (j * 4)));
+            if (containerItemInfo == NULL)
+            {
+                j_bank_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", j + 1, "name", "(empty)", "count", -1, "id", -1, "icon", -1);
+                json_array_append_new(j_bank_item_node_container_items_root, j_bank_container_item_node);
+                continue;
+            }
+
+            PCHAR containerItemName = EQ_ReadMemory<PCHAR>(containerItemInfo + 0xB8);
+            if (containerItemName != NULL)
+            {
+                DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + 0xD0);
+
+                DWORD containerItemSubInfo = EQ_ReadMemory<DWORD>(containerItemInfo + 0xB8);
+
+                DWORD containerItemId   = EQ_ReadMemory<DWORD>(containerItemSubInfo + 0xD0);
+                DWORD containerItemIcon = EQ_ReadMemory<DWORD>(containerItemSubInfo + 0xDC);
+
+                j_bank_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", j + 1, "name", containerItemName, "count", containerItemCount, "id", containerItemId, "icon", containerItemIcon);
+                json_array_append_new(j_bank_item_node_container_items_root, j_bank_container_item_node);
+            }
+        }
+    }
+
+    json_t* j_inventory_root = json_object();
+    json_object_set_new(j_root, "inventory", j_inventory_root);
+
+    DWORD inventoryPlatinum = EQ_ReadMemory<DWORD>(charInfo2 + 0x1654);
+    DWORD inventoryGold     = EQ_ReadMemory<DWORD>(charInfo2 + 0x1658);
+    DWORD inventorySilver   = EQ_ReadMemory<DWORD>(charInfo2 + 0x165C);
+    DWORD inventoryCopper   = EQ_ReadMemory<DWORD>(charInfo2 + 0x1660);
+
+    json_t* j_inventory_currency_node = json_pack("{s: i, s: i, s: i, s: i}", "platinum", inventoryPlatinum, "gold", inventoryGold, "silver", inventorySilver, "copper", inventoryCopper);
+    json_object_set_new(j_inventory_root, "currency", j_inventory_currency_node);
+
+    json_t* j_inventory_items_root = json_array();
+    json_object_set_new(j_inventory_root, "items", j_inventory_items_root);
+
+    for (size_t i = 0; i < EQ_NUM_INVENTORY_SLOTS; i++)
+    {
+        json_t* j_inventory_item_node = json_object();
+
+        std::string slotName = EQ_EQUIPMENT_SLOT_NAMES.at(i);
+
+        DWORD itemInfo = EQ_ReadMemory<DWORD>(charInfo2 + (0x10 + (i * 4)));
+        if (itemInfo == NULL)
+        {
+            j_inventory_item_node = json_pack("{s: i, s: s, s: s, s: i, s: i, s: i}", "slot", i + 1, "slotName", slotName.c_str(), "name", "(empty)", "count", -1, "id", -1, "icon", -1);
+            json_array_append_new(j_inventory_items_root, j_inventory_item_node);
+            continue;
+        }
+
+        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + 0xB8);
+        if (itemName != NULL)
+        {
+            DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + 0xD0);
+
+            DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + 0xB8);
+
+            DWORD itemId   = EQ_ReadMemory<DWORD>(itemSubInfo + 0xD0);
+            DWORD itemIcon = EQ_ReadMemory<DWORD>(itemSubInfo + 0xDC);
+
+            j_inventory_item_node = json_pack("{s: i, s: s, s: s, s: i, s: i, s: i}", "slot", i + 1, "slotName", slotName.c_str(), "name", itemName, "count", itemCount, "id", itemId, "icon", itemIcon);
+            json_array_append_new(j_inventory_items_root, j_inventory_item_node);
+        }
+
+        json_t* j_inventory_item_node_container_items_root = json_array();
+        json_object_set_new(j_inventory_item_node, "containerItems", j_inventory_item_node_container_items_root);
+
+        for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
+        {
+            json_t* j_inventory_container_item_node = json_object();
+
+            DWORD containerItemInfo = EQ_ReadMemory<DWORD>(itemInfo + (0x0C + (j * 4)));
+            if (containerItemInfo == NULL)
+            {
+                j_inventory_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", j + 1, "name", "(empty)", "count", -1, "id", -1, "icon", -1);
+                json_array_append_new(j_inventory_item_node_container_items_root, j_inventory_container_item_node);
+                continue;
+            }
+
+            PCHAR containerItemName = EQ_ReadMemory<PCHAR>(containerItemInfo + 0xB8);
+            if (containerItemName != NULL)
+            {
+                DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + 0xD0);
+
+                DWORD containerItemSubInfo = EQ_ReadMemory<DWORD>(containerItemInfo + 0xB8);
+
+                DWORD containerItemId   = EQ_ReadMemory<DWORD>(containerItemSubInfo + 0xD0);
+                DWORD containerItemIcon = EQ_ReadMemory<DWORD>(containerItemSubInfo + 0xDC);
+
+                j_inventory_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", j + 1, "name", containerItemName, "count", containerItemCount, "id", containerItemId, "icon", containerItemIcon);
+                json_array_append_new(j_inventory_item_node_container_items_root, j_inventory_container_item_node);
+            }
+        }
+    }
+
+    json_dump_file(j_root, filePath.str().c_str(), JSON_PRESERVE_ORDER | JSON_INDENT(4));
+
+    json_decref(j_root);
 }
 
 void EQAPP_DoOpenAllDoors()
@@ -2992,7 +3402,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     // help
     if (strcmp(command, "//help") == 0)
     {
-        for (auto& slashCommand : g_slashCommands)
+        for (auto& slashCommand : g_slashCommandsList)
         {
             std::cout << slashCommand << std::endl;
         }
@@ -3021,6 +3431,25 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//test") == 0)
     {
         std::cout << "test" << std::endl;
+
+        //DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
+        //if (playerSpawn == NULL)
+        //{
+            //return;
+        //}
+
+        //FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
+        //FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);
+        //FLOAT playerZ = EQ_ReadMemory<FLOAT>(playerSpawn + 0x6C);
+
+        //DWORD mapViewMap = EQ_GetMapViewMap();
+        //if (mapViewMap == NULL)
+        //{
+            //return;
+        //}
+
+        //((MapViewMap*)mapViewMap)->AddLabel(-playerX, -playerY, playerZ, 0xFFFF0000, 2, "TESTING123");
+
         return;
     }
 
@@ -3074,7 +3503,7 @@ void EQAPP_DoInterpretCommand(const char* command)
 
         if (result == 2)
         {
-            EQAPP_StringReplaceUnderscoresWithSpaces(itemName);
+            EQ_StringReplaceUnderscoresWithSpaces(itemName);
 
             bool lootResult = EQ_LootItemByName(itemName);
 
@@ -3118,7 +3547,7 @@ void EQAPP_DoInterpretCommand(const char* command)
 
         if (result == 2)
         {
-            EQAPP_StringReplaceUnderscoresWithSpaces(itemName);
+            EQ_StringReplaceUnderscoresWithSpaces(itemName);
 
             g_autoLootList.push_back(itemName);
 
@@ -3269,7 +3698,7 @@ void EQAPP_DoInterpretCommand(const char* command)
 
         if (result == 2)
         {
-            EQAPP_StringReplaceUnderscoresWithSpaces(name);
+            EQ_StringReplaceUnderscoresWithSpaces(name);
 
             EQAPP_DoBankList(name);
         }
@@ -3296,7 +3725,7 @@ void EQAPP_DoInterpretCommand(const char* command)
 
         if (result == 2)
         {
-            EQAPP_StringReplaceUnderscoresWithSpaces(name);
+            EQ_StringReplaceUnderscoresWithSpaces(name);
 
             EQAPP_DoInventoryList(name);
         }
@@ -3342,7 +3771,7 @@ void EQAPP_DoInterpretCommand(const char* command)
 
         if (result == 2)
         {
-            EQAPP_StringReplaceUnderscoresWithSpaces(name);
+            EQ_StringReplaceUnderscoresWithSpaces(name);
 
             EQAPP_DoSpawnList(name);
         }
@@ -3601,7 +4030,7 @@ void EQAPP_DoInterpretCommand(const char* command)
 
         if (result == 2)
         {
-            EQAPP_StringReplaceUnderscoresWithSpaces(name);
+            EQ_StringReplaceUnderscoresWithSpaces(name);
 
             g_findSpawnName = name;
 
@@ -3816,7 +4245,9 @@ void EQAPP_DoInterpretCommand(const char* command)
                 return;
             }
 
-            EQ_SetDrawDistance(distance);
+            g_drawDistance = distance;
+
+            g_drawDistanceIsEnabled = true;
 
             std::cout << "Draw Distance: " << distance << std::endl;
         }
@@ -3872,7 +4303,7 @@ void EQAPP_DoInterpretCommand(const char* command)
 
         if (result == 3)
         {
-            EQAPP_StringReplaceUnderscoresWithSpaces(name);
+            EQ_StringReplaceUnderscoresWithSpaces(name);
 
             g_targetBeepName = name;
 
@@ -3907,7 +4338,7 @@ void EQAPP_DoInterpretCommand(const char* command)
 
         if (result == 2)
         {
-            EQAPP_StringReplaceUnderscoresWithSpaces(name);
+            EQ_StringReplaceUnderscoresWithSpaces(name);
 
             g_spawnBeepName = name;
 
@@ -3967,7 +4398,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     }
 
     // reset health bars
-    if (strcmp(command, "//healthbarsreset") == 0)
+    if (strcmp(command, "//resethealthbars") == 0)
     {
         g_healthBarsSpawnNamesList.clear();
 
@@ -3987,7 +4418,7 @@ void EQAPP_DoInterpretCommand(const char* command)
 
         if (result == 2)
         {
-            EQAPP_StringReplaceUnderscoresWithSpaces(name);
+            EQ_StringReplaceUnderscoresWithSpaces(name);
 
             g_healthBarsSpawnNamesList.push_back(name);
 
@@ -4010,6 +4441,26 @@ void EQAPP_DoInterpretCommand(const char* command)
         {
             EQAPP_RemoveMapLabels();
         }
+
+        return;
+    }
+
+    // do map labels
+    if (strcmp(command, "//domaplabels") == 0)
+    {
+        EQAPP_DoMapLabels();
+
+        std::cout << "Adding map labels..." << std::endl;
+
+        return;
+    }
+
+    // remove map labels
+    if (strcmp(command, "//removemaplabels") == 0)
+    {
+        EQAPP_RemoveMapLabels();
+
+        std::cout << "Removing map labels..." << std::endl;
 
         return;
     }
@@ -4041,6 +4492,39 @@ void EQAPP_DoInterpretCommand(const char* command)
         return;
     }
 
+    // filter map labels
+    if (strncmp(command, "//filtermaplabels ", 18) == 0)
+    {
+        char commandEx[128];
+
+        char name[1024];
+
+        int result = sscanf_s(command, "%s %s", commandEx, sizeof(commandEx), name, sizeof(name));
+
+        if (result == 2)
+        {
+            EQ_StringReplaceUnderscoresWithSpaces(name);
+
+            g_mapLabelsFilterName = name;
+
+            std::cout << "Map Labels Filter: " << name << std::endl;
+
+            g_mapLabelsFilterIsEnabled = true;
+        }
+
+        return;
+    }
+
+    // toggle filter map labels
+    if (strcmp(command, "//filtermaplabels") == 0)
+    {
+        EQ_ToggleBool(g_mapLabelsFilterIsEnabled);
+
+        std::cout << "Map Labels Filter: " << std::boolalpha << g_mapLabelsFilterIsEnabled << std::noboolalpha << std::endl;
+
+        return;
+    }
+
     // get zone info
     if (strcmp(command, "//getzoneinfo") == 0 || strcmp(command, "//getzone") == 0)
     {
@@ -4064,6 +4548,26 @@ void EQAPP_DoInterpretCommand(const char* command)
         EQAPP_LoadMemory();
 
         std::cout << "Loading memories..." << std::endl;
+
+        return;
+    }
+
+    // toggle sounds
+    if (strcmp(command, "//sounds") == 0)
+    {
+        EQ_ToggleBool(g_soundsIsEnabled);
+
+        std::cout << "Sounds: " << std::boolalpha << g_soundsIsEnabled << std::noboolalpha << std::endl;
+
+        return;
+    }
+
+    // load sounds
+    if (strcmp(command, "//loadsounds") == 0)
+    {
+        EQAPP_LoadSounds();
+
+        std::cout << "Loading sounds..." << std::endl;
 
         return;
     }
@@ -4109,6 +4613,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//writecharacterfile") == 0 || strcmp(command, "//writechar") == 0)
     {
         EQAPP_WriteCharacterFile();
+        EQAPP_WriteCharacterFileJson();
 
         return;
     }
@@ -4119,6 +4624,16 @@ void EQAPP_DoInterpretCommand(const char* command)
         EQAPP_LoadTextOverlayChatText();
 
         std::cout << "Loading text overlay chat text..." << std::endl;
+
+        return;
+    }
+
+    // load short zone names
+    if (strcmp(command, "//loadshortzonenames") == 0)
+    {
+        EQAPP_LoadShortZoneNames();
+
+        std::cout << "Loading short zone names..." << std::endl;
 
         return;
     }
@@ -4143,6 +4658,14 @@ void EQAPP_DoInterpretCommand(const char* command)
         return;
     }
 
+    // census
+    if (strcmp(command, "//census") == 0)
+    {
+        EQAPP_DoCensus();
+
+        return;
+    }
+
     // toggle free camera
     if (strcmp(command, "//freecamera") == 0 || strcmp(command, "//freecam") == 0)
     {
@@ -4155,6 +4678,102 @@ void EQAPP_DoInterpretCommand(const char* command)
         return;
     }
 
+    // set view actor by name
+    if (strncmp(command, "//setviewactor ", 15) == 0 || strncmp(command, "//setview ", 10) == 0)
+    {
+        char commandEx[128];
+
+        char name[1024];
+
+        int result = sscanf_s(command, "%s %s", commandEx, sizeof(commandEx), name, sizeof(name));
+
+        if (result == 2)
+        {
+            EQ_CDisplay->SetViewActorByName(name);
+
+            std::cout << "Set View Actor: " << name << std::endl;
+        }
+
+        return;
+    }
+
+    // set view actor to target
+    if (strcmp(command, "//setviewtarget") == 0)
+    {
+        DWORD targetSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_TARGET_SPAWN_INFO);
+        if (targetSpawn == NULL)
+        {
+            std::cout << "Target not found!" << std::endl;
+            return;
+        }
+
+        EQ_SetViewActorBySpawn(targetSpawn);
+
+        std::cout << "Set View Actor to Target." << std::endl;
+
+        return;
+    }
+
+    // set view actor to target
+    if (strcmp(command, "//resetviewactor") == 0 || strcmp(command, "//resetview") == 0)
+    {
+        EQ_ResetViewActor();
+
+        std::cout << "Reset View Actor." << std::endl;
+
+        return;
+    }
+
+    // map locations
+    if (strcmp(command, "//maplocations") == 0 || strcmp(command, "//maplocs") == 0)
+    {
+        EQAPP_DoMapLocations();
+
+        std::cout << "Saving map locations..." << std::endl;
+
+        return;
+    }
+
+    // get map location
+    if (strcmp(command, "//getmaplocation") == 0 || strcmp(command, "//getmaploc") == 0)
+    {
+        EQ_CopyTargetMapLocationToClipboard();
+
+        std::cout << "Copying target's map location to the clipboard..." << std::endl;
+
+        return;
+    }
+
+    // open map file
+    if (strcmp(command, "//openmapfile") == 0)
+    {
+        char zoneShortName[0x20] = {0};
+        memcpy(zoneShortName, (LPVOID)(EQ_ZONEINFO_SHORT_NAME), sizeof(zoneShortName));
+
+        if (strlen(zoneShortName) == 0)
+        {
+            return;
+        }
+
+        std::stringstream filePath;
+        filePath << "maps\\" << zoneShortName << ".txt";
+
+        ShellExecuteA(0, "open", filePath.str().c_str(), 0, 0, SW_SHOW);
+
+        std::cout << "Opening map file: " << filePath.str() << std::endl;
+
+        for (size_t i = 1; i < 4; i++)
+        {
+            std::stringstream filePath;
+            filePath << "maps\\" << zoneShortName << "_" << i << ".txt";
+
+            ShellExecuteA(0, "open", filePath.str().c_str(), 0, 0, SW_SHOW);
+
+            std::cout << "Opening map file: " << filePath.str() << std::endl;
+        }
+
+        return;
+    }
 }
 
 int __fastcall EQAPP_DETOUR_CEverQuest__SetGameState(void* pThis, void* not_used, int a1)
@@ -4165,8 +4784,6 @@ int __fastcall EQAPP_DETOUR_CEverQuest__SetGameState(void* pThis, void* not_used
     {
         return EQAPP_REAL_CEverQuest__SetGameState(pThis, a1);
     }
-
-    //
 
     return EQAPP_REAL_CEverQuest__SetGameState(pThis, a1);
 }
@@ -4253,6 +4870,11 @@ int __cdecl EQAPP_DETOUR_DrawNetStatus(int a1, unsigned short a2, unsigned short
         return EQAPP_REAL_DrawNetStatus(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
     }
 
+    if (EQ_IsScreenshotBeingTaken() == true)
+    {
+        return EQAPP_REAL_DrawNetStatus(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
+    }
+
     EQAPP_DoWindowTitles();
 
     EQAPP_DoFreeCameraKeys();
@@ -4268,16 +4890,45 @@ int __cdecl EQAPP_DETOUR_DrawNetStatus(int a1, unsigned short a2, unsigned short
     EQAPP_DoDrawDistance();
     EQAPP_DoHideCorpseLooted();
 
-    EQAPP_DoLineToTarget();
-    EQAPP_DoEsp();
+    if (EQAPP_AreImportantWindowsOpen() == false)
+    {
+        EQAPP_DoLineToTarget();
+        EQAPP_DoEsp();
 
-    EQAPP_DoHealthBars();
-    EQAPP_DoNamedSpawns();
-    EQAPP_DoOnScreenText();
+        EQAPP_DoHealthBars();
+        EQAPP_DoNamedSpawns();
+        EQAPP_DoOnScreenText();
+    }
 
     EQAPP_DoHud();
 
     return EQAPP_REAL_DrawNetStatus(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
+}
+
+int __cdecl EQAPP_DETOUR_ExecuteCmd(DWORD a1, BOOL a2, PVOID a3)
+{
+    // a1 = command
+
+    if (g_bExit == 1)
+    {
+        return EQAPP_REAL_ExecuteCmd(a1, a2, a3);
+    }
+
+    //std::cout << "ExecuteCmd: " << a1 << std::endl;
+
+    return EQAPP_REAL_ExecuteCmd(a1, a2, a3);
+}
+
+int __fastcall EQAPP_DETOUR_CMapViewWnd__dCMapViewWnd(void* pThis, void* not_used)
+{
+    if (g_bExit == 1)
+    {
+        return EQAPP_REAL_CMapViewWnd__dCMapViewWnd(pThis);
+    }
+
+    //std::cout << "CMapViewWnd::~CMapViewWnd()" << std::endl;
+
+    return EQAPP_REAL_CMapViewWnd__dCMapViewWnd(pThis);
 }
 
 int __fastcall EQAPP_DETOUR_CMapViewWnd__DrawMap(void* pThis, void* not_used, int a1, int a2, int a3, int a4)
@@ -4380,6 +5031,18 @@ int __fastcall EQAPP_DETOUR_CEverQuest__dsp_chat(void* pThis, void* not_used, co
         return EQAPP_REAL_CEverQuest__dsp_chat(pThis, a1, a2, a3);
     }
 
+    if (g_soundsIsEnabled == true)
+    {
+        for (auto& sound : g_soundsList)
+        {
+            if (strstr(a1, sound.text.c_str()) != NULL)
+            {
+                PlaySoundA(sound.filename.c_str(), 0, SND_FILENAME | SND_NODEFAULT | SND_ASYNC);
+                break;
+            }
+        }
+    }
+
     if (g_textOverlayOnChatTextIsEnabled == true)
     {
         for (auto& text : g_textOverlayChatTextList)
@@ -4390,8 +5053,23 @@ int __fastcall EQAPP_DETOUR_CEverQuest__dsp_chat(void* pThis, void* not_used, co
                 DWORD windowHeight = EQ_ReadMemory<DWORD>(EQ_WINDOW_HEIGHT);
 
                 EQ_CTextOverlay->DisplayText(a1, EQ_TEXT_COLOR_WHITE, 15, 192, (int)(windowWidth / 2), (int)(windowHeight / 3), g_textOverlayChatTextDuration);
+
+                EQAPP_DoOnScreenTextAddToList(a1);
+
                 break;
             }
+        }
+    }
+
+    if (g_censusIsActive == true)
+    {
+        if
+        (
+            strstr(a1, "[") != NULL &&
+            strstr(a1, "]") != NULL
+        )
+        {
+            std::cout << a1 << std::endl;
         }
     }
 
@@ -4420,18 +5098,26 @@ int __fastcall EQAPP_DETOUR_CEverQuest__EnterZone(void* pThis, void* not_used, s
     int result = EQAPP_REAL_CEverQuest__EnterZone(pThis, a1);
 
     EQAPP_WriteCharacterFile();
+    EQAPP_WriteCharacterFileJson();
 
     EQAPP_LoadNamedSpawns();
 
     g_alwaysAttackIsEnabled = false;
 
+    g_censusIsActive = false;
+
     g_spawnCastSpellList.clear();
+
+    g_onScreenTextList.clear();
 
     return result;
 }
 
-int __fastcall EQAPP_DETOUR_CEverQuest__InterpretCmd(void* pThis, void* not_used, class EQPlayer* a1, char* a2)
+int __fastcall EQAPP_DETOUR_CEverQuest__InterpretCmd(void* pThis, void* not_used, DWORD a1, const char* a2)
 {
+    // a1 = spawnInfo
+    // a2 = command text
+
     if (g_bExit == 1)
     {
         return EQAPP_REAL_CEverQuest__InterpretCmd(pThis, NULL, NULL);
@@ -4498,6 +5184,11 @@ int __fastcall EQAPP_DETOUR_EQPlayer__ChangePosition(void* pThis, void* not_used
         return EQAPP_REAL_EQPlayer__ChangePosition(pThis, a1);
     }
 
+    if (a1 == EQ_STANDING_STATE_DUCKING)
+    {
+        g_censusIsActive = false;
+    }
+
     if (g_neverFrozenIsEnabled == true)
     {
         if (a1 == EQ_STANDING_STATE_FROZEN)
@@ -4556,11 +5247,44 @@ int __fastcall EQAPP_DETOUR_EQPlayer__SetRace(void* pThis, void* not_used, int a
     return EQAPP_REAL_EQPlayer__SetRace(pThis, a1);
 }
 
+int __fastcall EQAPP_DETOUR_MapViewMap__Save(void* pThis, void* not_used, char* a1)
+{
+    // a1 = short zone name of map
+
+    if (g_bExit == 1)
+    {
+        return EQAPP_REAL_MapViewMap__Save(pThis, a1);
+    }
+
+    std::cout << "The game is saving the map..." << std::endl;
+
+    EQAPP_RemoveMapLabels();
+
+    return EQAPP_REAL_MapViewMap__Save(pThis, a1);
+}
+
+int __fastcall EQAPP_DETOUR_MapViewMap__SaveEx(void* pThis, void* not_used, char* a1, int a2)
+{
+    // a1 = short zone name of map
+    // a2 = map layer
+
+    if (g_bExit == 1)
+    {
+        return EQAPP_REAL_MapViewMap__SaveEx(pThis, a1, a2);
+    }
+
+    std::cout << "The game is saving the map by layer..." << a2 << std::endl;
+
+    EQAPP_RemoveMapLabels();
+
+    return EQAPP_REAL_MapViewMap__SaveEx(pThis, a1, a2);
+}
+
 void EQAPP_AddDetours()
 {
     EQAPP_REAL_Exit = (EQ_FUNCTION_TYPE_Exit)DetourFunction((PBYTE)EQ_FUNCTION_Exit, (PBYTE)EQAPP_DETOUR_Exit);
-
     EQAPP_REAL_DrawNetStatus = (EQ_FUNCTION_TYPE_DrawNetStatus)DetourFunction((PBYTE)EQ_FUNCTION_DrawNetStatus, (PBYTE)EQAPP_DETOUR_DrawNetStatus);
+    EQAPP_REAL_ExecuteCmd = (EQ_FUNCTION_TYPE_ExecuteCmd)DetourFunction((PBYTE)EQ_FUNCTION_ExecuteCmd, (PBYTE)EQAPP_DETOUR_ExecuteCmd);
 
     EQAPP_REAL_CDisplay__CreatePlayerActor = (EQ_FUNCTION_TYPE_CDisplay__CreatePlayerActor)DetourFunction((PBYTE)EQ_FUNCTION_CDisplay__CreatePlayerActor, (PBYTE)EQAPP_DETOUR_CDisplay__CreatePlayerActor);
     EQAPP_REAL_CDisplay__DeleteActor = (EQ_FUNCTION_TYPE_CDisplay__DeleteActor)DetourFunction((PBYTE)EQ_FUNCTION_CDisplay__DeleteActor, (PBYTE)EQAPP_DETOUR_CDisplay__DeleteActor);
@@ -4572,6 +5296,7 @@ void EQAPP_AddDetours()
     EQAPP_REAL_CEverQuest__SetGameState = (EQ_FUNCTION_TYPE_CEverQuest__SetGameState)DetourFunction((PBYTE)EQ_FUNCTION_CEverQuest__SetGameState, (PBYTE)EQAPP_DETOUR_CEverQuest__SetGameState);
     EQAPP_REAL_CEverQuest__StartCasting = (EQ_FUNCTION_TYPE_CEverQuest__StartCasting)DetourFunction((PBYTE)EQ_FUNCTION_CEverQuest__StartCasting, (PBYTE)EQAPP_DETOUR_CEverQuest__StartCasting);
 
+    //EQAPP_REAL_CMapViewWnd__dCMapViewWnd = (EQ_FUNCTION_TYPE_CMapViewWnd__dCMapViewWnd)DetourFunction((PBYTE)EQ_FUNCTION_CMapViewWnd__dCMapViewWnd, (PBYTE)EQAPP_DETOUR_CMapViewWnd__dCMapViewWnd);
     EQAPP_REAL_CMapViewWnd__DrawMap = (EQ_FUNCTION_TYPE_CMapViewWnd__DrawMap)DetourFunction((PBYTE)EQ_FUNCTION_CMapViewWnd__DrawMap, (PBYTE)EQAPP_DETOUR_CMapViewWnd__DrawMap);
 
     EQAPP_REAL_EQ_Character__eqspa_movement_rate = (EQ_FUNCTION_TYPE_EQ_Character__eqspa_movement_rate)DetourFunction((PBYTE)EQ_FUNCTION_EQ_Character__eqspa_movement_rate, (PBYTE)EQAPP_DETOUR_EQ_Character__eqspa_movement_rate);
@@ -4579,13 +5304,16 @@ void EQAPP_AddDetours()
     EQAPP_REAL_EQPlayer__ChangePosition = (EQ_FUNCTION_TYPE_EQPlayer__ChangePosition)DetourFunction((PBYTE)EQ_FUNCTION_EQPlayer__ChangePosition, (PBYTE)EQAPP_DETOUR_EQPlayer__ChangePosition);
     //EQAPP_REAL_EQPlayer__do_change_form = (EQ_FUNCTION_TYPE_EQPlayer__do_change_form)DetourFunction((PBYTE)EQ_FUNCTION_EQPlayer__do_change_form, (PBYTE)EQAPP_DETOUR_EQPlayer__do_change_form);
     EQAPP_REAL_EQPlayer__SetRace = (EQ_FUNCTION_TYPE_EQPlayer__SetRace)DetourFunction((PBYTE)EQ_FUNCTION_EQPlayer__SetRace, (PBYTE)EQAPP_DETOUR_EQPlayer__SetRace);
+
+    EQAPP_REAL_MapViewMap__Save = (EQ_FUNCTION_TYPE_MapViewMap__Save)DetourFunction((PBYTE)EQ_FUNCTION_MapViewMap__Save, (PBYTE)EQAPP_DETOUR_MapViewMap__Save);
+    EQAPP_REAL_MapViewMap__SaveEx = (EQ_FUNCTION_TYPE_MapViewMap__SaveEx)DetourFunction((PBYTE)EQ_FUNCTION_MapViewMap__SaveEx, (PBYTE)EQAPP_DETOUR_MapViewMap__SaveEx);
 }
 
 void EQAPP_RemoveDetours()
 {
     DetourRemove((PBYTE)EQAPP_REAL_Exit, (PBYTE)EQAPP_DETOUR_Exit);
-
     DetourRemove((PBYTE)EQAPP_REAL_DrawNetStatus, (PBYTE)EQAPP_DETOUR_DrawNetStatus);
+    DetourRemove((PBYTE)EQAPP_REAL_ExecuteCmd, (PBYTE)EQAPP_DETOUR_ExecuteCmd);
 
     DetourRemove((PBYTE)EQAPP_REAL_CDisplay__CreatePlayerActor, (PBYTE)EQAPP_DETOUR_CDisplay__CreatePlayerActor);
     DetourRemove((PBYTE)EQAPP_REAL_CDisplay__DeleteActor, (PBYTE)EQAPP_DETOUR_CDisplay__DeleteActor);
@@ -4597,6 +5325,7 @@ void EQAPP_RemoveDetours()
     DetourRemove((PBYTE)EQAPP_REAL_CEverQuest__SetGameState, (PBYTE)EQAPP_DETOUR_CEverQuest__SetGameState);
     DetourRemove((PBYTE)EQAPP_REAL_CEverQuest__StartCasting, (PBYTE)EQAPP_DETOUR_CEverQuest__StartCasting);
 
+    //DetourRemove((PBYTE)EQAPP_REAL_CMapViewWnd__dCMapViewWnd, (PBYTE)EQAPP_DETOUR_CMapViewWnd__dCMapViewWnd);
     DetourRemove((PBYTE)EQAPP_REAL_CMapViewWnd__DrawMap, (PBYTE)EQAPP_DETOUR_CMapViewWnd__DrawMap);
 
     DetourRemove((PBYTE)EQAPP_REAL_EQ_Character__eqspa_movement_rate, (PBYTE)EQAPP_DETOUR_EQ_Character__eqspa_movement_rate);
@@ -4604,6 +5333,9 @@ void EQAPP_RemoveDetours()
     DetourRemove((PBYTE)EQAPP_REAL_EQPlayer__ChangePosition, (PBYTE)EQAPP_DETOUR_EQPlayer__ChangePosition);
     //DetourRemove((PBYTE)EQAPP_REAL_EQPlayer__do_change_form, (PBYTE)EQAPP_DETOUR_EQPlayer__do_change_form);
     DetourRemove((PBYTE)EQAPP_REAL_EQPlayer__SetRace, (PBYTE)EQAPP_DETOUR_EQPlayer__SetRace);
+
+    DetourRemove((PBYTE)EQAPP_REAL_MapViewMap__Save, (PBYTE)EQAPP_DETOUR_MapViewMap__Save);
+    DetourRemove((PBYTE)EQAPP_REAL_MapViewMap__SaveEx, (PBYTE)EQAPP_DETOUR_MapViewMap__SaveEx);
 }
 
 void EQAPP_LoadGraphicsDllFunctions()

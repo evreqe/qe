@@ -29,6 +29,7 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_BOOL_AUTO_FIRE      0x00AC1197 // BYTE
 #define EQ_BOOL_NET_STATUS     0x00A603E1 // BYTE
 #define EQ_BOOL_SAFELOCK       0x00A96858 // BYTE
+#define EQ_BOOL_SCREENSHOT     0x00A609A1 // BYTE, set to 1 to force the game to take a screenshot
 
 #define EQ_BOOL_KEYBOARD_SHIFT           0x00A609B0 // BYTE
 #define EQ_BOOL_KEYBOARD_CONTROL         0x00A609B1 // BYTE
@@ -50,21 +51,36 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 
 #define EQ_POINTER_EQGraphicsDLL              0x00B112BC
 
+
 #define EQ_POINTER_CDisplay                   0x00A42628
 #define EQ_POINTER_CEverQuest                 0x00AD6DB8
+#define EQ_POINTER_CSidlManager               0x00B10A40
+#define EQ_POINTER_CTextOverlay               0x00877500
+#define EQ_POINTER_CXWndManager               0x00B10A38
+#define EQ_POINTER_EQ_Character               0x00A425E4 // pinstCharData
+#define EQ_POINTER_EQPlayerManager            0x00AD3A0C // pinstSpawnManager
+
+#define EQ_POINTER_CAAWnd                     0x00990BD4
+#define EQ_POINTER_CBankWnd                   0x00990C48
+#define EQ_POINTER_CBazaarWnd                 0x00990C68
+#define EQ_POINTER_CBazaarSearchWnd           0x00990C6C
+#define EQ_POINTER_CGiveWnd                   0x00990C70
 #define EQ_POINTER_CHotButtonWnd              0x00B01C0C
 #define EQ_POINTER_CHotButtonWnd1             0x00B01C0C
 #define EQ_POINTER_CHotButtonWnd2             0x00B01C10
 #define EQ_POINTER_CHotButtonWnd3             0x00B01C14
 #define EQ_POINTER_CHotButtonWnd4             0x00B01C18
+#define EQ_POINTER_CInspectWnd                0x00990C78
+#define EQ_POINTER_CInventoryWnd              0x00990C44
 #define EQ_POINTER_CLootWnd                   0x00990C50
 #define EQ_POINTER_CMapViewWnd                0x00990C0C
-#define EQ_POINTER_CSidlManager               0x00B10A40
+#define EQ_POINTER_CMerchantWnd               0x00990C5C
+#define EQ_POINTER_CSelectorWnd               0x00990C64
+#define EQ_POINTER_CSocialEditWnd             0x00990C7C
+#define EQ_POINTER_CSpellBookWnd              0x00990C40
 #define EQ_POINTER_CTextEntryWnd              0x00990C90
-#define EQ_POINTER_CTextOverlay               0x00877500
-#define EQ_POINTER_CXWndManager               0x00B10A38
-#define EQ_POINTER_EQ_Character               0x00A425E4 // pinstCharData
-#define EQ_POINTER_EQPlayerManager            0x00AD3A0C // pinstSpawnManager
+#define EQ_POINTER_CTrackingWnd               0x00990C74
+#define EQ_POINTER_CTradeWnd                  0x00990C60
 
 #define EQ_POINTER_SPELL_MANAGER              0x00AD3A90 // pinstSpellManager
 #define EQ_POINTER_SWITCH_MANAGER             0x00A40704 // pinstSwitchManager (doors)
@@ -101,12 +117,15 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_FUNCTION_ExecuteCmd                  0x004A5580
 #define EQ_FUNCTION_get_melee_range             0x004AAA20 // __get_melee_range
 #define EQ_FUNCTION_get_bearing                 0x004B7BF0
+#define EQ_FUNCTION_Screenshot                  0x00469CC0
 
 #define EQ_FUNCTION_EQ_Guilds__GetGuildNameById    0x00421930 // GetPlayerGuildName
 
-#define EQ_FUNCTION_CDisplay__CreatePlayerActor    0x0046E0B0
-#define EQ_FUNCTION_CDisplay__DeleteActor          0x0046F2F0
-#define EQ_FUNCTION_CDisplay__WriteTextHD2         0x0046D880
+#define EQ_FUNCTION_CDisplay__CreatePlayerActor     0x0046E0B0
+#define EQ_FUNCTION_CDisplay__DeleteActor           0x0046F2F0
+#define EQ_FUNCTION_CDisplay__SetViewActor          0x0046DD30
+#define EQ_FUNCTION_CDisplay__SetViewActorByName    0x0046F3E0
+#define EQ_FUNCTION_CDisplay__WriteTextHD2          0x0046D880
 
 #define EQ_FUNCTION_CEverQuest__dsp_chat                   0x004DCD60
 #define EQ_FUNCTION_CEverQuest__dsp_chat__2                0x004DCF30
@@ -128,7 +147,18 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_FUNCTION_CLootWnd__Deactivate         0x005EAA50
 #define EQ_FUNCTION_CLootWnd__RequestLootSlot    0x005EB430
 
-#define EQ_FUNCTION_CMapViewWnd__DrawMap   0x005F7320
+#define EQ_FUNCTION_CMapViewWnd__DrawMap         0x005F7320
+#define EQ_FUNCTION_CMapViewWnd__CMapViewWnd     0x005F8D60
+#define EQ_FUNCTION_CMapViewWnd__dCMapViewWnd    0x005F9A50
+
+#define EQ_FUNCTION_MapViewMap__AddLabel          0x005F7250
+#define EQ_FUNCTION_MapViewMap__Clear             0x005F4430
+#define EQ_FUNCTION_MapViewMap__MoveLabel         0x005F4590
+#define EQ_FUNCTION_MapViewMap__RemoveLabel       0x005F4530
+#define EQ_FUNCTION_MapViewMap__Save              0x005F6B10
+#define EQ_FUNCTION_MapViewMap__SaveEx            0x005F4E00
+#define EQ_FUNCTION_MapViewMap__SetZoneExtents    0x005F4040
+#define EQ_FUNCTION_MapViewMap__SetZoom           0x005F4120
 
 #define EQ_FUNCTION_CTextEntryWnd__Activate    0x00649060
 
@@ -272,6 +302,8 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_CLASS_BEASTLORD                15
 #define EQ_CLASS_BANKER                   16
 
+#define EQ_CMD_EXIT_GAME 274
+
 const std::unordered_map<std::string, std::string> EQ_KEYVALUE_ACTOR_DEFINITIONS
 {
     {"IT27_ACTORDEF",    "Book"},
@@ -404,7 +436,7 @@ typedef struct _EQMAPLABEL
 /*0x18*/    DWORD Size = 2; // 1-3
 /*0x1C*/    PCHAR Label; // text
 /*0x20*/    DWORD Layer = 0; // 0-3
-/*0x24*/    DWORD Width = 1;
+/*0x24*/    DWORD Width = 20;
 /*0x28*/    DWORD Height = 12;
 /*0x2C*/    DWORD Unknown0x2C; // BYTE X;
 /*0x30*/    DWORD Unknown0x30; // BYTE Y;
