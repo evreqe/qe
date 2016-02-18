@@ -51,7 +51,6 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 
 #define EQ_POINTER_EQGraphicsDLL              0x00B112BC
 
-
 #define EQ_POINTER_CDisplay                   0x00A42628
 #define EQ_POINTER_CEverQuest                 0x00AD6DB8
 #define EQ_POINTER_CSidlManager               0x00B10A40
@@ -96,6 +95,8 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_POINTER_GROUP_INFO                 0x00A40ABE // pinstGroup
 
 #define EQ_GUILDS 0x00A42640
+
+#define EQ_EXECUTECMD_LIST 0x00851940
 
 #define EQ_ZONEINFO_CHARACTER_NAME    0x00A6057C // string 64  [0x40]
 #define EQ_ZONEINFO_SHORT_NAME        0x00A605BC // string 32  [0x20]
@@ -167,11 +168,13 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_FUNCTION_EQ_Character__eqspa_movement_rate    0x0042D970
 #define EQ_FUNCTION_EQ_Character__UseSkill               0x00441FC0
 
-#define EQ_FUNCTION_EQPlayer__ChangeHeight      0x00530900
-#define EQ_FUNCTION_EQPlayer__ChangePosition    0x0052E120
-#define EQ_FUNCTION_EQPlayer__FacePlayer        0x0052C170
-#define EQ_FUNCTION_EQPlayer__SetRace           0x0052BE50
-#define EQ_FUNCTION_EQPlayer__do_change_form    0x00527E60
+#define EQ_FUNCTION_EQPlayer__EQPlayer            0x005276F0
+#define EQ_FUNCTION_EQPlayer__ChangeHeight        0x00530900
+#define EQ_FUNCTION_EQPlayer__ChangePosition      0x0052E120
+#define EQ_FUNCTION_EQPlayer__do_change_form      0x00527E60
+#define EQ_FUNCTION_EQPlayer__FacePlayer          0x0052C170
+#define EQ_FUNCTION_EQPlayer__SetRace             0x0052BE50
+#define EQ_FUNCTION_EQPlayer__UpdateAppearance    0x00523D20
 
 #define EQ_FUNCTION_EQPlayerManager__GetSpawnByID      0x5287B0
 #define EQ_FUNCTION_EQPlayerManager__GetSpawnByName    0x528990
@@ -281,8 +284,10 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_RACE_IKSAR            128
 #define EQ_RACE_VAH_SHIR         130
 #define EQ_RACE_FROGLOK          330
+#define EQ_RACE_CHOKADAI         356
 #define EQ_RACE_SKELETON2        367
 #define EQ_RACE_SKELETON3        484
+#define EQ_RACE_DRAKKIN          522 // drakkin?
 
 #define EQ_CLASS_UNKNOWN                  0
 #define EQ_CLASS_WARRIOR                  1
@@ -302,7 +307,23 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_CLASS_BEASTLORD                15
 #define EQ_CLASS_BANKER                   16
 
-#define EQ_CMD_EXIT_GAME 274
+#define EQ_CMD_JUMP                             1
+#define EQ_CMD_MOVE_FORWARD                     2
+#define EQ_CMD_MOVE_BACKWARD                    3
+#define EQ_CMD_TURN_RIGHT                       4
+#define EQ_CMD_TURN_LEFT                        5
+#define EQ_CMD_STRAFE_LEFT                      6
+#define EQ_CMD_STRAFE_RIGHT                     7
+#define EQ_CMD_DUCK                             12
+#define EQ_CMD_LOOK_UP                          17
+#define EQ_CMD_LOOK_DOWN                        18
+#define EQ_CMD_CENTER_VIEW                      19
+#define EQ_CMD_TOGGLE_CAMERA_VIEW               22
+#define EQ_CMD_SET_CAMERA_VIEW_OVERHEAD         197
+#define EQ_CMD_SET_CAMERA_VIEW_CHASE            198
+#define EQ_CMD_SET_CAMERA_VIEW_USER_DEFINED1    199
+#define EQ_CMD_SET_CAMERA_VIEW_USER_DEFINED2    200
+#define EQ_CMD_EXIT_GAME                        274
 
 const std::unordered_map<std::string, std::string> EQ_KEYVALUE_ACTOR_DEFINITIONS
 {
@@ -319,7 +340,7 @@ const std::unordered_map<std::string, std::string> EQ_KEYVALUE_ACTOR_DEFINITIONS
     {"IT10645_ACTORDEF", "Book"},
 };
 
-const std::vector<std::string> EQ_EQUIPMENT_SLOT_NAMES =
+const std::vector<std::string> EQ_LIST_EQUIPMENT_SLOT_NAMES =
 {
     "Charm",
     "Left Ear",
@@ -352,6 +373,161 @@ const std::vector<std::string> EQ_EQUIPMENT_SLOT_NAMES =
     "Bag #6",
     "Bag #7",
     "Bag #8",
+};
+
+const std::unordered_map<std::string, std::string> EQ_KEYVALUE_SHORT_ZONE_NAMES_WR
+{
+    {"paludal", "abyss"},
+    {"arena", "arena"},
+    {"felwithea", "athicaa"},
+    {"felwitheb", "athicab"},
+    {"blackburrow", "blackburrow"},
+    {"droga", "bloodquarry"},
+    {"mmcf", "catacombs"},
+    {"cauldron", "cauldron"},
+    {"qeytoqrg", "centaur"},
+    {"mmcg", "cesspits"},
+    {"karnor", "citadel"},
+    {"ssratemple", "cmalath"},
+    {"mmcc", "codarkness"},
+    {"sseru", "comercy"},
+    {"crystal", "crystal"},
+    {"beholder", "cycgorge"},
+    {"nektulos", "darkwoods"},
+    {"takishruins", "dojo"},
+    {"templeveeshan", "dragonhorn"},
+    {"frozenshadow", "dreadfang"},
+    {"dreadlands", "dreadlands"},
+    {"nightmareb", "dream"},
+    {"eastwastes", "eastwastes"},
+    {"eastkarana", "ebadlands"},
+    {"burningwood", "elaeltears"},
+    {"soltemple", "elaeltemple"},
+    {"mistmoore", "eldenals"},
+    {"soldungc", "emberflow"},
+    {"emeraldjungle", "emeraldjungle"},
+    {"ecommons", "eplaguelands"},
+    {"paineel", "erimal"},
+    {"erudnext", "erudnext"},
+    {"erudnint", "erudnint"},
+    {"load", "eternalwell"},
+    {"permafrost", "everchill"},
+    {"everfrost", "everfrost"},
+    {"wakening", "faentharc"},
+    {"crushbone", "fearstone"},
+    {"ferubi", "ferubi"},
+    {"fieldofbone", "fieldofbone"},
+    {"soldungb", "firegrotto"},
+    {"hole", "firstruins"},
+    {"forestfallen", "forestfallen"},
+    {"freporte", "freporte"},
+    {"freportn", "freportn"},
+    {"freportw", "freportw"},
+    {"iceclad", "frosthorn"},
+    {"gfaydark", "gfaydark"},
+    {"butcher", "goblinskull"},
+    {"greatdivide", "greatdivide"},
+    {"feerrott", "greenmist"},
+    {"grobb", "grobb"},
+    {"halas", "halas"},
+    {"hatesfury", "hatesfury"},
+    {"jaggedpine", "heartland"},
+    {"highkeep", "highkeep"},
+    {"grimling", "hmalath"},
+    {"house", "house"},
+    {"kaesora", "kaesora"},
+    {"kaladima", "kaladima"},
+    {"kaladimb", "kaladimb"},
+    {"kedge", "kedge"},
+    {"highpasshold", "kingpass"},
+    {"velketor", "labyrinth"},
+    {"najena", "lasanth"},
+    {"lfaydark", "lfaydark"},
+    {"guktop", "mielecha"},
+    {"gukbottom", "mielechb"},
+    {"sebilis", "mielechc"},
+    {"guka", "mielechd"},
+    {"befallen", "misery"},
+    {"tox", "mistwoods"},
+    {"swampofnohope", "murk"},
+    {"nadox", "nadox"},
+    {"neriaka", "nagthiliana"},
+    {"neriakb", "nagthilianb"},
+    {"neriakc", "nagthilianc"},
+    {"northkarana", "nbadlands"},
+    {"qcat", "ncat"},
+    {"necropolis", "necropolis"},
+    {"nightmareb", "night"},
+    {"qeynos2", "northnport"},
+    {"northro", "northwaste"},
+    {"oasis", "oasis"},
+    {"nurga", "oggmines"},
+    {"oggok", "oggok"},
+    {"fungusgrove", "overgrowth"},
+    {"paw", "paw"},
+    {"commons", "plaguelands"},
+    {"poair", "poair"},
+    {"tutorial", "pocketplane"},
+    {"growthplane", "poearth"},
+    {"podisease", "poentropy"},
+    {"pofire", "pofire"},
+    {"mire", "pofrost"},
+    {"pojustice", "pojustice"},
+    {"mirj", "polore"},
+    {"ponightmare", "ponightmare"},
+    {"vexthal", "portals"},
+    {"potorment", "potorment"},
+    {"powater", "powater"},
+    {"skyshrine", "prison"},
+    {"firiona", "prophets"},
+    {"trakanon", "remnants"},
+    {"rivervale", "rivervale"},
+    {"runnyeye", "runnyeye"},
+    {"poinnovation", "rust"},
+    {"southkarana", "sbadlands"},
+    {"rujc", "scrapheap"},
+    {"erudsxing", "seastorm"},
+    {"oot", "seaswords"},
+    {"mmce", "sepulcher"},
+    {"kithicor", "shadowdale"},
+    {"rathemtn", "shardmtns"},
+    {"sharvahl", "sharvahl"},
+    {"unrest", "shroudisle"},
+    {"sirens", "sirens"},
+    {"kerraridge", "smalath"},
+    {"qeynos", "southnport"},
+    {"southro", "southwaste"},
+    {"kurn", "spires"},
+    {"lakerathe", "starfall"},
+    {"steamfont", "steamfont"},
+    {"innothule", "stingersbog"},
+    {"kal", "stormkeep"},
+    {"sleeper", "stormseye"},
+    {"stonebrunt", "sundermtns"},
+    {"soldunga", "sunmines"},
+    {"lavastorm", "sunpeaks"},
+    {"qrg", "surefall"},
+    {"tipt", "tarhylcrags"},
+    {"bothunder", "thaztower"},
+    {"thedeep", "thedeep"},
+    {"thurgadina", "thurgadina"},
+    {"thurgadinb", "thurgadinb"},
+    {"solrotower", "towertarhyl"},
+    {"chardok", "turruj"},
+    {"veksar", "undercaverns"},
+    {"gukg", "undercity"},
+    {"akanon", "underhill"},
+    {"hohonora", "valor"},
+    {"hohonorb", "valorb"},
+    {"citymist", "veilcity"},
+    {"acrylia", "warpstone"},
+    {"warrens", "warrens"},
+    {"westkarana", "wbadlands"},
+    {"westwastes", "westwastes"},
+    {"misty", "whisperling"},
+    {"torgiran", "windstone"},
+    {"cobaltscar", "wyvernfang"},
+    {"cazicthule", "yaralith"},
 };
 
 typedef struct _EQLINE

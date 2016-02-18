@@ -15,7 +15,7 @@ comercy
 crystal
 cycgorge
 darkwoods
-Dojo
+dojo
 dragonhorn
 dreadfang
 dreadlands

@@ -216,9 +216,10 @@ class EQPlayer
 public:
     void EQPlayer::ChangeHeight(float height);
     void EQPlayer::ChangePosition(BYTE standingState);
+    void EQPlayer::do_change_form(int changeForm);
     void EQPlayer::FacePlayer(DWORD spawnInfo);
     void EQPlayer::SetRace(int raceId);
-    void EQPlayer::do_change_form(int changeForm);
+    int EQPlayer::UpdateAppearance(int a1, int a2, int a3);
 };
 
 class EQPlayerManager
@@ -415,6 +416,11 @@ typedef int (__thiscall* EQ_FUNCTION_TYPE_EQPlayer__ChangePosition)(void* pThis,
 EQ_FUNCTION_AT_ADDRESS(void EQPlayer::ChangePosition(BYTE standingState), EQ_FUNCTION_EQPlayer__ChangePosition);
 #endif
 
+#ifdef EQ_FUNCTION_EQPlayer__do_change_form
+typedef int (__thiscall* EQ_FUNCTION_TYPE_EQPlayer__do_change_form)(void* pThis, int changeForm);
+EQ_FUNCTION_AT_ADDRESS(void EQPlayer::do_change_form(int changeForm), EQ_FUNCTION_EQPlayer__do_change_form);
+#endif
+
 #ifdef EQ_FUNCTION_EQPlayer__FacePlayer
 EQ_FUNCTION_AT_ADDRESS(void EQPlayer::FacePlayer(DWORD spawnInfo), EQ_FUNCTION_EQPlayer__FacePlayer);
 #endif
@@ -424,9 +430,9 @@ typedef int (__thiscall* EQ_FUNCTION_TYPE_EQPlayer__SetRace)(void* pThis, int ra
 EQ_FUNCTION_AT_ADDRESS(void EQPlayer::SetRace(int raceId), EQ_FUNCTION_EQPlayer__SetRace);
 #endif
 
-#ifdef EQ_FUNCTION_EQPlayer__do_change_form
-typedef int (__thiscall* EQ_FUNCTION_TYPE_EQPlayer__do_change_form)(void* pThis, int changeForm);
-EQ_FUNCTION_AT_ADDRESS(void EQPlayer::do_change_form(int changeForm), EQ_FUNCTION_EQPlayer__do_change_form);
+#ifdef EQ_FUNCTION_EQPlayer__UpdateAppearance
+typedef int (__thiscall* EQ_FUNCTION_TYPE_EQPlayer__UpdateAppearance)(void* pThis, int a1, int a2, int a3);
+EQ_FUNCTION_AT_ADDRESS(int EQPlayer::UpdateAppearance(int a1, int a2, int a3), EQ_FUNCTION_EQPlayer__UpdateAppearance);
 #endif
 
 /* EQPlayerManager */
@@ -1133,7 +1139,13 @@ DWORD EQ_GetNumPlayersInZone()
 
             if (spawnLevel > 0 && spawnLevel < 100)
             {
-                numPlayers++;
+                char spawnName[0x40] = {0};
+                memcpy(spawnName, (LPVOID)(spawn + 0xA4), sizeof(spawnName));
+
+                if (strlen(spawnName) > 2)
+                {
+                    numPlayers++;
+                }
             }
         }
 
@@ -1482,6 +1494,21 @@ bool EQ_IsWindowVisible(DWORD windowPointer)
     }
 
     return true;
+}
+
+std::string EQ_GetExecuteCmdName(unsigned int command)
+{
+    if (command == 0)
+    {
+        return "Unknown Command";
+    }
+
+    DWORD commandNameAddress = EQ_ReadMemory<DWORD>(EQ_EXECUTECMD_LIST + (command * 4));
+
+    char commandName[0x40] = {0};
+    memcpy(commandName, (LPVOID)(commandNameAddress), sizeof(commandName));
+
+    return commandName;
 }
 
 #endif // EQSOD_FUNCTIONS_H
