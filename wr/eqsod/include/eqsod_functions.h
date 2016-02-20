@@ -1046,7 +1046,7 @@ bool EQ_WorldSpaceToScreenSpace(float worldX, float worldY, float worldZ, int& s
 
         return false;
     }
-    
+
     float v8 = 1.0f / v7;
 
     float a3 = v10 * v8 + cameraData_0x198;
@@ -1054,6 +1054,17 @@ bool EQ_WorldSpaceToScreenSpace(float worldX, float worldY, float worldZ, int& s
 
     screenX = (int)a3;
     screenY = (int)a4;
+
+    int windowWidth  = EQ_ReadMemory<DWORD>(EQ_WINDOW_WIDTH);
+    int windowHeight = EQ_ReadMemory<DWORD>(EQ_WINDOW_HEIGHT);
+
+    if (screenX < 0 || screenX > windowWidth || screenY < 0 || screenY > windowHeight)
+    {
+        screenX = -1;
+        screenY = -1;
+
+        return false;
+    }
 
     return true;
 }

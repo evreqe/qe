@@ -75,11 +75,14 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_POINTER_CMapViewWnd                0x00990C0C
 #define EQ_POINTER_CMerchantWnd               0x00990C5C
 #define EQ_POINTER_CSelectorWnd               0x00990C64
+#define EQ_POINTER_CSkillsWnd                 0x00990BB4
+#define EQ_POINTER_CSkillsSelectWnd           0x00990BB8
 #define EQ_POINTER_CSocialEditWnd             0x00990C7C
 #define EQ_POINTER_CSpellBookWnd              0x00990C40
 #define EQ_POINTER_CTextEntryWnd              0x00990C90
 #define EQ_POINTER_CTrackingWnd               0x00990C74
 #define EQ_POINTER_CTradeWnd                  0x00990C60
+#define EQ_POINTER_CTrainWnd                  0x00990BB0
 
 #define EQ_POINTER_SPELL_MANAGER              0x00AD3A90 // pinstSpellManager
 #define EQ_POINTER_SWITCH_MANAGER             0x00A40704 // pinstSwitchManager (doors)
