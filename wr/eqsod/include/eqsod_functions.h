@@ -32,6 +32,20 @@
 template <class T>
 T EQ_ReadMemory(DWORD address)
 {
+    T* buffer = (T*)address;
+    return (*buffer);
+}
+
+template <class T>
+void EQ_WriteMemory(DWORD address, T value)
+{
+    T* buffer = (T*)address;
+    *buffer = value;
+}
+
+template <class T>
+T EQ_ReadMemoryProtected(DWORD address)
+{
     DWORD oldProtect;
     VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, sizeof(T), PAGE_READWRITE, &oldProtect);
 
@@ -43,7 +57,7 @@ T EQ_ReadMemory(DWORD address)
 }
 
 template <class T>
-void EQ_WriteMemory(DWORD address, T value)
+void EQ_WriteMemoryProtected(DWORD address, T value)
 {
     DWORD oldProtect;
     VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, sizeof(value), PAGE_READWRITE, &oldProtect);
@@ -705,6 +719,8 @@ DWORD EQ_GetZoneId()
 
 bool EQ_IsZoneCity()
 {
+    // TODO
+
     DWORD zoneId = EQ_GetZoneId();
 
     if
@@ -728,7 +744,7 @@ bool EQ_IsZoneCity()
     return false;
 }
 
-bool EQ_IsCastingSpell()
+bool EQ_IsPlayerCastingSpell()
 {
     DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
     if (playerSpawn == NULL)
@@ -884,13 +900,13 @@ void EQ_DrawText(const char* text, int x, int y, unsigned int color, unsigned in
         return;
     }
     
-    EQ_WriteMemory<DWORD>(0x0046D8FF, color); // write new color
+    EQ_WriteMemoryProtected<DWORD>(0x0046D8FF, color); // write new color
 
     EQ_WriteMemory<DWORD>(font2 + 0x04, size); // write new font size
 
     EQ_CDisplay->WriteTextHD2(text, x, y, 0); // 0 is the color index that gets overwritten
 
-    EQ_WriteMemory<DWORD>(0x0046D8FF, 0xFF000000); // restore old color
+    EQ_WriteMemoryProtected<DWORD>(0x0046D8FF, 0xFF000000); // restore old color
 
     EQ_WriteMemory<DWORD>(font2 + 0x04, 2); // restore old font size
 }
@@ -1366,6 +1382,8 @@ bool EQ_LootItemByName(const char* name)
 
 DWORD EQ_GetFontHeight(int fontSize)
 {
+    // TODO
+
     if (fontSize == 2)
     {
         return 13;
@@ -1449,7 +1467,6 @@ std::string EQ_GetSpawnMapLocationString(DWORD spawnInfo)
 void EQ_CopyTargetMapLocationToClipboard()
 {
     DWORD targetSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_TARGET_SPAWN_INFO);
-
     if (targetSpawn == NULL)
     {
         return;
@@ -1515,9 +1532,18 @@ std::string EQ_GetExecuteCmdName(unsigned int command)
     }
 
     DWORD commandNameAddress = EQ_ReadMemory<DWORD>(EQ_EXECUTECMD_LIST + (command * 4));
+    if (commandNameAddress == NULL)
+    {
+        return "Unknown Command";
+    }
 
     char commandName[0x40] = {0};
     memcpy(commandName, (LPVOID)(commandNameAddress), sizeof(commandName));
+
+    if (commandName == NULL)
+    {
+        return "Unknown Command";
+    }
 
     return commandName;
 }

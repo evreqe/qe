@@ -161,10 +161,12 @@ bool g_espSpawnIsEnabled = true;
 bool g_espGroundSpawnIsEnabled = true;
 bool g_espDoorIsEnabled = false;
 bool g_espSkeletonIsEnabled = false;
+bool g_espZoneObjectIsEnabled = false;
 float g_espSpawnDistance = 400.0f;
 float g_espGroundSpawnDistance = 200.0f;
 float g_espDoorDistance = 100.0f;
 float g_espSkeletonDistance = 100.0f;
+float g_espZoneObjectDistance = 200.0f;
 unsigned int g_espNpcCorpseMax = 10;
 unsigned int g_espNumDrawText = 0;
 std::vector<EQAPPESPSPAWN> g_espSpawnList;
@@ -219,7 +221,9 @@ bool g_heightIsEnabled = true;
 float g_heightMaximum = 5.0f;
 
 bool g_drawDistanceIsEnabled = true;
-float g_drawDistance = 2000.0f;
+float g_drawDistance = 1000.0f;
+DWORD g_drawDistanceTimer = 0;
+DWORD g_drawDistanceDelay = 1000;
 
 bool g_hideCorpseLootedIsEnabled = true;
 
@@ -311,10 +315,12 @@ const std::vector<std::string> g_slashCommandsList
     "//espgroundspawn, //espg",
     "//espdoor, //espd",
     "//espskeleton, //espsk",
+    "//espzoneobject, //espzo",
     "//setespspawndistance (distance), //setesps (distance), //setesp (distance)",
     "//setespgroundspawndistance (distance), //setespg (distance)",
     "//setespdoordistance (distance), //setespd (distance)",
     "//setespskeletondistance (distance), //setespsk (distance)",
+    "//setespzoneobjectdistance (distance), //setespzo (distance)",
     "//speed",
     "//setspeed sow",
     "//setspeed run1",
@@ -1742,13 +1748,13 @@ void EQAPP_DoAlwaysAttack()
         return;
     }
 
-    DWORD charInfo = EQ_ReadMemory<DWORD>(EQ_POINTER_CHAR_INFO);
-    if (charInfo == NULL)
+    DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
+    if (playerSpawn == NULL)
     {
         return;
     }
 
-    DWORD standingState = EQ_ReadMemory<DWORD>(charInfo + 0xF2D8);
+    DWORD standingState = EQ_ReadMemory<BYTE>(playerSpawn + 0x279);
     if (standingState != EQ_STANDING_STATE_STANDING)
     {
         return;
@@ -1793,7 +1799,7 @@ void EQAPP_DoCombatHotbutton()
         return;
     }
 
-    if (EQ_IsCastingSpell() == true)
+    if (EQ_IsPlayerCastingSpell() == true)
     {
         return;
     }
@@ -1856,6 +1862,11 @@ void EQAPP_DoHeight()
 void EQAPP_DoDrawDistance()
 {
     if (g_drawDistanceIsEnabled == false)
+    {
+        return;
+    }
+
+    if (EQ_HasTimePassed(g_drawDistanceTimer, g_drawDistanceDelay) == false)
     {
         return;
     }
@@ -2532,6 +2543,99 @@ void EQAPP_DoEsp()
 
                     EQ_DrawText(ss.str().c_str(), screenX, screenY, 0xFFFFFFFF, 2);
                     g_espNumDrawText++;
+                }
+            }
+        }
+    }
+
+    if (g_espZoneObjectIsEnabled == true)
+    {
+        DWORD pointer1 = EQ_ReadMemory<DWORD>(0x00B112C0);
+        if (pointer1 != NULL)
+        {
+            DWORD pointer2 = EQ_ReadMemory<DWORD>(pointer1 + 0x94);
+            if (pointer2 != NULL)
+            {
+                DWORD zoneObject = EQ_ReadMemory<DWORD>(pointer2 + 0x5C);
+
+                while (zoneObject)
+                {
+                    DWORD zoneObject0x0C = EQ_ReadMemory<DWORD>(zoneObject + 0x0C);
+
+                    if (zoneObject0x0C == 2)
+                    {
+                        zoneObject = EQ_ReadMemory<DWORD>(zoneObject + 0x04); // next
+                        continue;
+                    }
+
+                    DWORD zoneObject0x2C = EQ_ReadMemory<BYTE>(zoneObject + 0x2C);
+                    DWORD zoneObject0x2D = EQ_ReadMemory<BYTE>(zoneObject + 0x2D);
+
+                    // skip player and npc models
+                    if (zoneObject0x2C == 1 && zoneObject0x2D == 0)
+                    {
+                        zoneObject = EQ_ReadMemory<DWORD>(zoneObject + 0x04); // next
+                        continue;
+                    }
+
+                    FLOAT zoneObjectY = EQ_ReadMemory<FLOAT>(zoneObject + 0x30);
+                    FLOAT zoneObjectX = EQ_ReadMemory<FLOAT>(zoneObject + 0x34);
+                    FLOAT zoneObjectZ = EQ_ReadMemory<FLOAT>(zoneObject + 0x38);
+
+                    float zoneObjectDistance = EQ_CalculateDistance3d(playerX, playerY, playerZ, zoneObjectX, zoneObjectY, zoneObjectZ);
+                    if (zoneObjectDistance > g_espZoneObjectDistance)
+                    {
+                        zoneObject = EQ_ReadMemory<DWORD>(zoneObject + 0x04); // next
+                        continue;
+                    }
+
+                    int screenX = -1;
+                    int screenY = -1;
+                    bool result = EQ_WorldSpaceToScreenSpace(zoneObjectX, zoneObjectY, zoneObjectZ, screenX, screenY);
+                    if (result == false)
+                    {
+                        zoneObject = EQ_ReadMemory<DWORD>(zoneObject + 0x04); // next
+                        continue;
+                    }
+
+                    std::string zoneObjectName = "ZONEOBJECT";
+
+                    DWORD zoneObject0x14 = EQ_ReadMemory<DWORD>(zoneObject + 0x14);
+                    if (zoneObject0x14 != NULL)
+                    {
+                        DWORD zoneObject0x14x18 = EQ_ReadMemory<DWORD>(zoneObject0x14 + 0x18);
+                        if (zoneObject0x14x18 != NULL)
+                        {
+                            PCHAR zoneObjectNamePointer = EQ_ReadMemory<PCHAR>(zoneObject0x14x18 + 0x08);
+                            if (zoneObjectNamePointer != NULL)
+                            {
+                                zoneObjectName = std::string(zoneObjectNamePointer);
+                            }
+                        }
+                    }
+
+                    std::stringstream ss;
+                    ss << "+ " << zoneObjectName << " (" << (int)zoneObjectDistance << ")";
+                    EQ_DrawText(ss.str().c_str(), screenX, screenY, 0xFFFFFFFF, 2);
+
+                    unsigned int offsetY = 13;
+
+                    std::stringstream ssY;
+                    ssY << "Y: " << zoneObjectY;
+                    EQ_DrawText(ssY.str().c_str(), screenX, screenY + offsetY, 0xFFFFFFFF, 2);
+                    offsetY += 13;
+
+                    std::stringstream ssX;
+                    ssX << "X: " << zoneObjectX;
+                    EQ_DrawText(ssX.str().c_str(), screenX, screenY + offsetY, 0xFFFFFFFF, 2);
+                    offsetY += 13;
+
+                    std::stringstream ssZ;
+                    ssZ << "Z: " << zoneObjectZ;
+                    EQ_DrawText(ssZ.str().c_str(), screenX, screenY + offsetY, 0xFFFFFFFF, 2);
+                    offsetY += 13;
+
+                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + 0x04); // next
                 }
             }
         }
@@ -4050,6 +4154,16 @@ void EQAPP_DoInterpretCommand(const char* command)
         return;
     }
 
+    // toggle esp zone object
+    if (strcmp(command, "//espzoneobject") == 0 || strcmp(command, "//espzo") == 0)
+    {
+        EQ_ToggleBool(g_espZoneObjectIsEnabled);
+
+        std::cout << "ESP Zone Object: " << std::boolalpha << g_espZoneObjectIsEnabled << std::noboolalpha << std::endl;
+
+        return;
+    }
+
     // set esp spawn distance
     if (strncmp(command, "//setespspawndistance ", 22) == 0 || strncmp(command, "//setesps ", 10) == 0 || strncmp(command, "//setesp ", 9) == 0)
     {
@@ -4121,6 +4235,25 @@ void EQAPP_DoInterpretCommand(const char* command)
             g_espSkeletonDistance = distance;
 
             std::cout << "ESP Skeleton Distance: " << distance << std::endl;
+        }
+
+        return;
+    }
+
+    // set esp zone object distance
+    if (strncmp(command, "//setespzoneobjectdistance ", 27) == 0 || strncmp(command, "//setespzo ", 11) == 0)
+    {
+        char commandEx[128];
+
+        float distance = 0.0f;
+
+        int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &distance);
+
+        if (result == 2)
+        {
+            g_espZoneObjectDistance = distance;
+
+            std::cout << "ESP Zone Object Distance: " << distance << std::endl;
         }
 
         return;
