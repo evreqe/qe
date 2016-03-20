@@ -572,6 +572,18 @@ void EQ_Rotate2d(float cx, float cy, float& x, float& y, float angle)
     y = ny;
 }
 
+void EQ_CopyStringToClipboard(std::string& str)
+{
+    HGLOBAL mem = GlobalAlloc(GMEM_MOVEABLE, str.size() + 1);
+    memcpy(GlobalLock(mem), str.c_str(), str.size() + 1);
+    GlobalUnlock(mem);
+
+    OpenClipboard(0);
+    EmptyClipboard();
+    SetClipboardData(CF_TEXT, mem);
+    CloseClipboard();
+}
+
 bool EQ_IsInGame()
 {
     DWORD everquest = EQ_ReadMemory<DWORD>(EQ_POINTER_CEverQuest);
@@ -1447,6 +1459,11 @@ void EQ_ResetViewActor()
 
 std::string EQ_GetSpawnMapLocationString(DWORD spawnInfo)
 {
+    if (spawnInfo == NULL)
+    {
+        return "NULL";
+    }
+
     char spawnName[0x40] = {0};
     memcpy(spawnName, (LPVOID)(spawnInfo + 0xE4), sizeof(spawnName));
 
@@ -1464,6 +1481,25 @@ std::string EQ_GetSpawnMapLocationString(DWORD spawnInfo)
     return ss.str();
 }
 
+std::string EQ_GetSpawnEspCustomLocationString(DWORD spawnInfo)
+{
+    if (spawnInfo == NULL)
+    {
+        return "NULL";
+    }
+
+    FLOAT spawnY = EQ_ReadMemory<FLOAT>(spawnInfo + 0x64);
+    FLOAT spawnX = EQ_ReadMemory<FLOAT>(spawnInfo + 0x68);
+    FLOAT spawnZ = EQ_ReadMemory<FLOAT>(spawnInfo + 0x6C);
+
+    // y x z red green blue size text
+    std::stringstream ss;
+    ss.precision(5);
+    ss << spawnY << " " << spawnX << " " << spawnZ << " " << "128 0 255 2 text";
+
+    return ss.str();
+}
+
 void EQ_CopyTargetMapLocationToClipboard()
 {
     DWORD targetSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_TARGET_SPAWN_INFO);
@@ -1474,14 +1510,20 @@ void EQ_CopyTargetMapLocationToClipboard()
 
     std::string mapLocation = EQ_GetSpawnMapLocationString(targetSpawn);
 
-    HGLOBAL mem = GlobalAlloc(GMEM_MOVEABLE, mapLocation.size());
-    memcpy(GlobalLock(mem), mapLocation.c_str(), mapLocation.size());
-    GlobalUnlock(mem);
+    EQ_CopyStringToClipboard(mapLocation);
+}
 
-    OpenClipboard(0);
-    EmptyClipboard();
-    SetClipboardData(CF_TEXT, mem);
-    CloseClipboard();
+void EQ_CopyPlayerEspCustomLocationToClipboard()
+{
+    DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
+    if (playerSpawn == NULL)
+    {
+        return;
+    }
+
+    std::string espCustomLocation = EQ_GetSpawnEspCustomLocationString(playerSpawn);
+
+    EQ_CopyStringToClipboard(espCustomLocation);
 }
 
 DWORD EQ_GetMapViewMap()
