@@ -1495,33 +1495,31 @@ std::string EQ_GetSpawnEspCustomLocationString(DWORD spawnInfo)
     // y x z red green blue size text
     std::stringstream ss;
     ss.precision(5);
-    ss << spawnY << " " << spawnX << " " << spawnZ << " " << "128 0 255 2 text";
+    ss << spawnY << " " << spawnX << " " << spawnZ << " " << "255 128 255 2 placeholder";
 
     return ss.str();
 }
 
-void EQ_CopyTargetMapLocationToClipboard()
+void EQ_CopySpawnMapLocationToClipboard(DWORD spawnInfo)
 {
-    DWORD targetSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_TARGET_SPAWN_INFO);
-    if (targetSpawn == NULL)
+    if (spawnInfo == NULL)
     {
         return;
     }
 
-    std::string mapLocation = EQ_GetSpawnMapLocationString(targetSpawn);
+    std::string mapLocation = EQ_GetSpawnMapLocationString(spawnInfo);
 
     EQ_CopyStringToClipboard(mapLocation);
 }
 
-void EQ_CopyPlayerEspCustomLocationToClipboard()
+void EQ_CopySpawnEspCustomLocationToClipboard(DWORD spawnInfo)
 {
-    DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
-    if (playerSpawn == NULL)
+    if (spawnInfo == NULL)
     {
         return;
     }
 
-    std::string espCustomLocation = EQ_GetSpawnEspCustomLocationString(playerSpawn);
+    std::string espCustomLocation = EQ_GetSpawnEspCustomLocationString(spawnInfo);
 
     EQ_CopyStringToClipboard(espCustomLocation);
 }
@@ -1588,6 +1586,23 @@ std::string EQ_GetExecuteCmdName(unsigned int command)
     }
 
     return commandName;
+}
+
+void EQ_TurnPlayerTowardsLocation(float y1, float x1, float y2, float x2)
+{
+    DWORD playerSpawn = EQ_ReadMemory<DWORD>(EQ_POINTER_PLAYER_SPAWN_INFO);
+    if (playerSpawn == NULL)
+    {
+        return;
+    }
+
+    FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
+    FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);
+    FLOAT playerZ = EQ_ReadMemory<FLOAT>(playerSpawn + 0x6C);
+
+    float heading = EQ_get_bearing(y1, x1, y2, x2);
+
+    EQ_WriteMemory<FLOAT>(playerSpawn + 0x80, heading);
 }
 
 #endif // EQSOD_FUNCTIONS_H
