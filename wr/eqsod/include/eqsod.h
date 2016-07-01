@@ -10,6 +10,9 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME = "EQGraphicsDX9.dll";
 
 const float EQ_PI = 3.14159265358979f;
 
+const float EQ_HEADING_MAX        = 512.0f;
+const float EQ_HEADING_MAX_HALVED = 256.0f;
+
 const float EQ_FIELD_OF_VIEW_DEFAULT = 45.0f;
 
 const float EQ_DRAW_DISTANCE_DEFAULT = 400.0f;
@@ -27,6 +30,7 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 
 #define EQ_BOOL_AUTO_ATTACK    0x00AC1196 // BYTE
 #define EQ_BOOL_AUTO_FIRE      0x00AC1197 // BYTE
+#define EQ_BOOL_AUTO_RUN       0x00A603FC // DWORD
 #define EQ_BOOL_NET_STATUS     0x00A603E1 // BYTE
 #define EQ_BOOL_SAFELOCK       0x00A96858 // BYTE
 #define EQ_BOOL_SCREENSHOT     0x00A609A1 // BYTE, set to 1 to force the game to take a screenshot
@@ -642,5 +646,10 @@ typedef struct _EQCHANGEFORM
     BYTE f;
     BYTE g;
 } EQCHANGEFORM, *PEQCHANGEFORM;
+
+typedef struct _EQSPAWNINFO
+{
+/* 0x00 */    DWORD Unknown0x00;
+} EQSPAWNINFO, *PEQSPAWNINFO;
 
 #endif // EQSOD_H
