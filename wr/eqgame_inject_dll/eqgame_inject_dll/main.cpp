@@ -7,11 +7,9 @@
 
 #define APPLICATION_NAME "EverQuest Inject DLL"
 
-#define EQ_EXECUTABLE_NAME "eqgame.exe"
-#define EQ_PROCESS_NAME    "eqgame.exe"
-
-#define EQ_WINDOW_TITLE     "EverQuest"
-#define EQ_WINDOW_TITLE_EQW "EQW beta 2.32"
+#define EQ_EXECUTABLE_NAME    "eqgame.exe"
+#define EQ_PROCESS_NAME       "eqgame.exe"
+#define EQ_WINDOW_TITLE       "EverQuest"
 
 int file_exists(char *filename)
 {
@@ -113,11 +111,7 @@ int main(int argc, char *argv[])
     HWND eq_window = FindWindowA(NULL, EQ_WINDOW_TITLE);
     if (eq_window == NULL)
     {
-        eq_window = FindWindowA(NULL, EQ_WINDOW_TITLE_EQW);
-        if (eq_window == NULL)
-        {
-            printf("Error: EverQuest window not found.\n");
-        }
+        printf("Error: EverQuest window not found.\n");
     }
 
     printf("Enabling debug privileges.\n");

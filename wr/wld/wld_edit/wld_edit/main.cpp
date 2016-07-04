@@ -181,6 +181,7 @@ int main(int argc, char* argv[])
 
             //std::cout << "Name: " << name << std::endl;
 
+/*
             output << "Name: " << name << std::endl;
             output << "NameReference: " << fragment15.nameReference << std::endl;
             output << "NameReference Hex: " << std::hex << fragment15.nameReference << std::dec << std::endl;
@@ -193,13 +194,13 @@ int main(int argc, char* argv[])
             output << "S0: " << fragment15.scale[0] << std::endl;
             output << "S1: " << fragment15.scale[1] << std::endl;
             output << "S2: " << fragment15.scale[2] << std::endl;
+*/
+
+            output << fragment15.y << ", " << fragment15.x << ", " << fragment15.z << ", " << name << std::endl;
 
             if (searchTerm.size() != 0 && searchTerm != "ignore" && name.find(searchTerm.c_str()) != std::string::npos)
             {
-                fileContentsBinary.at(filePosition + 4) = '\x01';
-                fileContentsBinary.at(filePosition + 5) = '\x02';
-                fileContentsBinary.at(filePosition + 6) = '\x03';
-                fileContentsBinary.at(filePosition + 7) = '\x04';
+                fileContentsBinary.at(filePosition + 4) = '\x00';
             }
         }
         //else if (fragmentHeader.type == 0x36)

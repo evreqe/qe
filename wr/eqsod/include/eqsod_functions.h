@@ -835,6 +835,16 @@ void EQ_WriteToChat(const char* text, int textColor)
 
 void EQ_SetSpawnCollisionRadius(DWORD spawnInfo, float radius)
 {
+    if (radius < 0.1f)
+    {
+        return;
+    }
+
+    if (spawnInfo == NULL)
+    {
+        return;
+    }
+
     DWORD actorInfo = EQ_ReadMemory<DWORD>(spawnInfo + 0xF84);
     if (actorInfo == NULL)
     {
@@ -1836,9 +1846,9 @@ void EQ_TurnPlayerTowardsLocationGradually(float y, float x)
     EQ_WriteMemory<FLOAT>(playerSpawn + 0x80, targetHeading);
 }
 
-void EQ_DoorOpen(DWORD doorInfo)
+void EQ_Door_SetState(DWORD doorInfo, BYTE doorState)
 {
-    ((EQSwitch*)doorInfo)->ChangeState(EQ_DOOR_STATE_OPEN, 0, 0);
+    ((EQSwitch*)doorInfo)->ChangeState(doorState, 0, 0);
 }
 
 void EQ_WalkPlayerToLocation(float y, float x)

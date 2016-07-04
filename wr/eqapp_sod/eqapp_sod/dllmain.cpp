@@ -26,1552 +26,148 @@
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
 
-//#define DIRECTINPUT_VERSION 0x0800
-//#include "dinput.h"
-//#pragma comment(lib, "dinput.lib")
-
 #include "detours.h"
 #pragma comment(lib, "detours.lib")
 
 #include "jansson.h"
 #pragma comment(lib, "jansson.lib")
 
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
+
+#include <imgui.h>
+#include "imgui_impl_glfw.h"
+
 #include "eqsod.h"
 #include "eqsod_functions.h"
 
-const char* g_applicationName    = "EQAPP";
-const char* g_applicationExeName = "eqapp";
+#include "eqapp.h"
+#include "eqapp_functions.h"
 
-volatile int g_bLoaded  = 0;
-volatile int g_bExit    = 0;
-volatile int g_bConsole = 0;
+#include "eqapp_detours.h"
+#include "eqapp_memory.h"
+#include "eqapp_sounds.h"
+#include "eqapp_waypoint.h"
+#include "eqapp_freecamera.h"
+#include "eqapp_linetotarget.h"
+#include "eqapp_namedspawns.h"
+#include "eqapp_census.h"
+#include "eqapp_nobeep.h"
+#include "eqapp_characterfile.h"
+#include "eqapp_textoverlaychattext.h"
+#include "eqapp_doors.h"
 
-HWND g_hwnd;
+#include "eqapp_imgui.h"
+#include "eqapp_imgui_functions.h"
 
-HMODULE g_module;
+#include "eqapp_imgui_consolewindow.h"
 
-HANDLE g_handleThreadLoad;
-HANDLE g_handleThreadConsole;
-HANDLE g_handleThreadLoop;
-
-// detours
-EQ_FUNCTION_TYPE_Exit EQAPP_REAL_Exit = NULL;
-EQ_FUNCTION_TYPE_DrawNetStatus EQAPP_REAL_DrawNetStatus = NULL;
-EQ_FUNCTION_TYPE_ExecuteCmd EQAPP_REAL_ExecuteCmd = NULL;
-
-EQ_FUNCTION_TYPE_CDisplay__CreatePlayerActor EQAPP_REAL_CDisplay__CreatePlayerActor = NULL;
-EQ_FUNCTION_TYPE_CDisplay__DeleteActor EQAPP_REAL_CDisplay__DeleteActor = NULL;
-//EQ_FUNCTION_TYPE_CDisplay__SetNameSpriteState EQAPP_REAL_CDisplay__SetNameSpriteState = NULL;
-//EQ_FUNCTION_TYPE_CDisplay__SetNameSpriteTint EQAPP_REAL_CDisplay__SetNameSpriteTint = NULL;
-
-EQ_FUNCTION_TYPE_CEverQuest__dsp_chat EQAPP_REAL_CEverQuest__dsp_chat = NULL;
-EQ_FUNCTION_TYPE_CEverQuest__EnterZone EQAPP_REAL_CEverQuest__EnterZone = NULL;
-EQ_FUNCTION_TYPE_CEverQuest__InterpretCmd EQAPP_REAL_CEverQuest__InterpretCmd = NULL;
-EQ_FUNCTION_TYPE_CEverQuest__MoveToZone EQAPP_REAL_CEverQuest__MoveToZone = NULL;
-EQ_FUNCTION_TYPE_CEverQuest__SetGameState EQAPP_REAL_CEverQuest__SetGameState = NULL;
-EQ_FUNCTION_TYPE_CEverQuest__StartCasting EQAPP_REAL_CEverQuest__StartCasting = NULL;
-
-EQ_FUNCTION_TYPE_CMapViewWnd__dCMapViewWnd EQAPP_REAL_CMapViewWnd__dCMapViewWnd = NULL;
-EQ_FUNCTION_TYPE_CMapViewWnd__DrawMap EQAPP_REAL_CMapViewWnd__DrawMap = NULL;
-
-EQ_FUNCTION_TYPE_EQ_Character__eqspa_movement_rate EQAPP_REAL_EQ_Character__eqspa_movement_rate = NULL;
-
-EQ_FUNCTION_TYPE_EQPlayer__ChangePosition EQAPP_REAL_EQPlayer__ChangePosition = NULL;
-EQ_FUNCTION_TYPE_EQPlayer__do_change_form EQAPP_REAL_EQPlayer__do_change_form = NULL;
-EQ_FUNCTION_TYPE_EQPlayer__SetRace EQAPP_REAL_EQPlayer__SetRace = NULL;
-
-EQ_FUNCTION_TYPE_MapViewMap__Save EQAPP_REAL_MapViewMap__Save = NULL;
-EQ_FUNCTION_TYPE_MapViewMap__SaveEx EQAPP_REAL_MapViewMap__SaveEx = NULL;
-
-// types
-typedef struct _EQAPPMEMORY
+void EQAPP_Load()
 {
-    unsigned int index;
-    std::string name;
-    std::string filename;
-    std::string description;
-    bool isEnabled;
-} EQAPPMEMORY, *PEQAPPMEMORY;
-
-typedef struct _EQAPPSOUND
-{
-    unsigned int index;
-    std::string text;
-    std::string filename;
-    bool isEnabled;
-} EQAPPSOUND, *PEQAPPSOUND;
-
-typedef struct _EQAPPESPSPAWN
-{
-    DWORD spawnInfo;
-    char name[0x40];
-    char lastName[0x20];
-    float y;
-    float x;
-    float z;
-    float distance;
-    int level;
-    int type;
-    int _class;
-    int guildId;
-    int standingState;
-    int isHoldingPrimary;
-    int isHoldingSecondary;
-    int isPet;
-    int isLfg;
-    int isPvp;
-    int isTrader;
-    int isAfk;
-    int isGm;
-    bool showAtAnyDistance = false;
-    bool isTarget = false;
-    bool isFindSpawn = false;
-    bool isHalfDistance = false;
-} EQAPPESPSPAWN, *PEQAPPESPSPAWN;
-
-typedef struct _EQAPPESPCUSTOM
-{
-    float y;
-    float x;
-    float z;
-    DWORD color;
-    unsigned int size = 2;
-    std::string text;
-} EQAPPESPCUSTOM, *PEQAPPESPCUSTOM;
-
-typedef struct _EQAPPSPAWNCASTSPELL
-{
-    DWORD spawnInfo;
-    std::string spellName;
-    DWORD spellCastTime;
-    DWORD timer = 0;
-} EQAPPSPAWNCASTSPELL, *PEQAPPSPAWNCASTSPELL;
-
-typedef std::shared_ptr<EQAPPSPAWNCASTSPELL> SPEQAPPSPAWNCASTSPELL;
-
-typedef struct _EQAPPWAYPOINT
-{
-    unsigned int index;
-    float y;
-    float x;
-    float z;
-    std::vector<unsigned int> connectList;
-    std::string name;
-
-    // A* Star pathfinding algorithm
-    bool isOpened;
-    bool isClosed;
-    unsigned int f = 0;
-    unsigned int g = 0;
-    unsigned int h = 0;
-    struct _EQAPPWAYPOINT* parent = NULL;
-} EQAPPWAYPOINT, *PEQAPPWAYPOINT;
-
-// globals
-std::ios g_coutFlags(NULL);
-
-bool g_debugIsEnabled = false;
-
-int g_killSwitchKey = VK_PAUSE;
-
-bool g_hudIsEnabled = true;
-int g_hudX = 5;
-int g_hudY = 28;
-float g_hudWidth  = 127.0f;
-float g_hudHeight = 0.0f;
-
-std::vector<std::string> g_zoneShortNamesList;
-
-bool g_onScreenTextIsEnabled = true;
-std::list<std::string> g_onScreenTextList;
-unsigned int g_onScreenTextMax = 10;
-unsigned int g_onScreenTextX = 1200;
-unsigned int g_onScreenTextY = 500;
-DWORD g_onScreenTextTimer = 0;
-DWORD g_onScreenTextDelay = 5000;
-DWORD g_onScreenTextColor = 0xFFFFFFFF;
-
-bool g_memoryIsEnabled = true;
-std::vector<EQAPPMEMORY> g_memoryList;
-
-bool g_soundsIsEnabled = true;
-std::vector<EQAPPSOUND> g_soundsList;
-
-bool g_espIsEnabled = true;
-bool g_espSpawnIsEnabled = true;
-bool g_espGroundSpawnIsEnabled = true;
-bool g_espDoorIsEnabled = false;
-bool g_espSkeletonIsEnabled = false;
-bool g_espZoneObjectIsEnabled = false;
-bool g_espCustomIsEnabled = true;
-bool g_espWaypointIsEnabled = true;
-float g_espSpawnDistance = 400.0f;
-float g_espGroundSpawnDistance = 200.0f;
-float g_espDoorDistance = 100.0f;
-float g_espSkeletonDistance = 100.0f;
-float g_espZoneObjectDistance = 200.0f;
-float g_espCustomDistance = 400.0f;
-float g_espWaypointDistance = 1000.0f;
-unsigned int g_espNpcCorpseMax = 10;
-unsigned int g_espNumDrawText = 0;
-std::vector<EQAPPESPSPAWN> g_espSpawnList;
-DWORD g_espSpawnListTimer = 0;
-DWORD g_espSpawnListDelay = 1000;
-std::vector<EQAPPESPCUSTOM> g_espCustomList;
-
-DWORD g_espDoorColor        = 0xFFFFFFFF;
-DWORD g_espZoneObjectColor  = 0xFFFFFFFF;
-DWORD g_espLocatorColor     = 0xFFFFFFFF;
-DWORD g_espGroundSpawnColor = 0xFFFFFFFF;
-DWORD g_espWaypointColor    = 0xFFC0C0C0;
-DWORD g_espFindColor        = 0xFF00FF80;
-
-bool g_speedHackIsEnabled = true;
-float g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_SPIRIT_OF_WOLF;
-
-bool g_locatorIsEnabled = false;
-float g_locatorY = 0.0f;
-float g_locatorX = 0.0f;
-float g_locatorZ = 0.0f;
-
-bool g_findIsEnabled = false;
-std::string g_findSpawnName;
-
-bool g_textOverlayOnChatTextIsEnabled = true;
-std::vector<std::string> g_textOverlayChatTextList;
-int g_textOverlayChatTextDuration = 5000;
-
-bool g_lineToTargetIsEnabled = true;
-DWORD g_lineToTargetColor = 0xFFFF00FF;
-
-bool g_namedSpawnsIsEnabled = true;
-std::vector<std::string> g_namedSpawnsList;
-unsigned int g_namedSpawnsX = 1200;
-unsigned int g_namedSpawnsY = 28;
-float g_namedSpawnsWidth  = 256.0f;
-float g_namedSpawnsHeight = 512.0f;
-DWORD g_namedSpawnsColor = 0xFFFFFFFF;
-
-bool g_alwaysAttackIsEnabled = false;
-
-bool g_combatHotbuttonIsEnabled = false;
-unsigned int g_combatHotbuttonIndex = 0;
-DWORD g_combatHotbuttonTimer = 0;
-DWORD g_combatHotbuttonDelay = 1000;
-
-bool g_alwaysHotbuttonIsEnabled = false;
-unsigned int g_alwaysHotbuttonIndex = 0;
-DWORD g_alwaysHotbuttonTimer = 0;
-DWORD g_alwaysHotbuttonDelay = 1000;
-
-bool g_targetBeepIsEnabled = false;
-DWORD g_targetBeepTimer = 0;
-DWORD g_targetBeepDelay = 1000;
-std::string g_targetBeepName;
-
-bool g_spawnBeepIsEnabled = false;
-std::string g_spawnBeepName;
-
-std::vector<std::string> g_noBeepList;
-
-bool g_heightIsEnabled = true;
-float g_heightMaximum = 5.0f;
-
-bool g_drawDistanceIsEnabled = true;
-float g_drawDistance = 1000.0f;
-DWORD g_drawDistanceTimer = 0;
-DWORD g_drawDistanceDelay = 1000;
-
-bool g_hideCorpseLootedIsEnabled = true;
-
-bool g_healthBarsIsEnabled = false;
-bool g_healthBarsShowGroupIsEnabled = false;
-unsigned int g_healthBarsMax = 20;
-unsigned int g_healthBarsX = 1200;
-unsigned int g_healthBarsY = 28;
-float g_healthBarsWidth  = 256.0f;
-float g_healthBarsHeight = 512.0f;
-std::vector<std::string> g_healthBarsSpawnNamesList;
-
-bool g_mapLabelsIsEnabled = false;
-bool g_mapLabelsFilterIsEnabled = false;
-DWORD g_mapLabelsData = 255;
-DWORD g_mapLabelsTimer = 0;
-DWORD g_mapLabelsDelay = 10000;
-std::string g_mapLabelsFilterName;
-
-bool g_neverFrozenIsEnabled = true;
-
-bool g_spawnCastSpellIsEnabled = true;
-std::vector<SPEQAPPSPAWNCASTSPELL> g_spawnCastSpellList;
-DWORD g_spawnCastSpellDelay = 5000;
-
-bool g_autoLootIsEnabled = false;
-std::vector<std::string> g_autoLootList;
-DWORD g_autoLootTimer = 0;
-DWORD g_autoLootDelay = 500;
-
-bool g_freeCameraIsEnabled = false;
-float g_freeCameraMultiplier = 1.0f;
-
-bool g_replaceRacesIsEnabled = true;
-
-bool g_autoScreenshotIsEnabled = false;
-
-bool g_censusIsActive = false;
-
-std::vector<EQAPPWAYPOINT> g_waypointList;
-bool g_waypointBotIsEnabled = false;
-std::string g_waypointBotSpawnName;
-DWORD g_waypointBotSpawnInfo;
-
-// important windows
-const std::vector<DWORD> g_importantWindowsList
-{
-    EQ_POINTER_CAAWnd,
-    EQ_POINTER_CBankWnd,
-    EQ_POINTER_CBazaarWnd,
-    EQ_POINTER_CBazaarSearchWnd,
-    EQ_POINTER_CInspectWnd,
-    EQ_POINTER_CInventoryWnd,
-    EQ_POINTER_CLootWnd,
-    EQ_POINTER_CMapViewWnd,
-    EQ_POINTER_CMerchantWnd,
-    EQ_POINTER_CSkillsWnd,
-    EQ_POINTER_CSkillsSelectWnd,
-    EQ_POINTER_CSocialEditWnd,
-    EQ_POINTER_CSpellBookWnd,
-    EQ_POINTER_CTextEntryWnd,
-    EQ_POINTER_CTrackingWnd,
-    EQ_POINTER_CTradeWnd,
-    EQ_POINTER_CTrainWnd,
-};
-
-// slash commands
-// TODO
-const std::vector<std::string> g_slashCommandsList
-{
-    "//help",
-    "//unload",
-    "//debug",
-    "//test",
-    "//hud",
-    "//lootdebug",
-    "//loot (item name)",
-    "//autoloot, //al",
-    "//resetautoloot, //resetal, //ral",
-    "//autoloot (item name), //al (item name)",
-    "//castray, //cr",
-    "//getmeleerange, //getmr, //gmr",
-    "//getspellname (spell id), //getsn (spell id), //gsn (spell id)",
-    "//gettargetinfo, //getti, //gti",
-    "//bank, //money",
-    "//banklist, //bl",
-    "//banklist (item name), //bl (item name)",
-    "//inventorylist, //invlist, //il",
-    "//inventorylist (item name), //invlist (item name), //il (item name)",
-    "//spawnlist, //sl",
-    "//spawnlist (spawn name), //sl (spawn name)",
-    "//esp",
-    "//espspawn, //esps",
-    "//espgroundspawn, //espg",
-    "//espdoor, //espd",
-    "//espskeleton, //espsk",
-    "//espzoneobject, //espzo",
-    "//espcustom, //espc",
-    "//setespspawndistance (distance), //setesps (distance), //setesp (distance)",
-    "//setespgroundspawndistance (distance), //setespg (distance)",
-    "//setespdoordistance (distance), //setespd (distance)",
-    "//setespskeletondistance (distance), //setespsk (distance)",
-    "//setespzoneobjectdistance (distance), //setespzo (distance)",
-    "//setespcustomdistance (distance), //setespc (distance)",
-    "//speed",
-    "//setspeed sow",
-    "//setspeed run1",
-    "//setspeed run2",
-    "//setspeed run3",
-    "//setspeed (speed), //sets (speed), //ss (speed)",
-    "//locator, //loc",
-    "//setlocator (y) (x) (z), //setloc (y) (x) (z)",
-    "//find",
-    "//setfind (spawn name)",
-    "//linetotarget, //ltt",
-    "//memorylist, //memlist",
-    "//memory (index), //mem (index)",
-    "//alwaysattack, //aa",
-    "//combathotbutton, //chb",
-    "//setcombathotbutton (index), //setchb (index), //schb (index)",
-    "//alwayshotbutton, //ahb",
-    "//setalwayshotbutton (index), //setahb (index), //sahb (index)",
-    "//setcollisionradius (radius), //setcr (radius), //scr (radius)",
-    "//drawdistance, //dd",
-    "//setdrawdistance (distance), //setdd  (distance)",
-    "//setfieldofview (fov), //setfov (fov)",
-    "//targetbeep, //tbeep",
-    "//settargetbeep (name) (delay), //settbeep (name) (delay), //stb (name) (delay)",
-    "//spawnbeep, //sbeep",
-    "//setspawnbeep (name), //setsbeep (name), //ssb (name)",
-    "//height",
-    "//setheight (height), //seth (height), //sh (height)",
-    "//healthbars, //hb",
-    "//resethealthbars, //resethb, //rhb",
-    "//healthbars (spawnname), //hb (spawnname)",
-    "//maplabels, //ml",
-    "//addmaplabels, //addml, //aml",
-    "//removemaplabels, //removeml, //rml",
-    "//getmaplabels, //getml, //gml",
-    "//filtermaplabels, //filterml, //fml",
-    "//filtermaplabels (spawn name), //filterml (spawn name), //fml (spawn name)",
-    "//getzoneinfo, //getzone, //getzi, //gzi",
-    "//loadmemory, //loadm, //lm",
-    "//sounds",
-    "//loadsounds, //loads, //ls",
-    "//namedspawns, //ns",
-    "//loadnamedspawns, //loadns, //lns",
-    "//loadespcustom, //loadec, //lec",
-    "//getnamedspawns, //getns, //gns",
-    "//writecharacterfile, //writechar, //writecf, //wcf",
-    "//loadtextoverlaychattext, //loadtoct, //ltoct",
-    "//loadnobeep, //loadnb, //lnb",
-    "//loadshortzonenames, //loadzsn, //lzsn",
-    "//hidecorpselooted, //hcl",
-    "//openalldoors, //opendoors, //oad",
-    "//census",
-    "//freecamera, //freecam, //fc",
-    "//setviewactor (spawn name), //setview (spawn name), //setva (spawn name), //sva (spawn name)",
-    "//setviewtarget, //setvt, //svt",
-    "//resetviewactor, //resetview, //resetva, //rva",
-    "//maplocations, //maplocs",
-    "//getmaplocation, //getmaploc",
-    "//getespcustomlocation, //getecl, //gecl",
-    "//openmapfile, //omf",
-};
-
-// function prototypes
-void EQAPP_EnableDebugPrivileges();
-void EQAPP_LoadConsole();
-void EQAPP_Cout_SaveFlags();
-void EQAPP_Cout_RestoreFlags();
-void EQAPP_DoWindowTitles();
-bool EQAPP_IsForegroundWindowCurrentProcessId();
-DWORD EQAPP_GetModuleBaseAddress(const wchar_t* moduleName);
-void EQAPP_LoadGraphicsDllFunctions();
-void EQAPP_DoLoad();
-void EQAPP_DoUnload();
-void EQAPP_AddDetours();
-void EQAPP_RemoveDetours();
-void EQAPP_LoadMemory();
-void EQAPP_UnloadMemory();
-void EQAPP_ToggleMemory(PEQAPPMEMORY pMemory, bool bEnabled);
-void EQAPP_LoadSounds();
-void EQAPP_LoadNamedSpawns();
-void EQAPP_LoadEspCustom();
-void EQAPP_DoNamedSpawns();
-void EQAPP_LoadTextOverlayChatText();
-void EQAPP_DoHud();
-void EQAPP_DoHealthBars();
-void EQAPP_DoTargetBeep();
-void EQAPP_DoSpawnBeep(DWORD spawnInfo);
-void EQAPP_DoSpawnMessage(DWORD spawnInfo);
-void EQAPP_DoDespawnMessage(DWORD spawnInfo);
-void EQAPP_DoLineToTarget();
-void EQAPP_DoAlwaysAttack();
-void EQAPP_DoCombatHotbutton();
-void EQAPP_DoAlwaysHotbutton();
-void EQAPP_UpdateEspSpawnList();
-void EQAPP_DoEsp();
-void EQAPP_DrawSpawnSkeleton(DWORD spawnInfo, DWORD argbColor);
-void EQAPP_DoMaxSwimming();
-void EQAPP_DoHeight();
-void EQAPP_DoDrawDistance();
-void EQAPP_DoHideCorpseLooted();
-void EQAPP_DoMapLabels();
-void EQAPP_RemoveMapLabels();
-void EQAPP_DoSpawnCastSpell();
-void EQAPP_DoSpawnCastSpellAddToList(DWORD spawnInfo, DWORD spellId, DWORD spellCastTime);
-void EQAPP_DoInterpretCommand(const char* command);
-void EQAPP_DoSpawnList(const char* filterSpawnName);
-void EQAPP_DoAutoLoot();
-void EQAPP_DoBankList(const char* filterItemName);
-void EQAPP_DoInventoryList(const char* filterItemName);
-void EQAPP_WriteCharacterFile();
-void EQAPP_WriteCharacterFileJson();
-void EQAPP_DoOpenAllDoors();
-void EQAPP_ToggleFreeCamera(bool b);
-void EQAPP_DoFreeCameraKeys();
-void EQAPP_DoOnScreenText();
-void EQAPP_DoOnScreenTextAddToList(std::string str);
-void EQAPP_DoMapLocations();
-void EQAPP_LoadZoneShortNames();
-void EQAPP_DoCensus();
-bool EQAPP_IsAnImportantWindowOpen();
-void EQAPP_LoadNoBeep();
-DWORD WINAPI EQAPP_ThreadLoop(LPVOID param);
-DWORD WINAPI EQAPP_ThreadLoad(LPVOID param);
-DWORD WINAPI EQAPP_ThreadConsole(LPVOID param);
-BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved);
-
-void EQAPP_EnableDebugPrivileges()
-{
-    HANDLE token;
-
-    if (OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token))
-    {
-        TOKEN_PRIVILEGES tp;
-        TOKEN_PRIVILEGES tpPrevious;
-
-        DWORD cbPrevious = sizeof(TOKEN_PRIVILEGES);
-
-        LUID luid;
-
-        if (LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &luid))
-        {
-            tp.PrivilegeCount           = 1;
-            tp.Privileges[0].Luid       = luid;
-            tp.Privileges[0].Attributes = 0;
-
-            AdjustTokenPrivileges
-            (
-                token,
-                FALSE,
-                &tp,
-                sizeof(TOKEN_PRIVILEGES),
-                &tpPrevious,
-                &cbPrevious
-            );
-
-            tpPrevious.PrivilegeCount            = 1;
-            tpPrevious.Privileges[0].Luid        = luid;
-            tpPrevious.Privileges[0].Attributes |= (SE_PRIVILEGE_ENABLED);
-    
-            AdjustTokenPrivileges
-            (
-                token,
-                FALSE,
-                &tpPrevious,
-                cbPrevious,
-                NULL,
-                NULL
-            );
-        }
-    }
-
-    CloseHandle(token);
-}
-
-void EQAPP_LoadConsole()
-{
-    static const WORD MAX_CONSOLE_LINES = 500;
-    int hConHandle;
-    long lStdHandle;
-    CONSOLE_SCREEN_BUFFER_INFO consoleScreenBufferInfo;
-    FILE* fp;
-
-    AllocConsole();
-
-    // set the screen buffer to be big enough to let us scroll text
-    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &consoleScreenBufferInfo);
-    consoleScreenBufferInfo.dwSize.Y = MAX_CONSOLE_LINES;
-    SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), consoleScreenBufferInfo.dwSize);
-
-    // redirect unbuffered STDOUT to the console
-    lStdHandle = (long)GetStdHandle(STD_OUTPUT_HANDLE);
-    hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
-    fp = _fdopen(hConHandle, "w");
-    *stdout = *fp;
-    setvbuf(stdout, NULL, _IONBF, 0);
-
-    // redirect unbuffered STDIN to the console
-    lStdHandle = (long)GetStdHandle(STD_INPUT_HANDLE);
-    hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
-    fp = _fdopen(hConHandle, "r");
-    *stdin = *fp;
-    setvbuf(stdin, NULL, _IONBF, 0);
-
-    // redirect unbuffered STDERR to the console
-    lStdHandle = (long)GetStdHandle(STD_ERROR_HANDLE);
-    hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
-    fp = _fdopen(hConHandle, "w");
-    *stderr = *fp;
-    setvbuf(stderr, NULL, _IONBF, 0);
-
-    std::ios::sync_with_stdio();
-
-    HWND hwnd = GetConsoleWindow();
-    if (hwnd != NULL)
-    {
-        SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)LoadIcon(0, IDI_APPLICATION));
-        SendMessage(hwnd, WM_SETICON, ICON_BIG  , (LPARAM)LoadIcon(0, IDI_APPLICATION));
-
-        // disable the close button
-        HMENU hMenu = GetSystemMenu(hwnd, FALSE);
-        if (hMenu != NULL)
-        {
-            DeleteMenu(hMenu, SC_CLOSE, MF_BYCOMMAND);
-        }
-    }
-
-    g_bConsole = 1;
-}
-
-void EQAPP_Cout_SaveFlags()
-{
-    g_coutFlags.copyfmt(std::cout);
-}
-
-void EQAPP_Cout_RestoreFlags()
-{
-    std::cout.copyfmt(g_coutFlags);
-}
-
-bool EQAPP_IsForegroundWindowCurrentProcessId()
-{
-    HWND foregroundHwnd = GetForegroundWindow();
-
-    DWORD foregroundProcessId;
-    GetWindowThreadProcessId(foregroundHwnd, &foregroundProcessId);
-
-    return (foregroundProcessId == GetCurrentProcessId());
-}
-
-DWORD EQAPP_GetModuleBaseAddress(const wchar_t* moduleName)
-{
-    DWORD moduleBaseAddress = 0;
-
-    DWORD processId = GetCurrentProcessId();
-
-    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, processId);
-
-    if (snapshot != INVALID_HANDLE_VALUE)
-    {
-        MODULEENTRY32 ModuleEntry32 = {0};
-        ModuleEntry32.dwSize = sizeof(MODULEENTRY32);
-
-        if (Module32First(snapshot, &ModuleEntry32))
-        {
-            do
-            {
-                if (wcscmp(ModuleEntry32.szModule, moduleName) == 0)
-                {
-                    moduleBaseAddress = (DWORD)ModuleEntry32.modBaseAddr;
-                    break;
-                }
-            } while (Module32Next(snapshot, &ModuleEntry32));
-        }
-
-        CloseHandle(snapshot);
-    }
-
-    return moduleBaseAddress;
-}
-
-template <class T>
-void EQAPP_Log(const char* text, T number)
-{
-    std::fstream file;
-    file.open("eqapp/log.txt", std::ios::out | std::ios::app);
-
-    file << "[" << __TIME__ << "] " << text << " (" << number << ")" << " Hex(" << std::hex << number << std::dec << ")" << std::endl;
-
-    file.close();
-}
-
-int EQAPP_Ini_ReadInt(const char* filename, const char* section, const char* key, int defaultValue)
-{
-    return GetPrivateProfileIntA(section, key, defaultValue, filename);
-}
-
-bool EQAPP_Ini_ReadBool(const char* filename, const char* section, const char* key, int defaultValue)
-{
-    int result = GetPrivateProfileIntA(section, key, defaultValue, filename);
-
-    return (result != 0);
-}
-
-float EQAPP_Ini_ReadFloat(const char* filename, const char* section, const char* key, float defaultValue)
-{
-    char bufferDefault[128];
-    _snprintf_s(bufferDefault, sizeof(bufferDefault), _TRUNCATE, "%f", defaultValue);
-
-    char bufferResult[128];
-    GetPrivateProfileStringA(section, key, bufferDefault, bufferResult, sizeof(bufferResult), filename);
-
-    float result = (float)atof(bufferResult);
-
-    return result;
-}
-
-std::string EQAPP_Ini_ReadString(const char* filename, const char* section, const char* key, const char* defaultValue)
-{
-    char result[1024];
-    GetPrivateProfileStringA(section, key, defaultValue, result, 1024, filename);
-    return result;
-}
-
-void EQAPP_DoLoad()
-{
-    AttachConsole(-1);
-
-    std::cout << g_applicationName << std::endl;
-
-    EQAPP_LoadMemory();
-    EQAPP_LoadSounds();
-    EQAPP_LoadNamedSpawns();
+    std::cout << "Loading..." << std::endl;
+
+    EQAPP_Memory_Load();
+    EQAPP_Sounds_Load();
+    EQAPP_NamedSpawns_Load();
     EQAPP_LoadEspCustom();
-    EQAPP_LoadTextOverlayChatText();
-    EQAPP_LoadNoBeep();
-    EQAPP_LoadZoneShortNames();
+    EQAPP_TextOverlayChatText_Load();
+    EQAPP_NoBeep_Load();
+    EQAPP_ZoneShortNames_Load();
 
-    EQAPP_WriteCharacterFile();
-    EQAPP_WriteCharacterFileJson();
+    EQAPP_CharacterFile_Write();
 
     std::cout << "Loaded." << std::endl;
 
-    g_bLoaded = 0;
+    g_bLoaded = 1;
 }
 
-void EQAPP_DoUnload()
+void EQAPP_Unload()
 {
+    std::cout << "Unloading..." << std::endl;
+
     g_spawnCastSpellList.clear();
 
     EQ_ResetViewActor();
 
     EQAPP_RemoveMapLabels();
 
-    EQAPP_UnloadMemory();
+    EQAPP_Memory_Unload();
 
-    EQAPP_ToggleFreeCamera(false);
-
-    std::cout << "Unloaded." << std::endl;
-
-    g_bExit = 1;
+    EQAPP_FreeCamera_Set(false);
 
     HWND window = EQ_ReadMemory<HWND>(EQ_WINDOW_HWND);
     if (window != NULL)
     {
         SetWindowTextA(window, EQ_STRING_WINDOW_TITLE);
     }
+
+    std::cout << "Unloaded." << std::endl;
+
+    g_bExit = 1;
 }
 
-void EQAPP_Waypoint_List()
+void EQAPP_Console_Load()
 {
-    std::cout << "Waypoint List: " << std::endl;
+    g_consoleStreamBuffer = std::cout.rdbuf(g_consoleStringStream.rdbuf());
 
-    if (g_waypointList.size() == 0)
-    {
-        std::cout << "empty" << std::endl;
-        return;
-    }
-
-    for (auto& waypoint : g_waypointList)
-    {
-        std::cout << waypoint.index << " " << waypoint.y << " " << waypoint.x << " " << waypoint.z << " ";
-
-        if (waypoint.connectList.size() == 0)
-        {
-            std::cout << "none";
-        }
-        else
-        {
-            for (auto& connect : waypoint.connectList)
-            {
-                std::cout << connect;
-
-                if (&connect != &waypoint.connectList.back())
-                {
-                    std::cout << ",";
-                }
-            }
-        }
-
-        std::cout << " " << waypoint.name << std::endl;
-    }
+    g_bConsole = 1;
 }
 
-PEQAPPWAYPOINT EQAPP_Waypoint_GetByIndex(unsigned int index)
+void EQAPP_Console_Unload()
 {
-    for (auto& waypoint : g_waypointList)
-    {
-        if (waypoint.index == index)
-        {
-            return &waypoint;
-        }
-    }
+    std::cout.rdbuf(g_consoleStreamBuffer);
 
-    std::cout << __FUNCTION__ << ": index not found: " << index << std::endl;
-    return NULL;
+    g_bConsole = 0;
 }
 
-void EQAPP_Waypoint_Add()
+void EQAPP_WindowTitles_Execute()
 {
-    unsigned int index = 0;
-
-    for (auto& waypoint_it = g_waypointList.begin(); waypoint_it != g_waypointList.end(); waypoint_it++)
+    if (g_bExit == 1)
     {
-        if (waypoint_it->index == index)
+        return;
+    }
+
+    HWND window = EQ_ReadMemory<HWND>(EQ_WINDOW_HWND);
+    if (window == NULL)
+    {
+        return;
+    }
+
+    DWORD playerSpawn = EQ_GetPlayerSpawn();
+    if (playerSpawn == NULL)
+    {
+        SetWindowTextA(window, EQ_STRING_WINDOW_TITLE);
+
+        if (g_hwndConsoleWindow != NULL)
         {
-            index++;
-            waypoint_it = g_waypointList.begin();
+            SetWindowTextA(g_hwndConsoleWindow, g_consoleWindowTitle);
         }
     }
-
-    DWORD spawnInfo = EQ_GetTargetSpawn();
-    if (spawnInfo == NULL)
+    else
     {
-        spawnInfo = EQ_GetPlayerSpawn();
-        if (spawnInfo == NULL)
-        {
-            std::cout << __FUNCTION__ << ": target and player spawn info is null" << std::endl;
-            return;
-        }
-    }
+        char playerName[0x40] = {0};
+        memcpy(playerName, (LPVOID)(playerSpawn + 0xE4), sizeof(playerName));
 
-    FLOAT spawnY = EQ_ReadMemory<FLOAT>(spawnInfo + 0x64);
-    FLOAT spawnX = EQ_ReadMemory<FLOAT>(spawnInfo + 0x68);
-    FLOAT spawnZ = EQ_ReadMemory<FLOAT>(spawnInfo + 0x6C);
-
-    std::stringstream waypointName;
-    waypointName << "Waypoint_" << index;
-
-    EQAPPWAYPOINT waypoint;
-    waypoint.index = index;
-    waypoint.y = spawnY;
-    waypoint.x = spawnX;
-    waypoint.z = spawnZ;
-    waypoint.name = waypointName.str();
-
-    g_waypointList.push_back(waypoint);
-
-    std::cout << __FUNCTION__ << ": added waypoint " << index << std::endl;
-}
-
-void EQAPP_Waypoint_Remove(unsigned int index)
-{
-    if (g_waypointList.empty() == true)
-    {
-        std::cout << __FUNCTION__ << ": waypoint list is empty" << std::endl;
-        return;
-    }
-
-    if (index > g_waypointList.size())
-    {
-        std::cout << __FUNCTION__ << ": index out of bounds: " << index << std::endl;
-        return;
-    }
-
-    for (auto& waypoint_it = g_waypointList.begin(); waypoint_it != g_waypointList.end(); waypoint_it++)
-    {
-        if (waypoint_it->index == index)
-        {
-            waypoint_it = g_waypointList.erase(waypoint_it);
-            waypoint_it--;
-        }
-    }
-
-    for (auto& waypoint : g_waypointList)
-    {
-        for (auto& connectIndex_it = waypoint.connectList.begin(); connectIndex_it != waypoint.connectList.end(); connectIndex_it++)
-        {
-            if (*connectIndex_it == index)
-            {
-                connectIndex_it = waypoint.connectList.erase(connectIndex_it);
-                connectIndex_it--;
-            }
-        }
-    }
-
-    std::cout << __FUNCTION__ << ": removed waypoint " << index << std::endl;
-}
-
-void EQAPP_Waypoint_Connect(unsigned int fromIndex, unsigned int toIndex)
-{
-    if (fromIndex == toIndex)
-    {
-        std::cout << __FUNCTION__ << ": cannot connect waypoint to itself" << std::endl;
-        return;
-    }
-
-    if (fromIndex > g_waypointList.size())
-    {
-        std::cout << __FUNCTION__ << ": from index out of bounds: " << fromIndex << std::endl;
-        return;
-    }
-
-    if (toIndex > g_waypointList.size())
-    {
-        std::cout << __FUNCTION__ << ": to index out of bounds: " << toIndex << std::endl;
-        return;
-    }
-
-    PEQAPPWAYPOINT fromWaypoint = EQAPP_Waypoint_GetByIndex(fromIndex);
-    if (fromWaypoint == NULL)
-    {
-        std::cout << __FUNCTION__ << ": from waypoint is null" << std::endl;
-        return;
-    }
-
-    for (auto& connectIndex : fromWaypoint->connectList)
-    {
-        if (connectIndex == toIndex)
-        {
-            std::cout << __FUNCTION__ << ": connection already exists for waypoints " << fromIndex << " and " << toIndex << std::endl;
-            return;
-        }
-    }
-
-    fromWaypoint->connectList.push_back(toIndex);
-
-    PEQAPPWAYPOINT toWaypoint = EQAPP_Waypoint_GetByIndex(toIndex);
-    if (toWaypoint == NULL)
-    {
-        std::cout << __FUNCTION__ << ": to waypoint is null" << std::endl;
-        return;
-    }
-
-    for (auto& connectIndex :toWaypoint->connectList)
-    {
-        if (connectIndex == fromIndex)
-        {
-            std::cout << __FUNCTION__ << ": connection already exists for waypoints " << fromIndex << " and " << toIndex << std::endl;
-            return;
-        }
-    }
-
-    toWaypoint->connectList.push_back(fromIndex);
-
-    std::cout << __FUNCTION__ << ": connected waypoints " << fromIndex << " and " << toIndex << std::endl;
-}
-
-void EQAPP_Waypoint_Disconnect(unsigned int fromIndex, unsigned int toIndex)
-{
-    if (fromIndex == toIndex)
-    {
-        std::cout << __FUNCTION__ << ": cannot disconnect waypoint from itself" << std::endl;
-        return;
-    }
-
-    if (fromIndex > g_waypointList.size())
-    {
-        std::cout << __FUNCTION__ << ": from index out of bounds: " << fromIndex << std::endl;
-        return;
-    }
-
-    if (toIndex > g_waypointList.size())
-    {
-        std::cout << __FUNCTION__ << ": to index out of bounds: " << toIndex << std::endl;
-        return;
-    }
-
-    PEQAPPWAYPOINT fromWaypoint = EQAPP_Waypoint_GetByIndex(fromIndex);
-    if (fromWaypoint == NULL)
-    {
-        std::cout << __FUNCTION__ << ": from waypoint is null" << std::endl;
-        return;
-    }
-
-    for (auto& connectIndex_it = fromWaypoint->connectList.begin(); connectIndex_it != fromWaypoint->connectList.end(); connectIndex_it++)
-    {
-        if (*connectIndex_it == toIndex)
-        {
-            connectIndex_it = fromWaypoint->connectList.erase(connectIndex_it);
-            connectIndex_it--;
-            break;
-        }
-    }
-
-    PEQAPPWAYPOINT toWaypoint = EQAPP_Waypoint_GetByIndex(toIndex);
-    if (toWaypoint == NULL)
-    {
-        std::cout << __FUNCTION__ << ": to waypoint is null" << std::endl;
-        return;
-    }
-
-    for (auto& connectIndex_it = toWaypoint->connectList.begin(); connectIndex_it != toWaypoint->connectList.end(); connectIndex_it++)
-    {
-        if (*connectIndex_it == fromIndex)
-        {
-            connectIndex_it = toWaypoint->connectList.erase(connectIndex_it);
-            connectIndex_it--;
-            break;
-        }
-    }
-
-    std::cout << __FUNCTION__ << ": disconnected waypoints " << fromIndex << " and " << toIndex << std::endl;
-}
-
-unsigned int EQAPP_Waypoint_GetGScore(PEQAPPWAYPOINT waypoint1, PEQAPPWAYPOINT waypoint2)
-{
-    return waypoint1->g + ((waypoint2->x == waypoint1->x || waypoint2->y == waypoint1->y) ? 10 : 14);
-}
-
-unsigned int EQAPP_Waypoint_GetHScore(PEQAPPWAYPOINT waypoint1, PEQAPPWAYPOINT waypoint2)
-{
-    // manhattan distance
-    //return (unsigned int)(abs(waypoint1->x - waypoint2->x) + abs(waypoint1->y - waypoint2->y) * 10);
-
-    // euclidean distance
-    return (unsigned int)(sqrt(pow(waypoint2->x - waypoint1->x, 2) + pow(waypoint2->y - waypoint1->y, 2) + pow(waypoint2->z - waypoint1->z, 2)));
-}
-
-void EQAPP_Waypoint_ComputeScores(PEQAPPWAYPOINT waypoint, PEQAPPWAYPOINT waypointEnd)
-{
-    waypoint->g = EQAPP_Waypoint_GetGScore(waypoint, waypoint->parent);
-    waypoint->h = EQAPP_Waypoint_GetHScore(waypoint, waypointEnd);
-
-    waypoint->f = waypoint->g + waypoint->h;
-}
-
-void EQAPP_WaypointList_Clear()
-{
-    g_waypointList.clear();
-}
-
-void EQAPP_WaypointList_Load()
-{
-    g_waypointList.clear();
-
-    std::string zoneShortName = EQ_GetZoneShortName();
-    if (zoneShortName.size() == 0)
-    {
-        std::cout << __FUNCTION__ << ": zone short name is null" << std::endl;
-        return;
-    }
-
-    std::stringstream filePath;
-    filePath << "eqapp/waypoints/" << zoneShortName << ".txt";
-
-    std::ifstream file;
-    file.open(filePath.str().c_str(), std::ios::in);
-    if (file.is_open() == false)
-    {
-        std::cout << __FUNCTION__ << ": failed to open file: " << filePath.str() << std::endl;
-        return;
-    }
-
-    std::string line;
-    while (std::getline(file, line))
-    {
-        if (line.size() == 0)
-        {
-            continue;
-        }
-
-        unsigned int index;
-        float y;
-        float x;
-        float z;
-        char connect[1024];
-        char name[1024];
-
-        int result = sscanf_s(line.c_str(), "%d %f %f %f %s %s", &index, &y, &x, &z, connect, sizeof(connect), name, sizeof(name));
-
-        if (result == 6)
-        {
-            EQ_StringReplaceUnderscoresWithSpaces(name);
-
-            EQAPPWAYPOINT waypoint;
-            waypoint.index = index;
-            waypoint.y = y;
-            waypoint.x = x;
-            waypoint.z = z;
-            waypoint.name = name;
-
-            if (strcmp(connect, "none") != 0)
-            {
-                std::istringstream connectSplit(connect);
-                std::vector<std::string> connectTokens;
-                for (std::string connectToken; std::getline(connectSplit, connectToken, ','); waypoint.connectList.push_back(std::stoul(connectToken, nullptr, 10)));
-            }
-
-            g_waypointList.push_back(waypoint);
-        }
-    }
-
-    std::cout << __FUNCTION__ << ": waypoints loaded from file: " << filePath.str() << std::endl;
-
-    file.close();
-}
-
-void EQAPP_WaypointList_Save()
-{
-    if (g_waypointList.empty() == true)
-    {
-        std::cout << __FUNCTION__ << ": waypoint list is empty" << std::endl;
-        return;
-    }
-
-    std::string zoneShortName = EQ_GetZoneShortName();
-    if (zoneShortName.size() == 0)
-    {
-        std::cout << __FUNCTION__ << ": zone short name is null" << std::endl;
-        return;
-    }
-
-    std::stringstream filePath;
-    filePath << "eqapp/waypoints/" << zoneShortName << ".txt";
-
-    std::fstream file;
-    file.open(filePath.str().c_str(), std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
-    if (file.is_open() == false)
-    {
-        std::cout << __FUNCTION__ << ": failed to open file: " << filePath.str() << std::endl;
-        return;
-    }
-
-    for (auto& waypoint : g_waypointList)
-    {
-        // index y x z connect name
         std::stringstream ss;
-        ss.precision(5);
+        ss << EQ_STRING_WINDOW_TITLE << ": " << playerName;
 
-        ss << waypoint.index << " " << waypoint.y << " " << waypoint.x << " " << waypoint.z << " ";
+        SetWindowTextA(window, ss.str().c_str());
 
-        if (waypoint.connectList.size() == 0)
+        if (g_hwndConsoleWindow != NULL)
         {
-            ss << "none";
-        }
-        else
-        {
-            for (auto& connectIndex : waypoint.connectList)
-            {
-                ss << connectIndex;
+            std::stringstream ss;
+            ss << g_applicationName << ": " << playerName;
 
-                if (&connectIndex != &waypoint.connectList.back())
-                {
-                    ss << ",";
-                }
-            }
-        }
-
-        ss << " Waypoint_" << waypoint.index;
-
-        file << ss.str() << std::endl;
-    }
-
-    std::cout << __FUNCTION__ << ": waypoints saved to file: " << filePath.str() << std::endl;
-
-    file.close();
-}
-
-unsigned int EQAPP_WaypointList_GetIndexNearestToLocation(float y, float x, float z)
-{
-    std::map<float, unsigned int> distanceList;
-
-    for (auto& waypoint :g_waypointList)
-    {
-        float distance = EQ_CalculateDistance3d(x, y, z, waypoint.x, waypoint.y, waypoint.z);
-
-        distanceList.insert(std::make_pair(distance, waypoint.index));
-    }
-
-    return distanceList.begin()->second;
-}
-
-std::vector<unsigned int> EQAPP_WaypointList_GetPath(unsigned int fromIndex, unsigned int toIndex)
-{
-    std::vector<unsigned int> pathList;
-
-    if (fromIndex == toIndex)
-    {
-        std::cout << __FUNCTION__ << ": from index and to index are the same" << std::endl;
-        return pathList;
-    }
-
-    if (fromIndex > g_waypointList.size())
-    {
-        std::cout << __FUNCTION__ << ": from index out of bounds: " << fromIndex << std::endl;
-        return pathList;
-    }
-
-    if (toIndex > g_waypointList.size())
-    {
-        std::cout << __FUNCTION__ << ": to index out of bounds: " << toIndex << std::endl;
-        return pathList;
-    }
-
-    PEQAPPWAYPOINT start = EQAPP_Waypoint_GetByIndex(fromIndex);
-    PEQAPPWAYPOINT end   = EQAPP_Waypoint_GetByIndex(toIndex);
-
-    if (start == NULL || end == NULL)
-    {
-        std::cout << __FUNCTION__ << ": start or end waypoint is null" << std::endl;
-        return pathList;
-    }
-
-    PEQAPPWAYPOINT current;
-    PEQAPPWAYPOINT child;
-
-    std::list<PEQAPPWAYPOINT> openedList;
-    std::list<PEQAPPWAYPOINT> closedList;
-    std::list<PEQAPPWAYPOINT>::iterator it;
-
-    unsigned int numIterations = 0;
-    unsigned int maxIterations = 100;
-
-    openedList.push_back(start);
-    start->isOpened = true;
-
-    while (numIterations == 0 || (current != end && numIterations < maxIterations))
-    {
-        for (it = openedList.begin(); it != openedList.end(); ++it)
-        {
-            if (it == openedList.begin() || (*it)->f <= current->f)
-            {
-                current = (*it);
-            }
-        }
-
-        if (current == end)
-        {
-            break;
-        }
-
-        openedList.remove(current);
-        current->isOpened = false;
-
-        closedList.push_back(current);
-        current->isClosed = true;
-
-        for (auto& connectIndex : current->connectList)
-        {
-            child = EQAPP_Waypoint_GetByIndex(connectIndex);
-
-            if (child == NULL || child == current || child->isClosed == true)
-            {
-                continue;
-            }
-
-            if (child->isOpened == true)
-            {
-                unsigned int currentGScore = EQAPP_Waypoint_GetGScore(child, current);
-
-                if (child->g > currentGScore)
-                {
-                    child->parent = current;
-                    EQAPP_Waypoint_ComputeScores(child, end);
-                }
-            }
-            else
-            {
-                openedList.push_back(child);
-                child->isOpened = true;
-
-                child->parent = current;
-                EQAPP_Waypoint_ComputeScores(child, end);
-            }
-        }
-
-        numIterations++;
-    }
-
-    for (it = openedList.begin(); it != openedList.end(); ++it)
-    {
-        (*it)->isOpened = false;
-    }
-
-    for (it = closedList.begin(); it != closedList.end(); ++it)
-    {
-        (*it)->isClosed = false;
-    }
-
-    while (current->parent != NULL && current != start)
-    {
-        pathList.push_back(current->index);
-        current = current->parent;
-        numIterations++;
-    }
-
-    std::reverse(pathList.begin(), pathList.end());
-
-    std::cout << "Waypoint Path: " << fromIndex << " -> ";
-
-    for (auto& pathIndex : pathList)
-    {
-        std::cout << pathIndex;
-
-        if (&pathIndex != &pathList.back())
-        {
-            std::cout << ", ";
+            SetWindowTextA(g_hwndConsoleWindow, ss.str().c_str());
         }
     }
-
-    std::cout << std::endl;
-
-    return pathList;
-}
-
-void EQAPP_LoadMemory()
-{
-    g_memoryList.clear();
-
-    g_memoryIsEnabled = EQAPP_Ini_ReadBool("eqapp/memory.ini", "Memory", "bEnabled", 1);
-
-    if (g_memoryIsEnabled == false)
-    {
-        std::cout << __FUNCTION__ << ": memory is disabled" << std::endl;
-        return;
-    }
-
-    for (size_t i = 0; i < 255; i++)
-    {
-        std::stringstream ssFilename;
-        ssFilename << "sFilename" << i;
-
-        std::string filename = EQAPP_Ini_ReadString("eqapp/memory.ini", "Memory", ssFilename.str().c_str(), "");
-        if (filename.size() == 0)
-        {
-            break;
-        }
-
-        std::stringstream filepath;
-        filepath << "eqapp/memory/" << filename;
-
-        std::stringstream ssEnabled;
-        ssEnabled << "bEnabled" << i;
-
-        EQAPPMEMORY memory;
-        memory.isEnabled = EQAPP_Ini_ReadBool("eqapp/memory.ini", "Memory", ssEnabled.str().c_str(), 0);
-
-        std::cout << __FUNCTION__ << ": " << filename << " isEnabled: " << std::boolalpha << memory.isEnabled << std::noboolalpha << std::endl;
-
-        memory.index = i;
-
-        memory.filename = filepath.str();
-
-        memory.name        = EQAPP_Ini_ReadString(filepath.str().c_str(), "Memory", "Name", "");
-        memory.description = EQAPP_Ini_ReadString(filepath.str().c_str(), "Memory", "Description", "");
-        
-        g_memoryList.push_back(memory);
-    }
-
-    for (auto& memory : g_memoryList)
-    {
-        if (memory.isEnabled == true)
-        {
-            EQAPP_ToggleMemory(&memory, true);
-
-            std::cout << __FUNCTION__ << ": " << memory.filename << " has been enabled" << std::endl;
-        }
-    }
-}
-
-void EQAPP_UnloadMemory()
-{
-    for (auto& memory : g_memoryList)
-    {
-        EQAPP_ToggleMemory(&memory, false);
-    }
-}
-
-void EQAPP_ToggleMemory(PEQAPPMEMORY pMemory, bool bEnable)
-{
-    if (pMemory == NULL)
-    {
-        std::cout << __FUNCTION__ << ": memory is null" << std::endl;
-        return;
-    }
-
-    pMemory->isEnabled = bEnable;
-
-    for (size_t i = 0; i < 8; i++)
-    {
-        std::stringstream ssAddress;
-        ssAddress << "Address" << i;
-
-        std::string sAddress = EQAPP_Ini_ReadString(pMemory->filename.c_str(), "Memory", ssAddress.str().c_str(), "");
-            
-        if (sAddress.size() == 0)
-        {
-            continue;
-        }
-
-        if (sAddress.find("+") == std::string::npos)
-        {
-            continue;
-        }
-
-        std::transform(sAddress.begin(), sAddress.end(), sAddress.begin(), ::tolower);
-
-        std::stringstream ssEnable;
-        ssEnable << "Enable" << i;
-
-        std::stringstream ssDisable;
-        ssDisable << "Disable" << i;
-
-        std::string sEnable  = EQAPP_Ini_ReadString(pMemory->filename.c_str(), "Memory", ssEnable.str().c_str(), "");
-        std::string sDisable = EQAPP_Ini_ReadString(pMemory->filename.c_str(), "Memory", ssDisable.str().c_str(), "");
-
-        DWORD baseAddress = 0;
-
-        if (sAddress.find("eqgame.exe") != std::string::npos)
-        {
-            baseAddress = EQ_BASE_ADDRESS;
-        }
-        else if (sAddress.find("eqgraphicsdx9.dll") != std::string::npos || sAddress.find("EQGraphicsDX9.dll") != std::string::npos)
-        {
-            baseAddress = EQ_ReadMemory<DWORD>(EQ_POINTER_GRAPHICS_DLL_BASE_ADDRESS);
-        }
-
-        std::istringstream addressSplit(sAddress);
-        std::vector<std::string> addressTokens;
-        for (std::string addressToken; std::getline(addressSplit, addressToken, '+'); addressTokens.push_back(addressToken));
-
-        DWORD offset = std::stoul(addressTokens.back(), nullptr, 16);
-
-        DWORD address = baseAddress + offset;
-
-        std::string sBytes;
-        if (bEnable == true)
-        {
-            sBytes = sEnable;
-        }
-        else
-        {
-            sBytes = sDisable;
-        }
-
-        if (sBytes.size() == 0)
-        {
-            break;
-        }
-
-        std::istringstream bytesSplit(sBytes);
-        std::vector<std::string> bytesTokens;
-        for (std::string bytesToken; std::getline(bytesSplit, bytesToken, ' '); bytesTokens.push_back(bytesToken));
-
-        BYTE value[256];
-        size_t valueSize = 0;
-
-        for (auto& token : bytesTokens)
-        {
-            value[valueSize] = (BYTE)(std::stoul(token, nullptr, 16));
-            valueSize++;
-        }
-
-        DWORD oldProtection;
-        VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, valueSize, PAGE_EXECUTE_READWRITE, &oldProtection);
-
-        WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, value, valueSize, 0);
-
-        DWORD tempProtection;
-        VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, valueSize, oldProtection, &tempProtection);
-    }
-}
-
-void EQAPP_LoadSounds()
-{
-    g_soundsList.clear();
-
-    g_soundsIsEnabled = EQAPP_Ini_ReadBool("eqapp/sounds.ini", "Sounds", "bEnabled", 1);
-
-    if (g_soundsIsEnabled == false)
-    {
-        std::cout << __FUNCTION__ << ": sounds are disabled" << std::endl;
-        return;
-    }
-
-    for (size_t i = 0; i < 255; i++)
-    {
-        std::stringstream ssFilename;
-        ssFilename << "sFilename" << i;
-
-        std::string filename = EQAPP_Ini_ReadString("eqapp/sounds.ini", "Sounds", ssFilename.str().c_str(), "");
-        if (filename.size() == 0)
-        {
-            break;
-        }
-
-        std::stringstream filepath;
-        filepath << "eqapp\\sounds\\" << filename;
-
-        std::stringstream ssText;
-        ssText << "sText" << i;
-
-        std::string text = EQAPP_Ini_ReadString("eqapp/sounds.ini", "Sounds", ssText.str().c_str(), "");
-        if (text.size() == 0)
-        {
-            break;
-        }
-
-        std::stringstream ssEnabled;
-        ssEnabled << "bEnabled" << i;
-
-        bool isEnabled = EQAPP_Ini_ReadBool("eqapp/sounds.ini", "Sounds", ssEnabled.str().c_str(), 0);
-
-        std::cout << __FUNCTION__ << ": " << filename << " isEnabled: " << std::boolalpha << isEnabled << std::noboolalpha << std::endl;
-
-        EQAPPSOUND sound;
-        sound.index     = i;
-        sound.text      = text;
-        sound.filename  = filepath.str();
-        sound.isEnabled = isEnabled;
-        
-        g_soundsList.push_back(sound);
-    }
-}
-
-void EQAPP_LoadNamedSpawns()
-{
-    g_namedSpawnsList.clear();
-
-    std::ifstream file;
-    std::string line;
-
-    file.open("eqapp/namedspawns.txt", std::ios::in);
-    if (file.is_open() == false)
-    {
-        std::cout << __FUNCTION__ << ": failed to open file: eqapp/namedspawns.txt" << std::endl;
-        return;
-    }
-
-    while (std::getline(file, line))
-    {
-        if (line.size() == 0)
-        {
-            continue;
-        }
-
-        std::cout << __FUNCTION__ << ": "<< line << std::endl;
-
-        g_namedSpawnsList.push_back(line);
-    }
-
-    file.close();
-
-    std::string zoneShortName = EQ_GetZoneShortName();
-    if (zoneShortName.size() == 0)
-    {
-        std::cout << __FUNCTION__ << ": zone short name is null" << std::endl;
-        return;
-    }
-
-    std::stringstream filePath;
-    filePath << "eqapp/namedspawns/" << zoneShortName << ".txt";
-
-    file.open(filePath.str().c_str(), std::ios::in);
-    if (file.is_open() == false)
-    {
-        std::cout << __FUNCTION__ << ": failed to open file: " << filePath.str() << std::endl;
-        return;
-    }
-
-    while (std::getline(file, line))
-    {
-        if (line.size() == 0)
-        {
-            continue;
-        }
-
-        std::cout << __FUNCTION__ << ": "<< line << std::endl;
-
-        g_namedSpawnsList.push_back(line);
-    }
-
-    file.close();
 }
 
 void EQAPP_LoadEspCustom()
 {
+    std::cout << "Loading custom ESP..." << std::endl;
+
     g_espCustomList.clear();
 
     std::string zoneShortName = EQ_GetZoneShortName();
@@ -1616,12 +212,12 @@ void EQAPP_LoadEspCustom()
             EQ_StringReplaceUnderscoresWithSpaces(text);
 
             EQAPPESPCUSTOM espCustom;
-            espCustom.y = y;
-            espCustom.x = x;
-            espCustom.z = z;
-            espCustom.color = (255 << 24) + (red << 16) + (green << 8) + blue;
-            espCustom.size = size;
-            espCustom.text = text;
+            espCustom.y        = y;
+            espCustom.x        = x;
+            espCustom.z        = z;
+            espCustom.color    = (255 << 24) + (red << 16) + (green << 8) + blue;
+            espCustom.size     = size;
+            espCustom.text     = text;
 
             g_espCustomList.push_back(espCustom);
         }
@@ -1630,8 +226,10 @@ void EQAPP_LoadEspCustom()
     file.close();
 }
 
-void EQAPP_DoMapLocations()
+void EQAPP_MapLocations_WriteToFile()
 {
+    std::cout << "Saving map locations to file..." << std::endl;
+
     std::string zoneShortName = EQ_GetZoneShortName();
     if (zoneShortName.size() == 0)
     {
@@ -1672,83 +270,6 @@ void EQAPP_DoMapLocations()
     file.close();
 }
 
-void EQAPP_DoNamedSpawns()
-{
-    if (g_namedSpawnsIsEnabled == false || g_namedSpawnsList.size() == 0)
-    {
-        return;
-    }
-
-    unsigned int fontSize   = 2;
-    unsigned int fontHeight = EQ_GetFontHeight(fontSize);
-
-    unsigned int numSpawns = 0;
-
-    unsigned int x = g_namedSpawnsX;
-    unsigned int y = g_namedSpawnsY;
-
-    if (g_namedSpawnsWidth > 0 && g_namedSpawnsHeight > 0)
-    {
-        EQ_DrawQuad((float)x, (float)y, g_namedSpawnsWidth, g_namedSpawnsHeight, EQ_TOOLTIP_COLOR);
-    }
-
-    DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_SPAWN_INFO);
-
-    while (spawn)
-    {
-        int spawnType = EQ_ReadMemory<BYTE>(spawn + 0x125);
-
-        if (spawnType != EQ_SPAWN_TYPE_NPC)
-        {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
-            continue;
-        }
-
-        int spawnIsPet = EQ_ReadMemory<DWORD>(spawn + 0x260);
-
-        if (spawnIsPet != 0)
-        {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
-            continue;
-        }
-
-        int spawnLevel = EQ_ReadMemory<BYTE>(spawn + 0x315);
-
-        if (spawnLevel < 1 || spawnLevel > 100)
-        {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
-            continue;
-        }
-
-        char spawnName[0x40] = {0};
-        memcpy(spawnName, (LPVOID)(spawn + 0xE4), sizeof(spawnName));
-
-        for (auto& namedSpawn : g_namedSpawnsList)
-        {
-            if (strstr(spawnName, namedSpawn.c_str()) != NULL)
-            {
-                numSpawns++;
-
-                EQ_DrawText(spawnName, x, y, g_namedSpawnsColor, fontSize);
-                y += fontHeight;
-
-                break;
-            }
-        }
-
-        spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
-    }
-
-    if (numSpawns > 0)
-    {
-        g_namedSpawnsHeight = (float)(numSpawns * fontHeight);
-    }
-    else
-    {
-        g_namedSpawnsHeight = 0;
-    }
-}
-
 void EQAPP_DoOnScreenTextAddToList(std::string str)
 {
     if (EQ_IsInGame() == false)
@@ -1767,16 +288,12 @@ void EQAPP_DoOnScreenText()
         return;
     }
 
-    if (EQ_HasTimePassed(g_onScreenTextTimer, g_onScreenTextDelay) == true)
+    if (EQ_HasTimePassed(g_onScreenTextTimer, g_onScreenTextTimerDelay) == true)
     {
         g_onScreenTextList.pop_front();
     }
 
-    unsigned int fontSize   = 2;
-    unsigned int fontHeight = EQ_GetFontHeight(fontSize);
-
-    unsigned int x = g_onScreenTextX;
-    unsigned int y = g_onScreenTextY;
+    std::stringstream ssDrawText;
 
     size_t textCount = 0;
 
@@ -1784,75 +301,23 @@ void EQAPP_DoOnScreenText()
     {
         std::string text = *g_onScreenTextList_it;
 
-        if (textCount >= g_onScreenTextMax)
+        if (textCount >= g_onScreenTextCountMax)
         {
             break;
         }
 
-        std::stringstream ss;
-        ss << text;
-
-        EQ_DrawText(ss.str().c_str(), x, y, g_onScreenTextColor, fontSize);
-        y -= fontHeight;
+        ssDrawText << text << "\n";
 
         textCount++;
     }
+
+    EQ_DrawText(ssDrawText.str().c_str(), g_onScreenTextX, g_onScreenTextY, g_onScreenTextColor, 2);
 }
 
-void EQAPP_LoadTextOverlayChatText()
+void EQAPP_ZoneShortNames_Load()
 {
-    g_textOverlayChatTextList.clear();
+    std::cout << "Loading short zone names..." << std::endl;
 
-    std::ifstream file;
-    file.open("eqapp/textoverlaychattext.txt", std::ios::in);
-    if (file.is_open() == false)
-    {
-        std::cout << __FUNCTION__ << ": failed to open file: eqapp/textoverlaychattext.txt" << std::endl;
-        return;
-    }
-
-    std::string line;
-    while (std::getline(file, line))
-    {
-        if (line.size() == 0)
-        {
-            continue;
-        }
-
-        g_textOverlayChatTextList.push_back(line);
-    }
-
-    file.close();
-}
-
-void EQAPP_LoadNoBeep()
-{
-    g_noBeepList.clear();
-
-    std::ifstream file;
-    file.open("eqapp/nobeep.txt", std::ios::in);
-    if (file.is_open() == false)
-    {
-        std::cout << __FUNCTION__ << ": failed to open file: eqapp/nobeep.txt" << std::endl;
-        return;
-    }
-
-    std::string line;
-    while (std::getline(file, line))
-    {
-        if (line.size() == 0)
-        {
-            continue;
-        }
-
-        g_noBeepList.push_back(line);
-    }
-
-    file.close();
-}
-
-void EQAPP_LoadZoneShortNames()
-{
     g_zoneShortNamesList.clear();
 
     std::ifstream file;
@@ -1874,53 +339,9 @@ void EQAPP_LoadZoneShortNames()
         g_zoneShortNamesList.push_back(line);
     }
 
+    g_zoneShortNamesList_it = g_zoneShortNamesList.begin();
+
     file.close();
-}
-
-bool EQAPP_IsAnImportantWindowOpen()
-{
-    for (auto& window : g_importantWindowsList)
-    {
-        if (EQ_IsWindowVisible(window) == true)
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-void EQAPP_DoCensus()
-{
-    DWORD playerSpawn = EQ_GetPlayerSpawn();
-    if (playerSpawn == NULL)
-    {
-        std::cout << __FUNCTION__ << ": player spawn is null" << std::endl;
-        return;
-    }
-
-    std::srand(unsigned(std::time(0)));
-    std::random_shuffle(g_zoneShortNamesList.begin(), g_zoneShortNamesList.end());
-
-    g_censusIsActive = true;
-
-    for (auto& shortZoneName : g_zoneShortNamesList)
-    {
-        if (g_censusIsActive == false)
-        {
-            break;
-        }
-
-        std::stringstream ss;
-        ss << "/who all " << shortZoneName;
-
-        std::cout << "Census: " << ss.str() << std::endl;
-
-        EQ_CEverQuest->InterpretCmd(playerSpawn, ss.str().c_str());
-        Sleep(1000);
-    }
-
-    g_censusIsActive = false;
 }
 
 void EQAPP_DoHud()
@@ -1930,371 +351,120 @@ void EQAPP_DoHud()
         return;
     }
 
-    unsigned int x = g_hudX;
-    unsigned int y = g_hudY;
-
     float width  = g_hudWidth;
     float height = g_hudHeight;
 
-    EQ_DrawQuad((float)x, (float)y, width, height, EQ_TOOLTIP_COLOR);
+    EQ_DrawQuad((float)g_hudX, (float)g_hudY, width, height, EQ_TOOLTIP_COLOR);
 
     unsigned int fontSize   = 2;
     unsigned int fontHeight = EQ_GetFontHeight(fontSize);
 
-    unsigned int numHudDrawText = 0;
+    unsigned int numDrawText = 0;
 
-    std::stringstream ss;
-    ss << g_applicationName << " - " << std::dec << (int)EQ_GetAverageFps() << " FPS";
+    std::stringstream ssDrawText;
 
-    EQ_DrawText(ss.str().c_str(), x, y, 0xFF808080, fontSize);
-    y += fontHeight;
-    numHudDrawText++;
+    ssDrawText << g_applicationName << " - " << std::dec << (int)EQ_GetAverageFps() << " FPS\n";
+    numDrawText++;
 
     DWORD numPlayersInZone = EQ_GetNumPlayersInZone();
     if (numPlayersInZone != 0)
     {
-        std::stringstream ss;
-        ss << "Players in zone: " << numPlayersInZone;
-
-        EQ_DrawText(ss.str().c_str(), x, y, 0xFFFFFFFF, fontSize);
-        y += fontHeight;
-        numHudDrawText++;
+        ssDrawText << "Players in Zone: " << numPlayersInZone << "\n";
+        numDrawText++;
     }
 
     if (g_speedHackIsEnabled == true)
     {
-        std::stringstream ss;
-        ss << "Speed: " << g_speedHackModifier;
-
-        EQ_DrawText(ss.str().c_str(), x, y, 0xFFFFFFFF, fontSize);
-        y += fontHeight;
-        numHudDrawText++;
+        ssDrawText << "Speed: " << g_speedHackModifier << "\n";
+        numDrawText++;
     }
 
     if (g_freeCameraIsEnabled == true)
     {
-        EQ_DrawText("Free Camera is on.", x, y, 0xFFFF0000, fontSize);
-        y += fontHeight;
-        numHudDrawText++;
+        ssDrawText << "Free Camera is on.\n";
+        numDrawText++;
     }
 
     if (EQ_IsAutoAttackEnabled() == true)
     {
-        EQ_DrawText("Auto attack is on.", x, y, 0xFFFF0000, fontSize);
-        y += fontHeight;
-        numHudDrawText++;
+        ssDrawText << "Auto attack is on.\n";
+        numDrawText++;
     }
 
     if (EQ_IsAutoFireEnabled() == true)
     {
-        EQ_DrawText("Auto fire is on.", x, y, 0xFFFF0000, fontSize);
-        y += fontHeight;
-        numHudDrawText++;
+        ssDrawText << "Auto fire is on.\n";
+        numDrawText++;
     }
 
     if (g_alwaysAttackIsEnabled == true)
     {
-        EQ_DrawText("Always attack is on.", x, y, 0xFFFF0000, fontSize);
-        y += fontHeight;
-        numHudDrawText++;
+        ssDrawText << "Always attack is on.\n";
+        numDrawText++;
     }
 
     if (g_alwaysHotbuttonIsEnabled == true)
     {
-        std::stringstream ss;
-        ss << "Always Hotbutton: " << (g_alwaysHotbuttonIndex + 1) << " (" << (g_alwaysHotbuttonDelay / 1000) << "s)";
-
-        EQ_DrawText(ss.str().c_str(), x, y, 0xFF00FF00, fontSize);
-        y += fontHeight;
-        numHudDrawText++;
+        ssDrawText << "Always Hotbutton: " << (g_alwaysHotbuttonIndex + 1) << " (" << (g_alwaysHotbuttonTimerDelay / 1000) << "s)\n";
+        numDrawText++;
     }
 
     if (g_combatHotbuttonIsEnabled == true)
     {
-        std::stringstream ss;
-        ss << "Combat Hotbutton: " << (g_combatHotbuttonIndex + 1) << " (" << (g_combatHotbuttonDelay / 1000) << "s)";
-
-        EQ_DrawText(ss.str().c_str(), x, y, 0xFF00FF00, fontSize);
-        y += fontHeight;
-        numHudDrawText++;
+        ssDrawText << "Combat Hotbutton: " << (g_combatHotbuttonIndex + 1) << " (" << (g_combatHotbuttonTimerDelay / 1000) << "s)\n";
+        numDrawText++;
     }
 
     if (g_targetBeepIsEnabled == true)
     {
-        std::stringstream ss;
-        ss << "Target Beep: " << g_targetBeepName << " (" << (g_targetBeepDelay / 1000) << "s)";
-
-        EQ_DrawText(ss.str().c_str(), x, y, 0xFF00FF00, fontSize);
-        y += fontHeight;
-        numHudDrawText++;
+        ssDrawText << "Target Beep: " << g_targetBeepName << " (" << (g_targetBeepTimerDelay / 1000) << "s)\n";
+        numDrawText++;
     }
 
-    if (g_spawnBeepIsEnabled == true)
+    if (g_spawnBeepIsEnabled == true && g_spawnBeepName.size() != 0)
     {
-        std::stringstream ss;
-        ss << "Spawn Beep: " << g_spawnBeepName;
-
-        EQ_DrawText(ss.str().c_str(), x, y, 0xFF00FF00, fontSize);
-        y += fontHeight;
-        numHudDrawText++;
+        ssDrawText << "Spawn Beep: " << g_spawnBeepName << "\n";
+        numDrawText++;
     }
 
     if (g_locatorIsEnabled == true)
     {
-        std::stringstream ss;
-        ss << "Locator: " << g_locatorY << ", " << g_locatorX << ", " << g_locatorZ;
-
-        EQ_DrawText(ss.str().c_str(), x, y, 0xFF00FF00, fontSize);
-        y += fontHeight;
-        numHudDrawText++;
+        ssDrawText << "Locator: " << g_locatorY << ", " << g_locatorX << ", " << g_locatorZ << "\n";
+        numDrawText++;
     }
 
     if (g_findIsEnabled == true && g_findSpawnName.size() != 0)
     {
-        std::stringstream ss;
-        ss << "Find: " << g_findSpawnName;
-
-        EQ_DrawText(ss.str().c_str(), x, y, 0xFF00FF00, fontSize);
-        y += fontHeight;
-        numHudDrawText++;
+        ssDrawText << "Find: " << g_findSpawnName << "\n";
+        numDrawText++;
     }
 
     if (g_autoLootIsEnabled == true)
     {
-        EQ_DrawText("Auto Loot is on.", x, y, 0xFFFF0000, fontSize);
-        y += fontHeight;
-        numHudDrawText++;
+        ssDrawText << "Auto Loot is on.\n";
+        numDrawText++;
 
         for (auto& itemName : g_autoLootList)
         {
-            std::stringstream ss;
-            ss << "AL: " << itemName;
-
-            EQ_DrawText(ss.str().c_str(), x, y, 0xFFFFFFFF, fontSize);
-            y += fontHeight;
-            numHudDrawText++;
+            ssDrawText << "AL: " << itemName << "\n";
+            numDrawText++;
         }
     }
 
     if (g_debugIsEnabled == true)
     {
-        std::stringstream ss;
-        ss << "ESP Num Draw Text: " << g_espNumDrawText;
+        ssDrawText << "Debug is on.\n";
+        numDrawText++;
 
-        EQ_DrawText(ss.str().c_str(), x, y, 0xFFFFFFFF, fontSize);
-        y += fontHeight;
-        numHudDrawText++;
+        ssDrawText << "ESP Num Draw Text: " << g_espNumDrawText << "\n";
+        numDrawText++;
     }
 
-    if (numHudDrawText > 0)
+    EQ_DrawText(ssDrawText.str().c_str(), g_hudX, g_hudY, 0xFFFFFFFF, 2);
+
+    if (numDrawText > 0)
     {
-        g_hudHeight = (float)((numHudDrawText * fontHeight) + 2.0f);
-    }
-}
-
-void EQAPP_DrawHealthBar(int x, int y, char* spawnName, int spawnHealth)
-{
-    if (strlen(spawnName) == 0)
-    {
-        return;
-    }
-
-    unsigned int fontSize   = 2;
-    unsigned int fontHeight = EQ_GetFontHeight(fontSize);
-
-    float healthBarWidth = g_healthBarsWidth;
-
-    if (spawnHealth != 0)
-    {
-        float healthPercent = 100.0f / spawnHealth;
-
-        healthBarWidth = g_healthBarsWidth / healthPercent;
-    }
-
-    EQ_DrawQuad((float)x, (float)y, healthBarWidth, (float)fontHeight, 0xC8FF0000);
-
-    EQ_DrawText(spawnName, x, y, 0xFFFFFFFF, fontSize);
-
-    if (spawnHealth < 100)
-    {
-        std::stringstream ss;
-
-        if (spawnHealth == 0)
-        {
-            ss << "Dead";
-        }
-        else
-        {
-            ss << spawnHealth << "%";
-        }
-
-        EQ_DrawText(ss.str().c_str(), (x + (int)(g_healthBarsWidth * 0.5f)), y, 0xFFFFFFFF, fontSize);
-    }
-}
-
-void EQAPP_DoHealthBars()
-{
-    if (g_healthBarsIsEnabled == false)
-    {
-        return;
-    }
-
-    unsigned int fontSize   = 2;
-    unsigned int fontHeight = EQ_GetFontHeight(fontSize);
-
-    unsigned int numHealthBars = 0;
-
-    unsigned int x = g_healthBarsX;
-    unsigned int y = g_healthBarsY;
-
-    EQ_DrawQuad((float)x, (float)y, g_healthBarsWidth, g_healthBarsHeight, EQ_TOOLTIP_COLOR);
-
-    DWORD playerSpawn = EQ_GetPlayerSpawn();
-
-    DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_SPAWN_INFO);
-
-    while (spawn)
-    {
-        if (numHealthBars >= g_healthBarsMax)
-        {
-            return;
-        }
-
-        if (g_healthBarsShowGroupIsEnabled == false)
-        {
-            if (EQ_IsSpawnInGroup(spawn) == true)
-            {
-                spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
-                continue;
-            }
-        }
-
-        if (spawn == playerSpawn)
-        {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
-            continue;
-        }
-
-        int spawnLevel = EQ_ReadMemory<BYTE>(spawn + 0x315);
-
-        if (spawnLevel < 1 || spawnLevel > 100)
-        {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
-            continue;
-        }
-
-        LONG spawnHealth = EQ_ReadMemory<LONG>(spawn + 0x1F8);
-
-        if (spawnHealth <= 0)
-        {
-            spawnHealth = 0;
-        }
-
-        if (spawnHealth > 100)
-        {
-            spawnHealth = 100;
-        }
-
-        bool bFoundSpawn = false;
-
-        char spawnName[0x40] = {0};
-        memcpy(spawnName, (LPVOID)(spawn + 0xE4), sizeof(spawnName));
-
-        for (auto& namedSpawn : g_namedSpawnsList)
-        {
-            if (strstr(spawnName, namedSpawn.c_str()) != NULL)
-            {
-                numHealthBars++;
-
-                EQAPP_DrawHealthBar(x, y, spawnName, spawnHealth);
-                y += fontHeight;
-
-                bFoundSpawn = true;
-                break;
-            }
-        }
-
-        if (bFoundSpawn == true)
-        {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
-            continue;
-        }
-
-        for (auto& healthBarSpawnName : g_healthBarsSpawnNamesList)
-        {
-            if (strstr(spawnName, healthBarSpawnName.c_str()) != NULL)
-            {
-                numHealthBars++;
-
-                EQAPP_DrawHealthBar(x, y, spawnName, spawnHealth);
-                y += fontHeight;
-
-                bFoundSpawn = true;
-                break;
-            }
-        }
-
-        if (bFoundSpawn == true)
-        {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
-            continue;
-        }
-
-        int spawnType = EQ_ReadMemory<BYTE>(spawn + 0x125);
-
-        if (spawnType == EQ_SPAWN_TYPE_PLAYER)
-        {
-            numHealthBars++;
-
-            EQAPP_DrawHealthBar(x, y, spawnName, spawnHealth);
-            y += fontHeight;
-        }
-
-        spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
-    }
-
-    if (numHealthBars > 0)
-    {
-        g_healthBarsHeight = (float)(numHealthBars * fontHeight);
-    }
-}
-
-void EQAPP_DoWindowTitles()
-{
-    if (g_bExit == 1)
-    {
-        return;
-    }
-
-    HWND window = EQ_ReadMemory<HWND>(EQ_WINDOW_HWND);
-    if (window == NULL)
-    {
-        return;
-    }
-
-    DWORD playerSpawn = EQ_GetPlayerSpawn();
-    if (playerSpawn == NULL)
-    {
-        SetWindowTextA(window, EQ_STRING_WINDOW_TITLE);
-
-        SetConsoleTitleA(g_applicationName);
-    }
-    else
-    {
-        char playerName[0x40] = {0};
-        memcpy(playerName, (LPVOID)(playerSpawn + 0xE4), sizeof(playerName));
-
-        std::stringstream ss;
-        ss << EQ_STRING_WINDOW_TITLE << ": " << playerName;
-
-        SetWindowTextA(window, ss.str().c_str());
-
-        ss.str(std::string());
-        ss.clear();
-
-        ss << g_applicationName << ": " << playerName;
-
-        SetConsoleTitleA(ss.str().c_str());
+        g_hudHeight = (float)((numDrawText * fontHeight) + 2.0f);
     }
 }
 
@@ -2305,7 +475,7 @@ void EQAPP_DoTargetBeep()
         return;
     }
 
-    if (EQ_HasTimePassed(g_targetBeepTimer, g_targetBeepDelay) == false)
+    if (EQ_HasTimePassed(g_targetBeepTimer, g_targetBeepTimerDelay) == false)
     {
         return;
     }
@@ -2345,20 +515,20 @@ void EQAPP_DoSpawnBeep(DWORD spawnInfo)
         return;
     }
 
+    for (auto& noBeep : g_noBeepList)
+    {
+        if (noBeep.size() != 0 && strcmp(spawnName, noBeep.c_str()) == 0)
+        {
+            return;
+        }
+    }
+
     for (auto& namedSpawn : g_namedSpawnsList)
     {
         if (namedSpawn.size() != 0 && strstr(spawnName, namedSpawn.c_str()) != NULL)
         {
             MessageBeep(0);
             break;
-        }
-    }
-
-    for (auto& noBeep : g_noBeepList)
-    {
-        if (noBeep.size() != 0 && strcmp(spawnName, noBeep.c_str()) == 0)
-        {
-            return;
         }
     }
 
@@ -2462,36 +632,6 @@ void EQAPP_DoDespawnMessage(DWORD spawnInfo)
     }
 }
 
-void EQAPP_DoLineToTarget()
-{
-    if (g_lineToTargetIsEnabled == false)
-    {
-        return;
-    }
-
-    DWORD targetSpawn = EQ_GetTargetSpawn();
-
-    if (targetSpawn == NULL)
-    {
-        return;
-    }
-
-    FLOAT targetY = EQ_ReadMemory<FLOAT>(targetSpawn + 0x64);
-    FLOAT targetX = EQ_ReadMemory<FLOAT>(targetSpawn + 0x68);
-    FLOAT targetZ = EQ_ReadMemory<FLOAT>(targetSpawn + 0x6C);
-
-    int screenX = -1;
-    int screenY = -1;
-    bool result = EQ_WorldSpaceToScreenSpace(targetX, targetY, targetZ, screenX, screenY);
-    if (result == true)
-    {
-        DWORD windowWidth  = EQ_ReadMemory<DWORD>(EQ_WINDOW_WIDTH);
-        DWORD windowHeight = EQ_ReadMemory<DWORD>(EQ_WINDOW_HEIGHT);
-
-        EQ_DrawLine((float)(windowWidth / 2), (float)windowHeight, 0.0f, (float)screenX, (float)screenY, 0.0f, g_lineToTargetColor);
-    }
-}
-
 void EQAPP_DoHideCorpseLooted()
 {
     if (g_hideCorpseLootedIsEnabled == false)
@@ -2565,7 +705,7 @@ void EQAPP_DoCombatHotbutton()
         return;
     }
 
-    if (EQ_HasTimePassed(g_combatHotbuttonTimer, g_combatHotbuttonDelay) == false)
+    if (EQ_HasTimePassed(g_combatHotbuttonTimer, g_combatHotbuttonTimerDelay) == false)
     {
         return;
     }
@@ -2580,7 +720,7 @@ void EQAPP_DoAlwaysHotbutton()
         return;
     }
 
-    if (EQ_HasTimePassed(g_alwaysHotbuttonTimer, g_alwaysHotbuttonDelay) == false)
+    if (EQ_HasTimePassed(g_alwaysHotbuttonTimer, g_alwaysHotbuttonTimerDelay) == false)
     {
         return;
     }
@@ -2613,7 +753,6 @@ void EQAPP_DoHeight()
     }
 
     float height = EQ_ReadMemory<FLOAT>(playerSpawn + 0x13C);
-
     if (height > g_heightMaximum)
     {
         ((EQPlayer*)playerSpawn)->ChangeHeight(g_heightMaximum);
@@ -2627,7 +766,7 @@ void EQAPP_DoDrawDistance()
         return;
     }
 
-    if (EQ_HasTimePassed(g_drawDistanceTimer, g_drawDistanceDelay) == false)
+    if (EQ_HasTimePassed(g_drawDistanceTimer, g_drawDistanceTimerDelay) == false)
     {
         return;
     }
@@ -2647,7 +786,7 @@ void EQAPP_DoMapLabels()
         return;
     }
 
-    if (EQ_HasTimePassed(g_mapLabelsTimer, g_mapLabelsDelay) == false)
+    if (EQ_HasTimePassed(g_mapLabelsTimer, g_mapLabelsTimerDelay) == false)
     {
         return;
     }
@@ -2692,14 +831,10 @@ void EQAPP_DoMapLabels()
         FLOAT spawnX = EQ_ReadMemory<FLOAT>(spawn + 0x68);
         FLOAT spawnZ = EQ_ReadMemory<FLOAT>(spawn + 0x6C);
 
-        EQMAPLABEL mapLabel;
-
         EQXYZ location;
         location.X = -spawnX;
         location.Y = -spawnY;
         location.Z = spawnZ;
-
-        mapLabel.Location = location;
 
         EQARGBCOLOR color;
         color.A = 255; 
@@ -2729,17 +864,15 @@ void EQAPP_DoMapLabels()
             color.B = 0;
         }
 
-        mapLabel.Color = color;
-
-        mapLabel.Size = 2;
-
-        mapLabel.Label = (PCHAR)(spawn + 0xE4); // spawn name
-
-        mapLabel.Layer = 3;
-        mapLabel.Width = 20;
-        mapLabel.Height = 12;
-
-        mapLabel.Data = g_mapLabelsData;
+        EQMAPLABEL mapLabel;
+        mapLabel.Location    = location;
+        mapLabel.Color       = color;
+        mapLabel.Size        = 2;
+        mapLabel.Label       = (PCHAR)(spawn + 0xE4); // spawn name
+        mapLabel.Layer       = 3;
+        mapLabel.Width       = 20;
+        mapLabel.Height      = 12;
+        mapLabel.Data        = g_mapLabelsData;
 
         EQ_MapWindow_AddLabel(&mapLabel);
 
@@ -2848,14 +981,14 @@ void EQAPP_DrawSpawnSkeleton(DWORD spawnInfo, DWORD argbColor)
             continue;
         }
 
-        //EQ_DrawText(".", screenX, screenY, argbColor, fontSize);
+        // drawing a line instead of text for performance
         EQ_DrawLine((float)screenX, (float)screenY, 1.0f, (float)screenX, (float)(screenY + 1.0f), 1.0f, argbColor);
     }
 }
 
 void EQAPP_UpdateEspSpawnList()
 {
-    if (EQ_HasTimePassed(g_espSpawnListTimer, g_espSpawnListDelay) == false)
+    if (EQ_HasTimePassed(g_espSpawnListTimer, g_espSpawnListTimerDelay) == false)
     {
         return;
     }
@@ -2865,7 +998,6 @@ void EQAPP_UpdateEspSpawnList()
     unsigned int numNpcCorpse = 0;
 
     DWORD targetSpawn = EQ_GetTargetSpawn();
-
     DWORD playerSpawn = EQ_GetPlayerSpawn();
 
     FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
@@ -2909,15 +1041,15 @@ void EQAPP_UpdateEspSpawnList()
 
         espSpawn.standingState = EQ_ReadMemory<BYTE>(spawn + 0x279);
 
-        espSpawn.isHoldingPrimary   = EQ_ReadMemory<BYTE>(spawn + 0x10E0);
-        espSpawn.isHoldingSecondary = EQ_ReadMemory<BYTE>(spawn + 0x10E4);
+        espSpawn.isHoldingPrimary      = EQ_ReadMemory<BYTE>(spawn + 0x10E0);
+        espSpawn.isHoldingSecondary    = EQ_ReadMemory<BYTE>(spawn + 0x10E4);
 
-        espSpawn.isPet = EQ_ReadMemory<DWORD>(spawn + 0x260);
-        espSpawn.isLfg = EQ_ReadMemory<BYTE>(spawn + 0x1F1);
-        espSpawn.isPvp = EQ_ReadMemory<BYTE>(spawn + 0x2BC);
+        espSpawn.isPet    = EQ_ReadMemory<DWORD>(spawn + 0x260);
+        espSpawn.isLfg    = EQ_ReadMemory<BYTE>(spawn + 0x1F1);
+        espSpawn.isPvp    = EQ_ReadMemory<BYTE>(spawn + 0x2BC);
         espSpawn.isTrader = EQ_ReadMemory<DWORD>(spawn + 0x228);
-        espSpawn.isAfk = EQ_ReadMemory<DWORD>(spawn + 0x284);
-        espSpawn.isGm = EQ_ReadMemory<BYTE>(spawn + 0x4DA);
+        espSpawn.isAfk    = EQ_ReadMemory<DWORD>(spawn + 0x284);
+        espSpawn.isGm     = EQ_ReadMemory<BYTE>(spawn + 0x4DA);
 
         if (spawn == targetSpawn)
         {
@@ -3080,15 +1212,15 @@ void EQAPP_DoEsp()
                 }
             }
 
-            std::stringstream ss;
-            ss << "+ " << spawn.name;
+            std::stringstream ssDrawText;
+            ssDrawText << "+ " << spawn.name;
 
             if (spawn.type == EQ_SPAWN_TYPE_PLAYER_CORPSE || spawn.type == EQ_SPAWN_TYPE_NPC_CORPSE)
             {
-                ss << " corpse";
+                ssDrawText << " corpse";
             }
 
-            ss << " L" << spawn.level;
+            ssDrawText << " L" << spawn.level;
 
             if (spawn._class > EQ_CLASS_UNKNOWN && spawn._class < EQ_CLASS_BANKER)
             {
@@ -3096,53 +1228,45 @@ void EQAPP_DoEsp()
                 {
                     const char* spawnClassThreeLetterCode = EQ_CEverQuest->GetClassThreeLetterCode(spawn._class);
 
-                    ss << " " << spawnClassThreeLetterCode;
+                    ssDrawText << " " << spawnClassThreeLetterCode;
                 }
             }
 
-            ss << " (" << (int)spawn.distance << ")";
+            ssDrawText << " (" << (int)spawn.distance << ")";
 
             if (spawn.isLfg == 1)
             {
-                ss << "  LFG";
+                ssDrawText << "  LFG";
             }
 
             if (spawn.isPvp == 1)
             {
-                ss << "  PVP";
+                ssDrawText << "  PVP";
             }
 
             if (spawn.isTrader == 1)
             {
-                ss << "  TRADER";
+                ssDrawText << "  TRADER";
             }
 
             if (spawn.isAfk == 1)
             {
-                ss << "  AFK";
+                ssDrawText << "  AFK";
             }
 
             if (spawn.isGm == 1)
             {
-                ss << "  *GM*";
+                ssDrawText << "  *GM*";
             }
 
-            EQ_DrawText(ss.str().c_str(), screenX, screenY, textColor, fontSize);
+            ssDrawText << "\n";
             g_espNumDrawText++;
-
-            unsigned int fontHeight = EQ_GetFontHeight(fontSize);
-
-            unsigned int textOffsetY = fontHeight;
 
             if (spawn.type == EQ_SPAWN_TYPE_PLAYER)
             {
                 if (spawn.standingState == EQ_STANDING_STATE_FEIGNED)
                 {
-                    std::stringstream ss;
-                    ss << "*Feign Death*";
-
-                    EQ_DrawText(ss.str().c_str(), screenX, screenY + textOffsetY, textColor, fontSize);
-                    textOffsetY = textOffsetY + fontHeight;
+                    ssDrawText << "*Feign Death*\n";
                     g_espNumDrawText++;
                 }
 
@@ -3152,11 +1276,7 @@ void EQAPP_DoEsp()
                     {
                         const char* spawnGuildName = EQ_EQ_Guilds.GetGuildNameById(spawn.guildId);
 
-                        std::stringstream ss;
-                        ss << "<" << spawnGuildName << ">";
-
-                        EQ_DrawText(ss.str().c_str(), screenX, screenY + textOffsetY, textColor, fontSize);
-                        textOffsetY = textOffsetY + fontHeight;
+                        ssDrawText << "<" << spawnGuildName << ">\n";
                         g_espNumDrawText++;
                     }
                 }
@@ -3165,11 +1285,7 @@ void EQAPP_DoEsp()
             {
                 if (strlen(spawn.lastName) > 0)
                 {
-                    std::stringstream ss;
-                    ss << "(" << spawn.lastName << ")";
-
-                    EQ_DrawText(ss.str().c_str(), screenX, screenY + textOffsetY, textColor, fontSize);
-                    textOffsetY = textOffsetY + fontHeight;
+                    ssDrawText << "(" << spawn.lastName << ")\n";
                     g_espNumDrawText++;
                 }
 
@@ -3177,29 +1293,22 @@ void EQAPP_DoEsp()
                 {
                     const char* spawnBodyTypeDescription = EQ_CEverQuest->GetBodyTypeDesc(spawn.spawnInfo + 0x128);
 
-                    std::stringstream ss;
-                    ss << "[" << spawnBodyTypeDescription << "]";
-
-                    EQ_DrawText(ss.str().c_str(), screenX, screenY + textOffsetY, textColor, fontSize);
-                    textOffsetY = textOffsetY + fontHeight;
+                    ssDrawText << "[" << spawnBodyTypeDescription << "]\n";
                     g_espNumDrawText++;
 
                     if (spawn.isHoldingPrimary != 0 && spawn.isHoldingSecondary != 0)
                     {
-                        EQ_DrawText("Holding Primary & Secondary", screenX, screenY + textOffsetY, textColor, fontSize);
-                        textOffsetY = textOffsetY + fontHeight;
+                        ssDrawText << "Holding Primary & Secondary\n";
                         g_espNumDrawText++;
                     }
                     else if (spawn.isHoldingPrimary != 0)
                     {
-                        EQ_DrawText("Holding Primary", screenX, screenY + textOffsetY, textColor, fontSize);
-                        textOffsetY = textOffsetY + fontHeight;
+                        ssDrawText << "Holding Primary\n";
                         g_espNumDrawText++;
                     }
                     else if (spawn.isHoldingSecondary != 0)
                     {
-                        EQ_DrawText("Holding Secondary", screenX, screenY + textOffsetY, textColor, fontSize);
-                        textOffsetY = textOffsetY + fontHeight;
+                        ssDrawText << "Holding Secondary\n";
                         g_espNumDrawText++;
                     }
                 }
@@ -3211,17 +1320,14 @@ void EQAPP_DoEsp()
                 {
                     if (spawnCastSpell->spawnInfo == spawn.spawnInfo)
                     {
-                        std::stringstream ss;
-                        ss << "(" << spawnCastSpell->spellName << ")";
-
-                        EQ_DrawText(ss.str().c_str(), screenX, screenY + textOffsetY, textColor, fontSize);
-                        textOffsetY = textOffsetY + fontHeight;
+                        ssDrawText << "(" << spawnCastSpell->spellName << ")\n";
                         g_espNumDrawText++;
-
                         break;
                     }
                 }
             }
+
+            EQ_DrawText(ssDrawText.str().c_str(), screenX, screenY, textColor, fontSize);
 
             if (g_findIsEnabled == true && spawn.isFindSpawn == true)
             {
@@ -3398,26 +1504,14 @@ void EQAPP_DoEsp()
                         }
                     }
 
-                    std::stringstream ss;
-                    ss << "+ " << zoneObjectName << " (" << (int)zoneObjectDistance << ")";
-                    EQ_DrawText(ss.str().c_str(), screenX, screenY, g_espZoneObjectColor, fontSize);
+                    std::stringstream ssDrawText;
+                    ssDrawText << "+ " << zoneObjectName << " (" << (int)zoneObjectDistance << ")\n";
 
-                    unsigned int offsetY = fontHeight;
+                    ssDrawText << "Y: " << zoneObjectY << "\n";
+                    ssDrawText << "X: " << zoneObjectX << "\n";
+                    ssDrawText << "Z: " << zoneObjectZ << "\n";
 
-                    std::stringstream ssY;
-                    ssY << "Y: " << zoneObjectY;
-                    EQ_DrawText(ssY.str().c_str(), screenX, screenY + offsetY, g_espZoneObjectColor, fontSize);
-                    offsetY += fontHeight;
-
-                    std::stringstream ssX;
-                    ssX << "X: " << zoneObjectX;
-                    EQ_DrawText(ssX.str().c_str(), screenX, screenY + offsetY, g_espZoneObjectColor, fontSize);
-                    offsetY += fontHeight;
-
-                    std::stringstream ssZ;
-                    ssZ << "Z: " << zoneObjectZ;
-                    EQ_DrawText(ssZ.str().c_str(), screenX, screenY + offsetY, g_espZoneObjectColor, fontSize);
-                    offsetY += fontHeight;
+                    EQ_DrawText(ssDrawText.str().c_str(), screenX, screenY, g_espZoneObjectColor, fontSize);
 
                     zoneObject = EQ_ReadMemory<DWORD>(zoneObject + 0x04); // next
                 }
@@ -3546,9 +1640,9 @@ void EQAPP_DoSpawnCastSpell()
         }
 
         DWORD delay = spawnCastSpell->spellCastTime;
-        if (delay < g_spawnCastSpellDelay)
+        if (delay < g_spawnCastSpellTimerDelay)
         {
-            delay = g_spawnCastSpellDelay;
+            delay = g_spawnCastSpellTimerDelay;
         }
 
         DWORD spawnStandingState = EQ_ReadMemory<BYTE>(spawnCastSpell->spawnInfo + 0x278);
@@ -3606,7 +1700,7 @@ void EQAPP_DoSpawnList(const char* filterSpawnName)
         return;
     }
 
-    EQAPP_Cout_SaveFlags();
+    EQAPP_COUT_SaveFlags();
 
     std::cout << "Spawn List:";
     if (filterSpawnName != NULL)
@@ -3744,10 +1838,10 @@ void EQAPP_DoSpawnList(const char* filterSpawnName)
         spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
     }
 
-    EQAPP_Cout_RestoreFlags();
+    EQAPP_COUT_RestoreFlags();
 }
 
-void EQAPP_DoAutoLoot()
+void EQAPP_AutoLoot_Execute()
 {
     if (g_autoLootIsEnabled == false || g_autoLootList.size() == 0)
     {
@@ -3760,7 +1854,7 @@ void EQAPP_DoAutoLoot()
         return;
     }
 
-    if (EQ_HasTimePassed(g_autoLootTimer, g_autoLootDelay) == false)
+    if (EQ_HasTimePassed(g_autoLootTimer, g_autoLootTimerDelay) == false)
     {
         return;
     }
@@ -3769,6 +1863,25 @@ void EQAPP_DoAutoLoot()
     {
         bool result = EQ_LootItemByName(itemName.c_str());
     }
+}
+
+void EQAPP_AutoLoot_Toggle()
+{
+    EQ_ToggleBool(g_autoLootIsEnabled);
+
+    if (g_autoLootIsEnabled == false)
+    {
+        g_autoLootList.clear();
+    }
+
+    EQAPP_PrintBool("Auto Loot", g_autoLootIsEnabled);
+}
+
+void EQAPP_AutoLoot_Reset()
+{
+    g_autoLootList.clear();
+
+    std::cout << "Auto Loot reset." << std::endl;
 }
 
 void EQAPP_DoBankList(const char* filterItemName)
@@ -3786,7 +1899,7 @@ void EQAPP_DoBankList(const char* filterItemName)
         return;
     }
 
-    EQAPP_Cout_SaveFlags();
+    EQAPP_COUT_SaveFlags();
 
     std::cout << "Bank List:";
     if (filterItemName != NULL)
@@ -3877,7 +1990,7 @@ void EQAPP_DoBankList(const char* filterItemName)
         }
     }
 
-    EQAPP_Cout_RestoreFlags();
+    EQAPP_COUT_RestoreFlags();
 }
 
 void EQAPP_DoInventoryList(const char* filterItemName)
@@ -3895,7 +2008,7 @@ void EQAPP_DoInventoryList(const char* filterItemName)
         return;
     }
 
-    EQAPP_Cout_SaveFlags();
+    EQAPP_COUT_SaveFlags();
 
     std::cout << "Inventory List:";
     if (filterItemName != NULL)
@@ -3980,610 +2093,10 @@ void EQAPP_DoInventoryList(const char* filterItemName)
         }
     }
 
-    EQAPP_Cout_RestoreFlags();
+    EQAPP_COUT_RestoreFlags();
 }
 
-void EQAPP_WriteCharacterFile()
-{
-    DWORD charInfo = EQ_ReadMemory<DWORD>(EQ_POINTER_CHAR_INFO);
-    if (charInfo == NULL)
-    {
-        std::cout << __FUNCTION__ << ": char info is null" << std::endl;
-        return;
-    }
-
-    DWORD charInfo2 = EQ_GetCharInfo2();
-    if (charInfo2 == NULL)
-    {
-        std::cout << __FUNCTION__ << ": char info 2 is null" << std::endl;
-        return;
-    }
-
-    std::string characterName = EQ_GetCharacterName();
-
-    std::stringstream filePath;
-    filePath << "eqapp/characters/" << characterName << ".txt";
-
-    std::cout << "Writing character file: " << filePath.str() << std::endl;
-
-    std::fstream file;
-    file.open(filePath.str().c_str(), std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
-    if (file.is_open() == false)
-    {
-        std::cout << __FUNCTION__ << ": Failed to open file: " << filePath.str() << std::endl;
-        return;
-    }
-
-    file << "Name: " << characterName << std::endl << std::endl;
-
-    file << "---------- BANK ----------" << std::endl << std::endl;
-
-    DWORD bankPlatinum = EQ_ReadMemory<DWORD>(charInfo + 0xF5A4);
-    DWORD bankGold     = EQ_ReadMemory<DWORD>(charInfo + 0xF5A8);
-    DWORD bankSilver   = EQ_ReadMemory<DWORD>(charInfo + 0xF5AC);
-    DWORD bankCopper   = EQ_ReadMemory<DWORD>(charInfo + 0xF5B0);
-
-    file << "Platinum: " << bankPlatinum << std::endl;
-    file << "Gold:     " << bankGold     << std::endl;
-    file << "Silver:   " << bankSilver   << std::endl;
-    file << "Copper:   " << bankCopper   << std::endl;
-
-    file << std::endl;
-
-    for (size_t i = 0; i < EQ_NUM_BANK_SLOTS; i++)
-    {
-        DWORD itemInfo = EQ_ReadMemory<DWORD>(charInfo + (0x1128 + (i * 4)));
-        if (itemInfo == NULL)
-        {
-            file << std::setfill('0') << std::setw(2) << i + 1 << ": EMPTY" << std::endl;
-            continue;
-        }
-
-        DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + 0xD0);
-
-        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + 0xB8);
-        if (itemName != NULL)
-        {
-            file << std::setfill('0') << std::setw(2) << i + 1 << ": ";
-
-            if (itemCount > 1)
-            {
-                file << itemCount << " x ";
-            }
-
-            file << itemName << std::endl;
-        }
-
-        for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
-        {
-            DWORD containerItemInfo = EQ_ReadMemory<DWORD>(itemInfo + (0x0C + (j * 4)));
-            if (containerItemInfo == NULL)
-            {
-                //file << std::setfill('0') << std::setw(2) << i + 1 << "-" << std::setfill('0') << std::setw(2) << j + 1 << ": EMPTY" << std::endl;
-                continue;
-            }
-
-            DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + 0xD0);
-
-            PCHAR containerItemName = EQ_ReadMemory<PCHAR>(containerItemInfo + 0xB8);
-            if (containerItemName != NULL)
-            {
-                file << std::setfill('0') << std::setw(2) << i + 1 << "-" << std::setfill('0') << std::setw(2) << j + 1 << ": ";
-
-                if (containerItemCount > 1)
-                {
-                    file << containerItemCount << " x ";
-                }
-
-                file << containerItemName << std::endl;
-            }
-        }
-    }
-
-    file << std::endl;
-
-    file << "---------- INVENTORY ----------" << std::endl << std::endl;
-
-    DWORD inventoryPlatinum = EQ_ReadMemory<DWORD>(charInfo2 + 0x1654);
-    DWORD inventoryGold     = EQ_ReadMemory<DWORD>(charInfo2 + 0x1658);
-    DWORD inventorySilver   = EQ_ReadMemory<DWORD>(charInfo2 + 0x165C);
-    DWORD inventoryCopper   = EQ_ReadMemory<DWORD>(charInfo2 + 0x1660);
-
-    file << "Platinum: " << inventoryPlatinum << std::endl;
-    file << "Gold:     " << inventoryGold     << std::endl;
-    file << "Silver:   " << inventorySilver   << std::endl;
-    file << "Copper:   " << inventoryCopper   << std::endl;
-
-    file << std::endl;
-
-    for (size_t i = 0; i < EQ_NUM_INVENTORY_SLOTS; i++)
-    {
-        std::string slotName = EQ_LIST_EQUIPMENT_SLOT_NAMES.at(i);
-
-        DWORD itemInfo = EQ_ReadMemory<DWORD>(charInfo2 + (0x10 + (i * 4)));
-        if (itemInfo == NULL)
-        {
-            file << std::setfill('0') << std::setw(2) << i + 1 << "(" << slotName << "): EMPTY" << std::endl;
-            continue;
-        }
-
-        DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + 0xD0);
-
-        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + 0xB8);
-        if (itemName != NULL)
-        {
-            file << std::setfill('0') << std::setw(2) << i + 1 << "(" << slotName << "): ";
-
-            if (itemCount > 1)
-            {
-                file << itemCount << " x ";
-            }
-
-            file << itemName << std::endl;
-        }
-
-        for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
-        {
-            DWORD containerItemInfo = EQ_ReadMemory<DWORD>(itemInfo + (0x0C + (j * 4)));
-            if (containerItemInfo == NULL)
-            {
-                //file << std::setfill('0') << std::setw(2) << i + 1 << "-" << std::setfill('0') << std::setw(2) << j + 1 << ": EMPTY" << std::endl;
-                continue;
-            }
-
-            DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + 0xD0);
-
-            PCHAR containerItemName = EQ_ReadMemory<PCHAR>(containerItemInfo + 0xB8);
-            if (containerItemName != NULL)
-            {
-                file << std::setfill('0') << std::setw(2) << i + 1 << "-" << std::setfill('0') << std::setw(2) << j + 1 << ": ";
-
-                if (containerItemCount > 1)
-                {
-                    file << containerItemCount << " x ";
-                }
-
-                file << containerItemName << std::endl;
-            }
-        }
-    }
-
-    file << std::endl;
-
-    file.close();
-}
-
-void EQAPP_WriteCharacterFileJson()
-{
-    DWORD charInfo = EQ_ReadMemory<DWORD>(EQ_POINTER_CHAR_INFO);
-    if (charInfo == NULL)
-    {
-        std::cout << __FUNCTION__ << ": char info is null" << std::endl;
-        return;
-    }
-
-    DWORD charInfo2 = EQ_GetCharInfo2();
-    if (charInfo2 == NULL)
-    {
-        std::cout << __FUNCTION__ << ": char info 2 is null" << std::endl;
-        return;
-    }
-
-    char characterName[0x40] = {0};
-    memcpy(characterName, (LPVOID)(charInfo + 0xF210), sizeof(characterName));
-
-    std::stringstream filePath;
-    filePath << "eqapp/characters/" << characterName << ".json";
-
-    std::cout << "Writing character file: " << filePath.str() << std::endl;
-
-    json_t* j_root = json_object();
-
-    json_object_set_new(j_root, "name", json_string(characterName));
-
-    json_t* j_bank_root = json_object();
-    json_object_set_new(j_root, "bank", j_bank_root);
-
-    DWORD bankPlatinum = EQ_ReadMemory<DWORD>(charInfo + 0xF5A4);
-    DWORD bankGold     = EQ_ReadMemory<DWORD>(charInfo + 0xF5A8);
-    DWORD bankSilver   = EQ_ReadMemory<DWORD>(charInfo + 0xF5AC);
-    DWORD bankCopper   = EQ_ReadMemory<DWORD>(charInfo + 0xF5B0);
-
-    json_t* j_bank_currency_node = json_pack("{s: i, s: i, s: i, s: i}", "platinum", bankPlatinum, "gold", bankGold, "silver", bankSilver, "copper", bankCopper);
-    json_object_set_new(j_bank_root, "currency", j_bank_currency_node);
-
-    json_t* j_bank_items_root = json_array();
-    json_object_set_new(j_bank_root, "items", j_bank_items_root);
-
-    for (size_t i = 0; i < EQ_NUM_BANK_SLOTS; i++)
-    {
-        json_t* j_bank_item_node = json_object();
-
-        DWORD itemInfo = EQ_ReadMemory<DWORD>(charInfo + (0x1128 + (i * 4)));
-        if (itemInfo == NULL)
-        {
-            j_bank_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", i + 1, "name", "(empty)", "count", -1, "id", -1, "icon", -1);
-            json_array_append_new(j_bank_items_root, j_bank_item_node);
-            continue;
-        }
-
-        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + 0xB8);
-        if (itemName != NULL)
-        {
-            DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + 0xD0);
-
-            DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + 0xB8);
-
-            DWORD itemId   = EQ_ReadMemory<DWORD>(itemSubInfo + 0xD0);
-            DWORD itemIcon = EQ_ReadMemory<DWORD>(itemSubInfo + 0xDC);
-
-            j_bank_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", i + 1, "name", itemName, "count", itemCount, "id", itemId, "icon", itemIcon);
-            json_array_append_new(j_bank_items_root, j_bank_item_node);
-        }
-
-        json_t* j_bank_item_node_container_items_root = json_array();
-        json_object_set_new(j_bank_item_node, "containerItems", j_bank_item_node_container_items_root);
-
-        for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
-        {
-            json_t* j_bank_container_item_node = json_object();
-
-            DWORD containerItemInfo = EQ_ReadMemory<DWORD>(itemInfo + (0x0C + (j * 4)));
-            if (containerItemInfo == NULL)
-            {
-                j_bank_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", j + 1, "name", "(empty)", "count", -1, "id", -1, "icon", -1);
-                json_array_append_new(j_bank_item_node_container_items_root, j_bank_container_item_node);
-                continue;
-            }
-
-            PCHAR containerItemName = EQ_ReadMemory<PCHAR>(containerItemInfo + 0xB8);
-            if (containerItemName != NULL)
-            {
-                DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + 0xD0);
-
-                DWORD containerItemSubInfo = EQ_ReadMemory<DWORD>(containerItemInfo + 0xB8);
-
-                DWORD containerItemId   = EQ_ReadMemory<DWORD>(containerItemSubInfo + 0xD0);
-                DWORD containerItemIcon = EQ_ReadMemory<DWORD>(containerItemSubInfo + 0xDC);
-
-                j_bank_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", j + 1, "name", containerItemName, "count", containerItemCount, "id", containerItemId, "icon", containerItemIcon);
-                json_array_append_new(j_bank_item_node_container_items_root, j_bank_container_item_node);
-            }
-        }
-    }
-
-    json_t* j_inventory_root = json_object();
-    json_object_set_new(j_root, "inventory", j_inventory_root);
-
-    DWORD inventoryPlatinum = EQ_ReadMemory<DWORD>(charInfo2 + 0x1654);
-    DWORD inventoryGold     = EQ_ReadMemory<DWORD>(charInfo2 + 0x1658);
-    DWORD inventorySilver   = EQ_ReadMemory<DWORD>(charInfo2 + 0x165C);
-    DWORD inventoryCopper   = EQ_ReadMemory<DWORD>(charInfo2 + 0x1660);
-
-    json_t* j_inventory_currency_node = json_pack("{s: i, s: i, s: i, s: i}", "platinum", inventoryPlatinum, "gold", inventoryGold, "silver", inventorySilver, "copper", inventoryCopper);
-    json_object_set_new(j_inventory_root, "currency", j_inventory_currency_node);
-
-    json_t* j_inventory_items_root = json_array();
-    json_object_set_new(j_inventory_root, "items", j_inventory_items_root);
-
-    for (size_t i = 0; i < EQ_NUM_INVENTORY_SLOTS; i++)
-    {
-        json_t* j_inventory_item_node = json_object();
-
-        std::string slotName = EQ_LIST_EQUIPMENT_SLOT_NAMES.at(i);
-
-        DWORD itemInfo = EQ_ReadMemory<DWORD>(charInfo2 + (0x10 + (i * 4)));
-        if (itemInfo == NULL)
-        {
-            j_inventory_item_node = json_pack("{s: i, s: s, s: s, s: i, s: i, s: i}", "slot", i + 1, "slotName", slotName.c_str(), "name", "(empty)", "count", -1, "id", -1, "icon", -1);
-            json_array_append_new(j_inventory_items_root, j_inventory_item_node);
-            continue;
-        }
-
-        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + 0xB8);
-        if (itemName != NULL)
-        {
-            DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + 0xD0);
-
-            DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + 0xB8);
-
-            DWORD itemId   = EQ_ReadMemory<DWORD>(itemSubInfo + 0xD0);
-            DWORD itemIcon = EQ_ReadMemory<DWORD>(itemSubInfo + 0xDC);
-
-            j_inventory_item_node = json_pack("{s: i, s: s, s: s, s: i, s: i, s: i}", "slot", i + 1, "slotName", slotName.c_str(), "name", itemName, "count", itemCount, "id", itemId, "icon", itemIcon);
-            json_array_append_new(j_inventory_items_root, j_inventory_item_node);
-        }
-
-        json_t* j_inventory_item_node_container_items_root = json_array();
-        json_object_set_new(j_inventory_item_node, "containerItems", j_inventory_item_node_container_items_root);
-
-        for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
-        {
-            json_t* j_inventory_container_item_node = json_object();
-
-            DWORD containerItemInfo = EQ_ReadMemory<DWORD>(itemInfo + (0x0C + (j * 4)));
-            if (containerItemInfo == NULL)
-            {
-                j_inventory_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", j + 1, "name", "(empty)", "count", -1, "id", -1, "icon", -1);
-                json_array_append_new(j_inventory_item_node_container_items_root, j_inventory_container_item_node);
-                continue;
-            }
-
-            PCHAR containerItemName = EQ_ReadMemory<PCHAR>(containerItemInfo + 0xB8);
-            if (containerItemName != NULL)
-            {
-                DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + 0xD0);
-
-                DWORD containerItemSubInfo = EQ_ReadMemory<DWORD>(containerItemInfo + 0xB8);
-
-                DWORD containerItemId   = EQ_ReadMemory<DWORD>(containerItemSubInfo + 0xD0);
-                DWORD containerItemIcon = EQ_ReadMemory<DWORD>(containerItemSubInfo + 0xDC);
-
-                j_inventory_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", j + 1, "name", containerItemName, "count", containerItemCount, "id", containerItemId, "icon", containerItemIcon);
-                json_array_append_new(j_inventory_item_node_container_items_root, j_inventory_container_item_node);
-            }
-        }
-    }
-
-    json_dump_file(j_root, filePath.str().c_str(), JSON_PRESERVE_ORDER | JSON_INDENT(4));
-
-    json_decref(j_root);
-}
-
-void EQAPP_DoOpenAllDoors()
-{
-    DWORD switchManager = EQ_ReadMemory<DWORD>(EQ_POINTER_SWITCH_MANAGER);
-    if (switchManager == NULL)
-    {
-        std::cout << __FUNCTION__ << ": switch manager is null" << std::endl;
-        return;
-    }
-
-    DWORD numDoors = EQ_ReadMemory<DWORD>(switchManager + 0x00);
-    if (numDoors == 0)
-    {
-        std::cout << __FUNCTION__ << ": number of doors is zero" << std::endl;
-        return;
-    }
-
-    for (size_t i = 0; i < numDoors; i++)
-    {
-        DWORD doorInfo = EQ_ReadMemory<DWORD>(switchManager + 0x04 + (i * 4));
-        if (doorInfo == NULL)
-        {
-            continue;
-        }
-
-        EQ_DoorOpen(doorInfo);
-    }
-}
-
-void EQAPP_ToggleFreeCamera(bool b)
-{
-    // updates camera coordinates
-    // EQGraphicsDX9.DLL+591A - 89 8F BC000000        - mov [edi+000000BC],ecx
-    // EQGraphicsDX9.DLL+5923 - 89 97 C0000000        - mov [edi+000000C0],edx
-    // EQGraphicsDX9.DLL+592C - 89 87 C4000000        - mov [edi+000000C4],eax
-
-    DWORD baseAddress = EQ_ReadMemory<DWORD>(EQ_POINTER_GRAPHICS_DLL_BASE_ADDRESS);
-    if (baseAddress == NULL)
-    {
-        std::cout << __FUNCTION__ << ": base address is null" << std::endl;
-        return;
-    }
-
-    DWORD address = 0;
-    DWORD oldProtection = 0;
-    DWORD tempProtection = 0;
-
-    if (b == true)
-    {
-        // Camera Y
-        address = baseAddress + 0x591A;
-        VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, 6, PAGE_EXECUTE_READWRITE, &oldProtection);
-        WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, "\x90\x90\x90\x90\x90\x90", 6, 0);
-        VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, 6, oldProtection, &tempProtection);
-
-        // Camera X
-        address = baseAddress + 0x5923;
-        VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, 6, PAGE_EXECUTE_READWRITE, &oldProtection);
-        WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, "\x90\x90\x90\x90\x90\x90", 6, 0);
-        VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, 6, oldProtection, &tempProtection);
-
-        // Camera Z
-        address = baseAddress + 0x592C;
-        VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, 6, PAGE_EXECUTE_READWRITE, &oldProtection);
-        WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, "\x90\x90\x90\x90\x90\x90", 6, 0);
-        VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, 6, oldProtection, &tempProtection);
-
-        EQ_WriteMemory<DWORD>(EQ_CAMERA_VIEW, EQ_CAMERA_VIEW_FIRST_PERSON);
-    }
-    else
-    {
-        // Camera Y
-        address = baseAddress + 0x591A;
-        VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, 6, PAGE_EXECUTE_READWRITE, &oldProtection);
-        WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, "\x89\x8F\xBC\x00\x00\x00", 6, 0);
-        VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, 6, oldProtection, &tempProtection);
-
-        // Camera X
-        address = baseAddress + 0x5923;
-        VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, 6, PAGE_EXECUTE_READWRITE, &oldProtection);
-        WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, "\x89\x97\xC0\x00\x00\x00", 6, 0);
-        VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, 6, oldProtection, &tempProtection);
-
-        // Camera Z
-        address = baseAddress + 0x592C;
-        VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, 6, PAGE_EXECUTE_READWRITE, &oldProtection);
-        WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, "\x89\x87\xC4\x00\x00\x00", 6, 0);
-        VirtualProtectEx(GetCurrentProcess(), (LPVOID)address, 6, oldProtection, &tempProtection);
-    }
-
-    g_freeCameraIsEnabled = b;
-}
-
-void EQAPP_DoFreeCameraKeys()
-{
-    if (g_freeCameraIsEnabled == false)
-    {
-        return;
-    }
-
-    if (EQAPP_IsForegroundWindowCurrentProcessId() == false)
-    {
-        return;
-    }
-
-    DWORD cameraData = EQ_GetCameraData();
-    if (cameraData == NULL)
-    {
-        return;
-    }
-
-    if (GetAsyncKeyState(VK_UP) & 0x8000)
-    {
-        FLOAT cameraY = EQ_ReadMemory<FLOAT>(cameraData + 0xBC);
-        FLOAT cameraX = EQ_ReadMemory<FLOAT>(cameraData + 0xC0);
-        FLOAT cameraZ = EQ_ReadMemory<FLOAT>(cameraData + 0xC4);
-
-        FLOAT cameraHeading = EQ_ReadMemory<FLOAT>(cameraData + 0xB0);
-        FLOAT cameraPitch   = EQ_ReadMemory<FLOAT>(cameraData + 0xB4);
-
-        cameraHeading = cameraHeading - 128.0f;
-
-        EQ_FixHeading(cameraHeading);
-
-        float cameraHeadingRadians = EQ_GetRadians(cameraHeading);
-
-        cameraPitch = (float)(cameraPitch + fabs(EQ_CAMERA_PITCH_DEFAULT)); // remove negative offset from camera pitch
-
-        float cameraPitchRadians = EQ_GetRadians(cameraPitch);
-
-        float addY = sinf(cameraHeadingRadians);
-        float addX = cosf(cameraHeadingRadians);
-        float addZ = sinf(cameraPitchRadians);
-
-        if (fabs(cameraPitch) < 90.0f)
-        {
-            cameraY -= addY * g_freeCameraMultiplier;
-            cameraX += addX * g_freeCameraMultiplier;
-        }
-
-        cameraZ += addZ * g_freeCameraMultiplier;
-
-        EQ_WriteMemory<FLOAT>(cameraData + 0xBC, cameraY);
-        EQ_WriteMemory<FLOAT>(cameraData + 0xC0, cameraX);
-        EQ_WriteMemory<FLOAT>(cameraData + 0xC4, cameraZ);
-    }
-
-    if (GetAsyncKeyState(VK_DOWN) & 0x8000)
-    {
-        FLOAT cameraY = EQ_ReadMemory<FLOAT>(cameraData + 0xBC);
-        FLOAT cameraX = EQ_ReadMemory<FLOAT>(cameraData + 0xC0);
-        FLOAT cameraZ = EQ_ReadMemory<FLOAT>(cameraData + 0xC4);
-
-        FLOAT cameraHeading = EQ_ReadMemory<FLOAT>(cameraData + 0xB0);
-        FLOAT cameraPitch   = EQ_ReadMemory<FLOAT>(cameraData + 0xB4);
-
-        cameraHeading = cameraHeading - 128.0f;
-
-        EQ_FixHeading(cameraHeading);
-
-        float cameraHeadingRadians = EQ_GetRadians(cameraHeading);
-
-        cameraPitch = (float)(cameraPitch + fabs(EQ_CAMERA_PITCH_DEFAULT)); // remove negative offset from camera pitch
-
-        float cameraPitchRadians = EQ_GetRadians(cameraPitch);
-
-        float addY = sinf(cameraHeadingRadians);
-        float addX = cosf(cameraHeadingRadians);
-        float addZ = sinf(cameraPitchRadians);
-
-        if (fabs(cameraPitch) < 90.0f)
-        {
-            cameraY += addY * g_freeCameraMultiplier;
-            cameraX -= addX * g_freeCameraMultiplier;
-        }
-
-        cameraZ -= addZ * g_freeCameraMultiplier;
-
-        EQ_WriteMemory<FLOAT>(cameraData + 0xBC, cameraY);
-        EQ_WriteMemory<FLOAT>(cameraData + 0xC0, cameraX);
-        EQ_WriteMemory<FLOAT>(cameraData + 0xC4, cameraZ);
-    }
-
-    if (GetAsyncKeyState(VK_LEFT) & 0x8000)
-    {
-        FLOAT cameraY = EQ_ReadMemory<FLOAT>(cameraData + 0xBC);
-        FLOAT cameraX = EQ_ReadMemory<FLOAT>(cameraData + 0xC0);
-        FLOAT cameraZ = EQ_ReadMemory<FLOAT>(cameraData + 0xC4);
-
-        FLOAT cameraHeading = EQ_ReadMemory<FLOAT>(cameraData + 0xB0);
-        FLOAT cameraPitch   = EQ_ReadMemory<FLOAT>(cameraData + 0xB4);
-
-        EQ_FixHeading(cameraHeading);
-
-        float cameraHeadingRadians = EQ_GetRadians(cameraHeading);
-
-        cameraPitch = (float)(cameraPitch + fabs(EQ_CAMERA_PITCH_DEFAULT)); // remove negative offset from camera pitch
-
-        float cameraPitchRadians = EQ_GetRadians(cameraPitch);
-
-        float addY = sinf(cameraHeadingRadians);
-        float addX = cosf(cameraHeadingRadians);
-        float addZ = sinf(cameraPitchRadians);
-
-        if (fabs(cameraPitch) < 90.0f)
-        {
-            cameraY -= addY * g_freeCameraMultiplier;
-            cameraX += addX * g_freeCameraMultiplier;
-        }
-
-        cameraZ += addZ * g_freeCameraMultiplier;
-
-        EQ_WriteMemory<FLOAT>(cameraData + 0xBC, cameraY);
-        EQ_WriteMemory<FLOAT>(cameraData + 0xC0, cameraX);
-        EQ_WriteMemory<FLOAT>(cameraData + 0xC4, cameraZ);
-    }
-
-    if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
-    {
-        FLOAT cameraY = EQ_ReadMemory<FLOAT>(cameraData + 0xBC);
-        FLOAT cameraX = EQ_ReadMemory<FLOAT>(cameraData + 0xC0);
-        FLOAT cameraZ = EQ_ReadMemory<FLOAT>(cameraData + 0xC4);
-
-        FLOAT cameraHeading = EQ_ReadMemory<FLOAT>(cameraData + 0xB0);
-        FLOAT cameraPitch   = EQ_ReadMemory<FLOAT>(cameraData + 0xB4);
-
-        cameraHeading = cameraHeading + 256.0f;
-
-        EQ_FixHeading(cameraHeading);
-
-        float cameraHeadingRadians = EQ_GetRadians(cameraHeading);
-
-        cameraPitch = (float)(cameraPitch + fabs(EQ_CAMERA_PITCH_DEFAULT)); // remove negative offset from camera pitch
-
-        float cameraPitchRadians = EQ_GetRadians(cameraPitch);
-
-        float addY = sinf(cameraHeadingRadians);
-        float addX = cosf(cameraHeadingRadians);
-        float addZ = sinf(cameraPitchRadians);
-
-        if (fabs(cameraPitch) < 90.0f)
-        {
-            cameraY -= addY * g_freeCameraMultiplier;
-            cameraX += addX * g_freeCameraMultiplier;
-        }
-
-        cameraZ += addZ * g_freeCameraMultiplier;
-
-        EQ_WriteMemory<FLOAT>(cameraData + 0xBC, cameraY);
-        EQ_WriteMemory<FLOAT>(cameraData + 0xC0, cameraX);
-        EQ_WriteMemory<FLOAT>(cameraData + 0xC4, cameraZ);
-    }
-}
-
-void EQAPP_DoInterpretCommand(const char* command)
+void EQAPP_InterpretCommand(const char* command)
 {
     // help
     if (strcmp(command, "//help") == 0)
@@ -4599,7 +2112,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     // unload
     if (strcmp(command, "//unload") == 0)
     {
-        EQAPP_DoUnload();
+        EQAPP_Unload();
         return;
     }
 
@@ -4607,9 +2120,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//debug") == 0)
     {
         EQ_ToggleBool(g_debugIsEnabled);
-
-        std::cout << "Debug: " << std::boolalpha << g_debugIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Debug", g_debugIsEnabled);
         return;
     }
 
@@ -4653,9 +2164,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//hud") == 0)
     {
         EQ_ToggleBool(g_hudIsEnabled);
-
-        std::cout << "HUD: " << std::boolalpha << g_hudIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("HUD", g_hudIsEnabled);
         return;
     }
 
@@ -4706,39 +2215,27 @@ void EQAPP_DoInterpretCommand(const char* command)
         char itemName[1024];
 
         int result = sscanf_s(command, "%s %s", commandEx, sizeof(commandEx), itemName, sizeof(itemName));
-
         if (result == 2)
         {
             EQ_StringReplaceUnderscoresWithSpaces(itemName);
 
             bool lootResult = EQ_LootItemByName(itemName);
 
-            std::cout << "Loot Result: " << itemName << ", " << std::boolalpha << lootResult << std::noboolalpha << std::endl;
+            std::cout << "Loot Result: " << itemName << " , " << std::boolalpha << lootResult << std::noboolalpha << std::endl;
         }
     }
 
     // toggle auto loot
     if (strcmp(command, "//autoloot") == 0 || strcmp(command, "//al") == 0)
     {
-        EQ_ToggleBool(g_autoLootIsEnabled);
-
-        std::cout << "Auto Loot: " << std::boolalpha << g_autoLootIsEnabled << std::noboolalpha << std::endl;
-
-        if (g_autoLootIsEnabled == false)
-        {
-            g_autoLootList.clear();
-        }
-
+        EQAPP_AutoLoot_Toggle();
         return;
     }
 
     // reset auto loot
     if (strcmp(command, "//resetautoloot") == 0 || strcmp(command, "//resetal") == 0 || strcmp(command, "//ral") == 0)
     {
-        std::cout << "Auto Loot reset." << std::endl;
-
-        g_autoLootList.clear();
-
+        EQAPP_AutoLoot_Reset();
         return;
     }
 
@@ -4750,7 +2247,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         char itemName[1024];
 
         int result = sscanf_s(command, "%s %s", commandEx, sizeof(commandEx), itemName, sizeof(itemName));
-
         if (result == 2)
         {
             EQ_StringReplaceUnderscoresWithSpaces(itemName);
@@ -4769,7 +2265,7 @@ void EQAPP_DoInterpretCommand(const char* command)
         DWORD playerSpawn = EQ_GetPlayerSpawn();
         DWORD targetSpawn = EQ_GetTargetSpawn();
 
-        if (targetSpawn != NULL)
+        if (playerSpawn != NULL && targetSpawn != NULL)
         {
             FLOAT targetY = EQ_ReadMemory<FLOAT>(targetSpawn + 0x64);
             FLOAT targetX = EQ_ReadMemory<FLOAT>(targetSpawn + 0x68);
@@ -4789,7 +2285,7 @@ void EQAPP_DoInterpretCommand(const char* command)
         DWORD playerSpawn = EQ_GetPlayerSpawn();
         DWORD targetSpawn = EQ_GetTargetSpawn();
 
-        if (targetSpawn != NULL)
+        if (playerSpawn != NULL && targetSpawn != NULL)
         {
             FLOAT meleeRange = EQ_get_melee_range(playerSpawn, targetSpawn);
 
@@ -4807,7 +2303,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         int spellId = 0;
 
         int result = sscanf_s(command, "%s %d", commandEx, sizeof(commandEx), &spellId);
-
         if (result == 2)
         {
             std::string spellName = EQ_GetSpellNameById(spellId);
@@ -4911,7 +2406,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         DWORD copper   = EQ_ReadMemory<DWORD>(charInfo + 0xF5B0);
 
         std::cout << "You have " << platinum << "p " << gold << "g " << silver << "s " << copper << "c in the bank." << std::endl;
-
         return;
     }
 
@@ -4919,7 +2413,6 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//banklist") == 0 || strcmp(command, "//bl") == 0)
     {
         EQAPP_DoBankList(NULL);
-
         return;
     }
 
@@ -4931,7 +2424,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         char name[1024];
 
         int result = sscanf_s(command, "%s %s", commandEx, sizeof(commandEx), name, sizeof(name));
-
         if (result == 2)
         {
             EQ_StringReplaceUnderscoresWithSpaces(name);
@@ -4946,7 +2438,6 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//inventorylist") == 0 || strcmp(command, "//invlist") == 0 || strcmp(command, "//il") == 0)
     {
         EQAPP_DoInventoryList(NULL);
-
         return;
     }
 
@@ -4958,7 +2449,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         char name[1024];
 
         int result = sscanf_s(command, "%s %s", commandEx, sizeof(commandEx), name, sizeof(name));
-
         if (result == 2)
         {
             EQ_StringReplaceUnderscoresWithSpaces(name);
@@ -4973,7 +2463,6 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//spawnlist") == 0 || strcmp(command, "//sl") == 0)
     {
         EQAPP_DoSpawnList(NULL);
-
         return;
     }
 
@@ -4985,7 +2474,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         char name[1024];
 
         int result = sscanf_s(command, "%s %s", commandEx, sizeof(commandEx), name, sizeof(name));
-
         if (result == 2)
         {
             EQ_StringReplaceUnderscoresWithSpaces(name);
@@ -5000,9 +2488,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//esp") == 0)
     {
         EQ_ToggleBool(g_espIsEnabled);
-
-        std::cout << "ESP: " << std::boolalpha << g_espIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("ESP", g_espIsEnabled);
         return;
     }
 
@@ -5010,9 +2496,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//espspawn") == 0 || strcmp(command, "//esps") == 0)
     {
         EQ_ToggleBool(g_espSpawnIsEnabled);
-
-        std::cout << "ESP Spawn: " << std::boolalpha << g_espSpawnIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("ESP Spawn", g_espSpawnIsEnabled);
         return;
     }
 
@@ -5020,9 +2504,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//espgroundspawn") == 0 || strcmp(command, "//espg") == 0)
     {
         EQ_ToggleBool(g_espGroundSpawnIsEnabled);
-
-        std::cout << "ESP Ground Spawn: " << std::boolalpha << g_espGroundSpawnIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("ESP Ground Spawn", g_espGroundSpawnIsEnabled);
         return;
     }
 
@@ -5030,9 +2512,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//espdoor") == 0 || strcmp(command, "//espd") == 0)
     {
         EQ_ToggleBool(g_espDoorIsEnabled);
-
-        std::cout << "ESP Door: " << std::boolalpha << g_espDoorIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("ESP Door", g_espDoorIsEnabled);
         return;
     }
 
@@ -5040,9 +2520,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//espskeleton") == 0 || strcmp(command, "//espsk") == 0)
     {
         EQ_ToggleBool(g_espSkeletonIsEnabled);
-
-        std::cout << "ESP Skeleton: " << std::boolalpha << g_espSkeletonIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("ESP Skeleton", g_espSkeletonIsEnabled);
         return;
     }
 
@@ -5050,9 +2528,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//espzoneobject") == 0 || strcmp(command, "//espzo") == 0)
     {
         EQ_ToggleBool(g_espZoneObjectIsEnabled);
-
-        std::cout << "ESP Zone Object: " << std::boolalpha << g_espZoneObjectIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("ESP Zone Object", g_espZoneObjectIsEnabled);
         return;
     }
 
@@ -5060,9 +2536,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//espcustom") == 0 || strcmp(command, "//espc") == 0)
     {
         EQ_ToggleBool(g_espCustomIsEnabled);
-
-        std::cout << "ESP Custom: " << std::boolalpha << g_espCustomIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("ESP Custom", g_espCustomIsEnabled);
         return;
     }
 
@@ -5070,9 +2544,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//espwaypoint") == 0 || strcmp(command, "//espwp") == 0)
     {
         EQ_ToggleBool(g_espWaypointIsEnabled);
-
-        std::cout << "ESP Waypoint: " << std::boolalpha << g_espWaypointIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("ESP Waypoint", g_espWaypointIsEnabled);
         return;
     }
 
@@ -5080,9 +2552,6 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//loadespcustom") == 0 || strcmp(command, "//loadec") == 0 || strcmp(command, "//lec") == 0)
     {
         EQAPP_LoadEspCustom();
-
-        std::cout << "Loading custom esp..." << std::endl;
-
         return;
     }
 
@@ -5094,7 +2563,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         float distance = 0.0f;
 
         int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &distance);
-
         if (result == 2)
         {
             g_espSpawnDistance = distance;
@@ -5113,7 +2581,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         float distance = 0.0f;
 
         int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &distance);
-
         if (result == 2)
         {
             g_espGroundSpawnDistance = distance;
@@ -5132,7 +2599,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         float distance = 0.0f;
 
         int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &distance);
-
         if (result == 2)
         {
             g_espDoorDistance = distance;
@@ -5151,7 +2617,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         float distance = 0.0f;
 
         int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &distance);
-
         if (result == 2)
         {
             g_espSkeletonDistance = distance;
@@ -5170,7 +2635,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         float distance = 0.0f;
 
         int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &distance);
-
         if (result == 2)
         {
             g_espZoneObjectDistance = distance;
@@ -5189,7 +2653,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         float distance = 0.0f;
 
         int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &distance);
-
         if (result == 2)
         {
             g_espCustomDistance = distance;
@@ -5208,7 +2671,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         float distance = 0.0f;
 
         int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &distance);
-
         if (result == 2)
         {
             g_espWaypointDistance = distance;
@@ -5222,9 +2684,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     // get esp custom location
     if (strcmp(command, "//getespcustomlocation") == 0 || strcmp(command, "//getecl") == 0 || strcmp(command, "//gecl") == 0)
     {
-        DWORD spawnInfo = NULL;
-
-        spawnInfo = EQ_GetTargetSpawn();
+        DWORD spawnInfo = EQ_GetTargetSpawn();
         if (spawnInfo == NULL)
         {
             spawnInfo = EQ_GetPlayerSpawn();
@@ -5245,9 +2705,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//speed") == 0)
     {
         EQ_ToggleBool(g_speedHackIsEnabled);
-
-        std::cout << "Speed Hack: " << std::boolalpha << g_speedHackIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Speed Hack", g_speedHackIsEnabled);
         return;
     }
 
@@ -5255,9 +2713,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//setspeed sow") == 0)
     {
         g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_SPIRIT_OF_WOLF;
-
         std::cout << "Speed Modifier:  Spirit of Wolf" << std::endl;
-
         return;
     }
 
@@ -5265,9 +2721,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//setspeed run1") == 0)
     {
         g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN1;
-
         std::cout << "Speed Modifier: AA Run 1" << std::endl;
-
         return;
     }
 
@@ -5275,9 +2729,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//setspeed run2") == 0)
     {
         g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN2;
-
         std::cout << "Speed Modifier: AA Run 2" << std::endl;
-
         return;
     }
 
@@ -5285,9 +2737,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//setspeed run3") == 0)
     {
         g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN3;
-
         std::cout << "Speed Modifier: AA Run 3" << std::endl;
-
         return;
     }
 
@@ -5299,7 +2749,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         float modifier = 0.0f;
 
         int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &modifier);
-
         if (result == 2)
         {
             g_speedHackModifier = modifier;
@@ -5314,9 +2763,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//locator") == 0 || strcmp(command, "//loc") == 0)
     {
         EQ_ToggleBool(g_locatorIsEnabled);
-
-        std::cout << "Locator: " << std::boolalpha << g_locatorIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Locator", g_locatorIsEnabled);
         return;
     }
 
@@ -5330,7 +2777,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         float z = 0.0f;
 
         int result = sscanf_s(command, "%s %f %f %f", commandEx, sizeof(commandEx), &y, &x, &z);
-
         if (result == 4)
         {
             g_locatorY = y;
@@ -5349,9 +2795,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//find") == 0)
     {
         EQ_ToggleBool(g_findIsEnabled);
-
-        std::cout << "Find: " << std::boolalpha << g_findIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Find", g_findIsEnabled);
         return;
     }
 
@@ -5363,7 +2807,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         char name[1024];
 
         int result = sscanf_s(command, "%s %s", commandEx, sizeof(commandEx), name, sizeof(name));
-
         if (result == 2)
         {
             EQ_StringReplaceUnderscoresWithSpaces(name);
@@ -5382,9 +2825,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//linetotarget") == 0 || strcmp(command, "//ltt") == 0)
     {
         EQ_ToggleBool(g_lineToTargetIsEnabled);
-
-        std::cout << "Line To Target: " << std::boolalpha << g_lineToTargetIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Line to Target", g_lineToTargetIsEnabled);
         return;
     }
 
@@ -5409,22 +2850,9 @@ void EQAPP_DoInterpretCommand(const char* command)
         unsigned int index = 0;
 
         int result = sscanf_s(command, "%s %d", commandEx, sizeof(commandEx), &index);
-
         if (result == 2)
         {
-            if (index > (g_memoryList.size() - 1))
-            {
-                std::cout << "No memory found at specified index: " << index << std::endl;
-                return;
-            }
-
-            PEQAPPMEMORY pMemory = &g_memoryList.at(index);
-
-            EQ_ToggleBool(pMemory->isEnabled);
-
-            EQAPP_ToggleMemory(pMemory, pMemory->isEnabled);
-
-            std::cout << pMemory->name << ": " << std::boolalpha << pMemory->isEnabled << std::endl;
+            EQAPP_Memory_ToggleByIndex(index);
         }
 
         return;
@@ -5434,9 +2862,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//alwaysattack") == 0 || strcmp(command, "//aa") == 0)
     {
         EQ_ToggleBool(g_alwaysAttackIsEnabled);
-
-        std::cout << "Always Attack: " << std::boolalpha << g_alwaysAttackIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Always Attack", g_alwaysAttackIsEnabled);
         return;
     }
 
@@ -5444,9 +2870,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//combathotbutton") == 0 || strcmp(command, "//chb") == 0)
     {
         EQ_ToggleBool(g_combatHotbuttonIsEnabled);
-
-        std::cout << "Combat Hotbutton: " << std::boolalpha << g_combatHotbuttonIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Combat Hotbutton", g_combatHotbuttonIsEnabled);
         return;
     }
 
@@ -5456,13 +2880,13 @@ void EQAPP_DoInterpretCommand(const char* command)
         char commandEx[128];
 
         unsigned int buttonIndex = 0;
-
-        unsigned int delay = 1;
+        unsigned int delay       = 1;
 
         int result = sscanf_s(command, "%s %d %d", commandEx, sizeof(commandEx), &buttonIndex, &delay);
-
         if (result == 3)
         {
+            // TODO make function for this
+
             if (buttonIndex < 1 || buttonIndex > 10)
             {
                 std::cout << "No hotbutton exists at specified index: " << buttonIndex << std::endl;
@@ -5471,7 +2895,7 @@ void EQAPP_DoInterpretCommand(const char* command)
 
             g_combatHotbuttonIndex = buttonIndex - 1;
 
-            g_combatHotbuttonDelay = delay * 1000;
+            g_combatHotbuttonTimerDelay = delay * 1000;
 
             std::cout << "Combat Hotbutton: " << buttonIndex << " (" << delay << " second(s))" << std::endl;
 
@@ -5485,9 +2909,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//alwayshotbutton") == 0 || strcmp(command, "//ahb") == 0)
     {
         EQ_ToggleBool(g_alwaysHotbuttonIsEnabled);
-
-        std::cout << "Always Hotbutton: " << std::boolalpha << g_alwaysHotbuttonIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Always Hotbutton", g_alwaysHotbuttonIsEnabled);
         return;
     }
 
@@ -5497,13 +2919,13 @@ void EQAPP_DoInterpretCommand(const char* command)
         char commandEx[128];
 
         unsigned int buttonIndex = 0;
-
-        unsigned int delay = 1;
+        unsigned int delay       = 1;
 
         int result = sscanf_s(command, "%s %d %d", commandEx, sizeof(commandEx), &buttonIndex, &delay);
-
         if (result == 3)
         {
+            // TODO: make function for this
+
             if (buttonIndex < 1 || buttonIndex > 10)
             {
                 std::cout << "No hotbutton exists at specified index: " << buttonIndex << std::endl;
@@ -5512,7 +2934,7 @@ void EQAPP_DoInterpretCommand(const char* command)
 
             g_alwaysHotbuttonIndex = buttonIndex - 1;
 
-            g_alwaysHotbuttonDelay = delay * 1000;
+            g_alwaysHotbuttonTimerDelay = delay * 1000;
 
             std::cout << "Always Hotbutton: " << buttonIndex << " (" << delay << " second(s))" << std::endl;
 
@@ -5530,7 +2952,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         float radius = 1.0f;
 
         int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &radius);
-
         if (result == 2)
         {
             if (radius < 0.1f)
@@ -5540,7 +2961,6 @@ void EQAPP_DoInterpretCommand(const char* command)
             }
 
             DWORD playerSpawn = EQ_GetPlayerSpawn();
-
             if (playerSpawn == NULL)
             {
                 return;
@@ -5558,9 +2978,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//drawdistance") == 0 || strcmp(command, "//dd") == 0)
     {
         EQ_ToggleBool(g_drawDistanceIsEnabled);
-
-        std::cout << "Draw Distance: " << std::boolalpha << g_drawDistanceIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Draw Distance", g_drawDistanceIsEnabled);
         return;
     }
 
@@ -5572,9 +2990,10 @@ void EQAPP_DoInterpretCommand(const char* command)
         float distance = EQ_DRAW_DISTANCE_DEFAULT;
 
         int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &distance);
-
         if (result == 2)
         {
+            // TODO: make function
+
             if (distance < EQ_DRAW_DISTANCE_MINIMUM)
             {
                 std::cout << "Specified draw distance too low: " << distance << std::endl;
@@ -5599,7 +3018,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         float fov = EQ_FIELD_OF_VIEW_DEFAULT;
 
         int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &fov);
-
         if (result == 2)
         {
             if (fov <= 0.0f)
@@ -5610,7 +3028,7 @@ void EQAPP_DoInterpretCommand(const char* command)
 
             EQ_SetFieldOfView(fov);
 
-            std::cout << "Field Of View: " << fov << std::endl;
+            std::cout << "Field of View: " << fov << std::endl;
         }
 
         return;
@@ -5620,9 +3038,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//targetbeep") == 0 || strcmp(command, "//tbeep") == 0)
     {
         EQ_ToggleBool(g_targetBeepIsEnabled);
-
-        std::cout << "Target Beep: " << std::boolalpha << g_targetBeepIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Target Beep", g_targetBeepIsEnabled);
         return;
     }
 
@@ -5636,14 +3052,13 @@ void EQAPP_DoInterpretCommand(const char* command)
         unsigned int delay = 1;
 
         int result = sscanf_s(command, "%s %s %d", commandEx, sizeof(commandEx), name, sizeof(name), &delay);
-
         if (result == 3)
         {
             EQ_StringReplaceUnderscoresWithSpaces(name);
 
             g_targetBeepName = name;
 
-            g_targetBeepDelay = delay * 1000;
+            g_targetBeepTimerDelay = delay * 1000;
 
             std::cout << "Target Beep: " << name << " (" << delay << " second(s))" << std::endl;
 
@@ -5657,9 +3072,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//spawnbeep") == 0 || strcmp(command, "//sbeep") == 0)
     {
         EQ_ToggleBool(g_spawnBeepIsEnabled);
-
-        std::cout << "Spawn Beep: " << std::boolalpha << g_spawnBeepIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Spawn Beep", g_spawnBeepIsEnabled);
         return;
     }
 
@@ -5671,7 +3084,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         char name[1024];
 
         int result = sscanf_s(command, "%s %s", commandEx, sizeof(commandEx), name, sizeof(name));
-
         if (result == 2)
         {
             EQ_StringReplaceUnderscoresWithSpaces(name);
@@ -5690,9 +3102,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//height") == 0)
     {
         EQ_ToggleBool(g_heightIsEnabled);
-
-        std::cout << "Height: " << std::boolalpha << g_heightIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Height", g_heightIsEnabled);
         return;
     }
 
@@ -5700,7 +3110,6 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strncmp(command, "//setheight ", 12) == 0 || strncmp(command, "//seth ", 7) == 0 || strncmp(command, "//sh ", 5) == 0)
     {
         DWORD targetSpawn = EQ_GetTargetSpawn();
-
         if (targetSpawn == NULL)
         {
             std::cout << "Target not found!" << std::endl;
@@ -5712,7 +3121,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         float height = g_heightMaximum;
 
         int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &height);
-
         if (result == 2)
         {
             ((EQPlayer*)targetSpawn)->ChangeHeight(height);
@@ -5725,53 +3133,11 @@ void EQAPP_DoInterpretCommand(const char* command)
         return;
     }
 
-    // toggle health bars
-    if (strcmp(command, "//healthbars") == 0 || strcmp(command, "//hb") == 0)
-    {
-        EQ_ToggleBool(g_healthBarsIsEnabled);
-
-        std::cout << "Health Bars: " << std::boolalpha << g_healthBarsIsEnabled << std::noboolalpha << std::endl;
-    }
-
-    // reset health bars
-    if (strcmp(command, "//resethealthbars") == 0 || strcmp(command, "//resethb") == 0 || strcmp(command, "//rhb") == 0)
-    {
-        g_healthBarsSpawnNamesList.clear();
-
-        std::cout << "Health Bars reset." << std::endl;
-
-        return;
-    }
-
-    // add to health bars list
-    if (strncmp(command, "//healthbars ", 13) == 0 || strncmp(command, "//hb ", 5) == 0)
-    {
-        char commandEx[128];
-
-        char name[1024];
-
-        int result = sscanf_s(command, "%s %s", commandEx, sizeof(commandEx), name, sizeof(name));
-
-        if (result == 2)
-        {
-            EQ_StringReplaceUnderscoresWithSpaces(name);
-
-            g_healthBarsSpawnNamesList.push_back(name);
-
-            std::cout << "Health Bars added: " << name << std::endl;
-
-            g_healthBarsIsEnabled = true;
-        }
-
-        return;
-    }
-
     // toggle map labels
     if (strcmp(command, "//maplabels") == 0 || strcmp(command, "//ml") == 0)
     {
         EQ_ToggleBool(g_mapLabelsIsEnabled);
-
-        std::cout << "Map Labels: " << std::boolalpha << g_mapLabelsIsEnabled << std::noboolalpha << std::endl;
+        EQAPP_PrintBool("Map Labels", g_mapLabelsIsEnabled);
 
         if (g_mapLabelsIsEnabled == false)
         {
@@ -5832,9 +3198,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//filtermaplabels") == 0 || strcmp(command, "//filterml") == 0 || strcmp(command, "//fml") == 0)
     {
         EQ_ToggleBool(g_mapLabelsFilterIsEnabled);
-
-        std::cout << "Map Labels Filter: " << std::boolalpha << g_mapLabelsFilterIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Map Labels Filter", g_mapLabelsFilterIsEnabled);
         return;
     }
 
@@ -5846,7 +3210,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         char name[1024];
 
         int result = sscanf_s(command, "%s %s", commandEx, sizeof(commandEx), name, sizeof(name));
-
         if (result == 2)
         {
             EQ_StringReplaceUnderscoresWithSpaces(name);
@@ -5888,11 +3251,8 @@ void EQAPP_DoInterpretCommand(const char* command)
     // load memory
     if (strcmp(command, "//loadmemory") == 0 || strcmp(command, "//loadm") == 0 || strcmp(command, "//lm") == 0)
     {
-        EQAPP_UnloadMemory();
-        EQAPP_LoadMemory();
-
-        std::cout << "Loading memories..." << std::endl;
-
+        EQAPP_Memory_Unload();
+        EQAPP_Memory_Load();
         return;
     }
 
@@ -5900,19 +3260,14 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//sounds") == 0)
     {
         EQ_ToggleBool(g_soundsIsEnabled);
-
-        std::cout << "Sounds: " << std::boolalpha << g_soundsIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Sounds", g_soundsIsEnabled);
         return;
     }
 
     // load sounds
     if (strcmp(command, "//loadsounds") == 0 || strcmp(command, "//loads") == 0 || strcmp(command, "//ls") == 0)
     {
-        EQAPP_LoadSounds();
-
-        std::cout << "Loading sounds..." << std::endl;
-
+        EQAPP_Sounds_Load();
         return;
     }
 
@@ -5920,19 +3275,14 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//namedspawns") == 0 || strcmp(command, "//ns") == 0)
     {
         EQ_ToggleBool(g_namedSpawnsIsEnabled);
-
-        std::cout << "Named Spawns: " << std::boolalpha << g_namedSpawnsIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Named Spawns" , g_namedSpawnsIsEnabled);
         return;
     }
 
     // load named spawns
     if (strcmp(command, "//loadnamedspawns") == 0 || strcmp(command, "//loadns") == 0 || strcmp(command, "//lns") == 0)
     {
-        EQAPP_LoadNamedSpawns();
-
-        std::cout << "Loading named spawns..." << std::endl;
-
+        EQAPP_NamedSpawns_Load();
         return;
     }
 
@@ -5956,39 +3306,28 @@ void EQAPP_DoInterpretCommand(const char* command)
     // write character file
     if (strcmp(command, "//writecharacterfile") == 0 || strcmp(command, "//writechar") == 0 || strcmp(command, "//writecf") == 0 || strcmp(command, "//wcf") == 0)
     {
-        EQAPP_WriteCharacterFile();
-        EQAPP_WriteCharacterFileJson();
-
+        EQAPP_CharacterFile_Write();
         return;
     }
 
     // load text overlay chat text
     if (strcmp(command, "//loadtextoverlaychattext") == 0 || strcmp(command, "//loadtoct") == 0 || strcmp(command, "//ltoct") == 0)
     {
-        EQAPP_LoadTextOverlayChatText();
-
-        std::cout << "Loading text overlay chat text..." << std::endl;
-
+        EQAPP_TextOverlayChatText_Load();
         return;
     }
 
     // load no beep
     if (strcmp(command, "//loadnobeep") == 0 || strcmp(command, "//loadnb") == 0 || strcmp(command, "//lnb") == 0)
     {
-        EQAPP_LoadNoBeep();
-
-        std::cout << "Loading no beep..." << std::endl;
-
+        EQAPP_NoBeep_Load();
         return;
     }
 
     // load zone short names
     if (strcmp(command, "//loadzoneshortnames") == 0 || strcmp(command, "//loadzsn") == 0 || strcmp(command, "//lzsn") == 0)
     {
-        EQAPP_LoadZoneShortNames();
-
-        std::cout << "Loading zone short names..." << std::endl;
-
+        EQAPP_ZoneShortNames_Load();
         return;
     }
 
@@ -5996,18 +3335,22 @@ void EQAPP_DoInterpretCommand(const char* command)
     if (strcmp(command, "//hidecorpselooted") == 0 || strcmp(command, "//hcl") == 0)
     {
         EQ_ToggleBool(g_hideCorpseLootedIsEnabled);
-
-        std::cout << "Hide Corpse Looted: " << std::boolalpha << g_hideCorpseLootedIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_PrintBool("Hide Corpse Looted", g_hideCorpseLootedIsEnabled);
         return;
     }
 
     // open all doors
     if (strcmp(command, "//openalldoors") == 0 || strcmp(command, "//opendoors") == 0 || strcmp(command, "//oad") == 0)
     {
-        EQAPP_DoOpenAllDoors();
+        EQAPP_Doors_OpenAll(true);
 
-        std::cout << "Opening all doors..." << std::endl;
+        return;
+    }
+
+    // close all doors
+    if (strcmp(command, "//closealldoors") == 0 || strcmp(command, "//closedoors") == 0 || strcmp(command, "//cad") == 0)
+    {
+        EQAPP_Doors_OpenAll(false);
 
         return;
     }
@@ -6015,25 +3358,14 @@ void EQAPP_DoInterpretCommand(const char* command)
     // census
     if (strcmp(command, "//census") == 0)
     {
-        EQAPP_DoCensus();
-
+        EQAPP_ToggleCensus();
         return;
     }
 
     // toggle free camera
     if (strcmp(command, "//freecamera") == 0 || strcmp(command, "//freecam") == 0 || strcmp(command, "//fc") == 0)
     {
-        if (g_freeCameraIsEnabled == false)
-        {
-            EQAPP_ToggleFreeCamera(true);
-        }
-        else
-        {
-            EQAPP_ToggleFreeCamera(false);
-        }
-
-        std::cout << "Free Camera: " << std::boolalpha << g_freeCameraIsEnabled << std::noboolalpha << std::endl;
-
+        EQAPP_FreeCamera_Toggle();
         return;
     }
 
@@ -6045,7 +3377,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         char name[1024];
 
         int result = sscanf_s(command, "%s %s", commandEx, sizeof(commandEx), name, sizeof(name));
-
         if (result == 2)
         {
             EQ_CDisplay->SetViewActorByName(name);
@@ -6086,10 +3417,7 @@ void EQAPP_DoInterpretCommand(const char* command)
     // map locations
     if (strcmp(command, "//maplocations") == 0 || strcmp(command, "//maplocs") == 0)
     {
-        EQAPP_DoMapLocations();
-
-        std::cout << "Saving map locations to file..." << std::endl;
-
+        EQAPP_MapLocations_WriteToFile();
         return;
     }
 
@@ -6145,13 +3473,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         return;
     }
 
-    // waypoint list
-    if (strcmp(command, "//waypointlist") == 0 || strcmp(command, "//wpl") == 0)
-    {
-        EQAPP_Waypoint_List();
-        return;
-    }
-
     // waypoint add
     if (strcmp(command, "//waypointadd") == 0 || strcmp(command, "//wpa") == 0)
     {
@@ -6167,7 +3488,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         unsigned int index;
 
         int result = sscanf_s(command, "%s %d", commandEx, sizeof(commandEx), &index);
-
         if (result == 2)
         {
             EQAPP_Waypoint_Remove(index);
@@ -6185,7 +3505,6 @@ void EQAPP_DoInterpretCommand(const char* command)
         unsigned int toIndex;
 
         int result = sscanf_s(command, "%s %d %d", commandEx, sizeof(commandEx), &fromIndex, &toIndex);
-
         if (result == 3)
         {
             EQAPP_Waypoint_Connect(fromIndex, toIndex);
@@ -6203,12 +3522,18 @@ void EQAPP_DoInterpretCommand(const char* command)
         unsigned int toIndex;
 
         int result = sscanf_s(command, "%s %d %d", commandEx, sizeof(commandEx), &fromIndex, &toIndex);
-
         if (result == 3)
         {
             EQAPP_Waypoint_Disconnect(fromIndex, toIndex);
         }
 
+        return;
+    }
+
+    // waypoint list print
+    if (strcmp(command, "//waypointlist") == 0 || strcmp(command, "//wpl") == 0 || strcmp(command, "//waypointlistprint") == 0 || strcmp(command, "//wplp") == 0)
+    {
+        EQAPP_WaypointList_Print();
         return;
     }
 
@@ -6318,7 +3643,7 @@ int __fastcall EQAPP_DETOUR_CEverQuest__StartCasting(void* pThis, void* not_used
 
 int __cdecl EQAPP_DETOUR_Exit()
 {
-    EQAPP_DoUnload();
+    EQAPP_Unload();
 
     return EQAPP_REAL_Exit();
 }
@@ -6330,15 +3655,15 @@ int __cdecl EQAPP_DETOUR_DrawNetStatus(int a1, unsigned short a2, unsigned short
         return EQAPP_REAL_DrawNetStatus(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
     }
 
-    if (g_bLoaded == 1)
+    if (g_bLoaded == 0)
     {
-        EQAPP_DoLoad();
+        EQAPP_Load();
     }
 
     // kill switch
     if (GetAsyncKeyState(g_killSwitchKey))
     {
-        EQAPP_DoUnload();
+        EQAPP_Unload();
     }
 
     if (EQ_IsInGame() == false)
@@ -6351,11 +3676,11 @@ int __cdecl EQAPP_DETOUR_DrawNetStatus(int a1, unsigned short a2, unsigned short
         return EQAPP_REAL_DrawNetStatus(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
     }
 
-    EQAPP_DoWindowTitles();
+    EQAPP_WindowTitles_Execute();
 
-    EQAPP_DoFreeCameraKeys();
+    EQAPP_FreeCamera_Keys();
 
-    EQAPP_DoAutoLoot();
+    EQAPP_AutoLoot_Execute();
     EQAPP_DoSpawnCastSpell();
     EQAPP_DoTargetBeep();
     EQAPP_DoCombatHotbutton();
@@ -6365,14 +3690,13 @@ int __cdecl EQAPP_DETOUR_DrawNetStatus(int a1, unsigned short a2, unsigned short
     EQAPP_DoHeight();
     EQAPP_DoDrawDistance();
     EQAPP_DoHideCorpseLooted();
+    EQAPP_Census_Execute();
 
     if (EQAPP_IsAnImportantWindowOpen() == false && EQ_IsKeyShiftPressed() == false)
     {
-        EQAPP_DoLineToTarget();
+        EQAPP_LineToTarget_Execute();
         EQAPP_DoEsp();
-
-        EQAPP_DoHealthBars();
-        EQAPP_DoNamedSpawns();
+        EQAPP_NamedSpawns_Execute();
         EQAPP_DoOnScreenText();
     }
 
@@ -6414,33 +3738,6 @@ int __cdecl EQAPP_DETOUR_ExecuteCmd(DWORD a1, BOOL a2, PVOID a3)
     }
 
     return EQAPP_REAL_ExecuteCmd(a1, a2, a3);
-}
-
-int __fastcall EQAPP_DETOUR_CMapViewWnd__dCMapViewWnd(void* pThis, void* not_used)
-{
-    if (g_bExit == 1)
-    {
-        return EQAPP_REAL_CMapViewWnd__dCMapViewWnd(pThis);
-    }
-
-    //std::cout << "CMapViewWnd::~CMapViewWnd()" << std::endl;
-
-    return EQAPP_REAL_CMapViewWnd__dCMapViewWnd(pThis);
-}
-
-int __fastcall EQAPP_DETOUR_CMapViewWnd__DrawMap(void* pThis, void* not_used, int a1, int a2, int a3, int a4)
-{
-    if (g_bExit == 1)
-    {
-        return EQAPP_REAL_CMapViewWnd__DrawMap(pThis, a1, a2, a3, a4);
-    }
-
-    if (g_mapLabelsIsEnabled == true)
-    {
-        EQAPP_DoMapLabels();
-    }
-
-    return EQAPP_REAL_CMapViewWnd__DrawMap(pThis, a1, a2, a3, a4);
 }
 
 int __fastcall EQAPP_DETOUR_CDisplay__CreatePlayerActor(void* pThis, void* not_used, int a1, int a2, int a3, int a4, int a5)
@@ -6574,7 +3871,7 @@ int __fastcall EQAPP_DETOUR_CEverQuest__dsp_chat(void* pThis, void* not_used, co
         }
     }
 
-    if (g_censusIsActive == true)
+    if (g_censusIsEnabled == true)
     {
         if
         (
@@ -6610,17 +3907,18 @@ int __fastcall EQAPP_DETOUR_CEverQuest__EnterZone(void* pThis, void* not_used, s
 
     int result = EQAPP_REAL_CEverQuest__EnterZone(pThis, a1);
 
-    EQAPP_WriteCharacterFile();
-    EQAPP_WriteCharacterFileJson();
+    EQAPP_FreeCamera_Set(false);
 
-    EQAPP_LoadTextOverlayChatText();
-    EQAPP_LoadNoBeep();
-    EQAPP_LoadNamedSpawns();
+    EQAPP_CharacterFile_Write();
+
+    EQAPP_TextOverlayChatText_Load();
+    EQAPP_NoBeep_Load();
+    EQAPP_NamedSpawns_Load();
     EQAPP_LoadEspCustom();
 
     g_alwaysAttackIsEnabled = false;
 
-    g_censusIsActive = false;
+    g_censusIsEnabled = false;
 
     g_spawnCastSpellList.clear();
 
@@ -6629,6 +3927,7 @@ int __fastcall EQAPP_DETOUR_CEverQuest__EnterZone(void* pThis, void* not_used, s
     return result;
 }
 
+/*
 int __fastcall EQAPP_DETOUR_CEverQuest__InterpretCmd(void* pThis, void* not_used, DWORD a1, const char* a2)
 {
     // a1 = spawnInfo
@@ -6651,18 +3950,19 @@ int __fastcall EQAPP_DETOUR_CEverQuest__InterpretCmd(void* pThis, void* not_used
 
     if (strcmp(a2, "/exit") == 0)
     {
-        EQAPP_DoUnload();
+        EQAPP_Unload();
     }
 
     if (strlen(a2) > 2 && strncmp(a2, "//", 2) == 0)
     {
-        EQAPP_DoInterpretCommand(a2);
+        EQAPP_InterpretCommand(a2);
 
         return EQAPP_REAL_CEverQuest__InterpretCmd(pThis, NULL, NULL);
     }
 
     return EQAPP_REAL_CEverQuest__InterpretCmd(pThis, a1, a2);
 }
+*/
 
 int __fastcall EQAPP_DETOUR_EQ_Character__eqspa_movement_rate(void* pThis, void* not_used, int a1)
 {
@@ -6706,13 +4006,13 @@ int __fastcall EQAPP_DETOUR_EQPlayer__ChangePosition(void* pThis, void* not_used
 
         if (playerSpawn != NULL && (DWORD)pThis == playerSpawn)
         {
-            EQAPP_ToggleFreeCamera(false);
+            EQAPP_FreeCamera_Set(false);
         }
     }
 
     if (a1 == EQ_STANDING_STATE_DUCKING)
     {
-        g_censusIsActive = false;
+        g_censusIsEnabled = false;
     }
 
     if (g_neverFrozenIsEnabled == true)
@@ -6726,6 +4026,7 @@ int __fastcall EQAPP_DETOUR_EQPlayer__ChangePosition(void* pThis, void* not_used
     return EQAPP_REAL_EQPlayer__ChangePosition(pThis, a1);
 }
 
+/*
 int __fastcall EQAPP_DETOUR_EQPlayer__do_change_form(void* pThis, void* not_used, int a1)
 {
     // a1 = change form structure
@@ -6748,6 +4049,7 @@ int __fastcall EQAPP_DETOUR_EQPlayer__do_change_form(void* pThis, void* not_used
 
     return EQAPP_REAL_EQPlayer__do_change_form(pThis, a1);
 }
+*/
 
 int __fastcall EQAPP_DETOUR_EQPlayer__SetRace(void* pThis, void* not_used, int a1)
 {
@@ -6782,6 +4084,35 @@ int __fastcall EQAPP_DETOUR_EQPlayer__SetRace(void* pThis, void* not_used, int a
     return EQAPP_REAL_EQPlayer__SetRace(pThis, a1);
 }
 
+/*
+int __fastcall EQAPP_DETOUR_CMapViewWnd__dCMapViewWnd(void* pThis, void* not_used)
+{
+    if (g_bExit == 1)
+    {
+        return EQAPP_REAL_CMapViewWnd__dCMapViewWnd(pThis);
+    }
+
+    //std::cout << "CMapViewWnd::~CMapViewWnd()" << std::endl;
+
+    return EQAPP_REAL_CMapViewWnd__dCMapViewWnd(pThis);
+}
+*/
+
+int __fastcall EQAPP_DETOUR_CMapViewWnd__DrawMap(void* pThis, void* not_used, int a1, int a2, int a3, int a4)
+{
+    if (g_bExit == 1)
+    {
+        return EQAPP_REAL_CMapViewWnd__DrawMap(pThis, a1, a2, a3, a4);
+    }
+
+    if (g_mapLabelsIsEnabled == true)
+    {
+        EQAPP_DoMapLabels();
+    }
+
+    return EQAPP_REAL_CMapViewWnd__DrawMap(pThis, a1, a2, a3, a4);
+}
+
 int __fastcall EQAPP_DETOUR_MapViewMap__Save(void* pThis, void* not_used, char* a1)
 {
     // a1 = short zone name of map
@@ -6808,80 +4139,89 @@ int __fastcall EQAPP_DETOUR_MapViewMap__SaveEx(void* pThis, void* not_used, char
         return EQAPP_REAL_MapViewMap__SaveEx(pThis, a1, a2);
     }
 
-    std::cout << "The game is saving the map by layer..." << a2 << std::endl;
+    std::cout << "The game is saving map layer #" << a2 << std::endl;
 
     EQAPP_RemoveMapLabels();
 
     return EQAPP_REAL_MapViewMap__SaveEx(pThis, a1, a2);
 }
 
-void EQAPP_AddDetours()
+DWORD WINAPI EQAPP_ThreadConsole(LPVOID param)
 {
-    EQAPP_REAL_Exit = (EQ_FUNCTION_TYPE_Exit)DetourFunction((PBYTE)EQ_FUNCTION_Exit, (PBYTE)EQAPP_DETOUR_Exit);
-    EQAPP_REAL_DrawNetStatus = (EQ_FUNCTION_TYPE_DrawNetStatus)DetourFunction((PBYTE)EQ_FUNCTION_DrawNetStatus, (PBYTE)EQAPP_DETOUR_DrawNetStatus);
-    EQAPP_REAL_ExecuteCmd = (EQ_FUNCTION_TYPE_ExecuteCmd)DetourFunction((PBYTE)EQ_FUNCTION_ExecuteCmd, (PBYTE)EQAPP_DETOUR_ExecuteCmd);
+    if (!glfwInit())
+    {
+        return 0;
+    }
 
-    EQAPP_REAL_CDisplay__CreatePlayerActor = (EQ_FUNCTION_TYPE_CDisplay__CreatePlayerActor)DetourFunction((PBYTE)EQ_FUNCTION_CDisplay__CreatePlayerActor, (PBYTE)EQAPP_DETOUR_CDisplay__CreatePlayerActor);
-    EQAPP_REAL_CDisplay__DeleteActor = (EQ_FUNCTION_TYPE_CDisplay__DeleteActor)DetourFunction((PBYTE)EQ_FUNCTION_CDisplay__DeleteActor, (PBYTE)EQAPP_DETOUR_CDisplay__DeleteActor);
+    g_consoleWindow = glfwCreateWindow(g_consoleWindowWidth, g_consoleWindowHeight, "EQAPP Console", NULL, NULL);
+    if (!g_consoleWindow)
+    {
+        glfwTerminate();
+        ImGui_ImplGlfw_Shutdown();
 
-    EQAPP_REAL_CEverQuest__dsp_chat = (EQ_FUNCTION_TYPE_CEverQuest__dsp_chat)DetourFunction((PBYTE)EQ_FUNCTION_CEverQuest__dsp_chat, (PBYTE)EQAPP_DETOUR_CEverQuest__dsp_chat);
-    EQAPP_REAL_CEverQuest__EnterZone = (EQ_FUNCTION_TYPE_CEverQuest__EnterZone)DetourFunction((PBYTE)EQ_FUNCTION_CEverQuest__EnterZone, (PBYTE)EQAPP_DETOUR_CEverQuest__EnterZone);
-    //EQAPP_REAL_CEverQuest__InterpretCmd = (EQ_FUNCTION_TYPE_CEverQuest__InterpretCmd)DetourFunction((PBYTE)EQ_FUNCTION_CEverQuest__InterpretCmd, (PBYTE)EQAPP_DETOUR_CEverQuest__InterpretCmd);
-    EQAPP_REAL_CEverQuest__MoveToZone = (EQ_FUNCTION_TYPE_CEverQuest__MoveToZone)DetourFunction((PBYTE)EQ_FUNCTION_CEverQuest__MoveToZone, (PBYTE)EQAPP_DETOUR_CEverQuest__MoveToZone);
-    EQAPP_REAL_CEverQuest__SetGameState = (EQ_FUNCTION_TYPE_CEverQuest__SetGameState)DetourFunction((PBYTE)EQ_FUNCTION_CEverQuest__SetGameState, (PBYTE)EQAPP_DETOUR_CEverQuest__SetGameState);
-    EQAPP_REAL_CEverQuest__StartCasting = (EQ_FUNCTION_TYPE_CEverQuest__StartCasting)DetourFunction((PBYTE)EQ_FUNCTION_CEverQuest__StartCasting, (PBYTE)EQAPP_DETOUR_CEverQuest__StartCasting);
+        g_bConsole = 0;
 
-    //EQAPP_REAL_CMapViewWnd__dCMapViewWnd = (EQ_FUNCTION_TYPE_CMapViewWnd__dCMapViewWnd)DetourFunction((PBYTE)EQ_FUNCTION_CMapViewWnd__dCMapViewWnd, (PBYTE)EQAPP_DETOUR_CMapViewWnd__dCMapViewWnd);
-    EQAPP_REAL_CMapViewWnd__DrawMap = (EQ_FUNCTION_TYPE_CMapViewWnd__DrawMap)DetourFunction((PBYTE)EQ_FUNCTION_CMapViewWnd__DrawMap, (PBYTE)EQAPP_DETOUR_CMapViewWnd__DrawMap);
+        return 0;
+    }
 
-    EQAPP_REAL_EQ_Character__eqspa_movement_rate = (EQ_FUNCTION_TYPE_EQ_Character__eqspa_movement_rate)DetourFunction((PBYTE)EQ_FUNCTION_EQ_Character__eqspa_movement_rate, (PBYTE)EQAPP_DETOUR_EQ_Character__eqspa_movement_rate);
+    glfwMakeContextCurrent(g_consoleWindow);
+    ImGui_ImplGlfw_Init(g_consoleWindow, true);
 
-    EQAPP_REAL_EQPlayer__ChangePosition = (EQ_FUNCTION_TYPE_EQPlayer__ChangePosition)DetourFunction((PBYTE)EQ_FUNCTION_EQPlayer__ChangePosition, (PBYTE)EQAPP_DETOUR_EQPlayer__ChangePosition);
-    //EQAPP_REAL_EQPlayer__do_change_form = (EQ_FUNCTION_TYPE_EQPlayer__do_change_form)DetourFunction((PBYTE)EQ_FUNCTION_EQPlayer__do_change_form, (PBYTE)EQAPP_DETOUR_EQPlayer__do_change_form);
-    EQAPP_REAL_EQPlayer__SetRace = (EQ_FUNCTION_TYPE_EQPlayer__SetRace)DetourFunction((PBYTE)EQ_FUNCTION_EQPlayer__SetRace, (PBYTE)EQAPP_DETOUR_EQPlayer__SetRace);
+    g_hwndConsoleWindow = glfwGetWin32Window(g_consoleWindow);
 
-    EQAPP_REAL_MapViewMap__Save = (EQ_FUNCTION_TYPE_MapViewMap__Save)DetourFunction((PBYTE)EQ_FUNCTION_MapViewMap__Save, (PBYTE)EQAPP_DETOUR_MapViewMap__Save);
-    EQAPP_REAL_MapViewMap__SaveEx = (EQ_FUNCTION_TYPE_MapViewMap__SaveEx)DetourFunction((PBYTE)EQ_FUNCTION_MapViewMap__SaveEx, (PBYTE)EQAPP_DETOUR_MapViewMap__SaveEx);
-}
+    EQAPP_CenterWindow(g_hwndConsoleWindow);
 
-void EQAPP_RemoveDetours()
-{
-    DetourRemove((PBYTE)EQAPP_REAL_Exit, (PBYTE)EQAPP_DETOUR_Exit);
-    DetourRemove((PBYTE)EQAPP_REAL_DrawNetStatus, (PBYTE)EQAPP_DETOUR_DrawNetStatus);
-    DetourRemove((PBYTE)EQAPP_REAL_ExecuteCmd, (PBYTE)EQAPP_DETOUR_ExecuteCmd);
+    // disable close button
+    EnableMenuItem(GetSystemMenu(g_hwndConsoleWindow, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
-    DetourRemove((PBYTE)EQAPP_REAL_CDisplay__CreatePlayerActor, (PBYTE)EQAPP_DETOUR_CDisplay__CreatePlayerActor);
-    DetourRemove((PBYTE)EQAPP_REAL_CDisplay__DeleteActor, (PBYTE)EQAPP_DETOUR_CDisplay__DeleteActor);
+    const GLFWvidmode* videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    g_videoModeWidth  = videoMode->width;
+    g_videoModeHeight = videoMode->height;
 
-    DetourRemove((PBYTE)EQAPP_REAL_CEverQuest__dsp_chat, (PBYTE)EQAPP_DETOUR_CEverQuest__dsp_chat);
-    DetourRemove((PBYTE)EQAPP_REAL_CEverQuest__EnterZone, (PBYTE)EQAPP_DETOUR_CEverQuest__EnterZone);
-    //DetourRemove((PBYTE)EQAPP_REAL_CEverQuest__InterpretCmd, (PBYTE)EQAPP_DETOUR_CEverQuest__InterpretCmd);
-    DetourRemove((PBYTE)EQAPP_REAL_CEverQuest__MoveToZone, (PBYTE)EQAPP_DETOUR_CEverQuest__MoveToZone);
-    DetourRemove((PBYTE)EQAPP_REAL_CEverQuest__SetGameState, (PBYTE)EQAPP_DETOUR_CEverQuest__SetGameState);
-    DetourRemove((PBYTE)EQAPP_REAL_CEverQuest__StartCasting, (PBYTE)EQAPP_DETOUR_CEverQuest__StartCasting);
+    EQAPP_Console_Load();
 
-    //DetourRemove((PBYTE)EQAPP_REAL_CMapViewWnd__dCMapViewWnd, (PBYTE)EQAPP_DETOUR_CMapViewWnd__dCMapViewWnd);
-    DetourRemove((PBYTE)EQAPP_REAL_CMapViewWnd__DrawMap, (PBYTE)EQAPP_DETOUR_CMapViewWnd__DrawMap);
+    ImVec4 clearColor = ImColor(0, 128, 96);
 
-    DetourRemove((PBYTE)EQAPP_REAL_EQ_Character__eqspa_movement_rate, (PBYTE)EQAPP_DETOUR_EQ_Character__eqspa_movement_rate);
+    while (g_bExit == 0)
+    {
+        if (!glfwWindowShouldClose(g_consoleWindow))
+        {
+            glfwPollEvents();
+            ImGui_ImplGlfw_NewFrame();
 
-    DetourRemove((PBYTE)EQAPP_REAL_EQPlayer__ChangePosition, (PBYTE)EQAPP_DETOUR_EQPlayer__ChangePosition);
-    //DetourRemove((PBYTE)EQAPP_REAL_EQPlayer__do_change_form, (PBYTE)EQAPP_DETOUR_EQPlayer__do_change_form);
-    DetourRemove((PBYTE)EQAPP_REAL_EQPlayer__SetRace, (PBYTE)EQAPP_DETOUR_EQPlayer__SetRace);
+            EQAPP_IMGUI_Draw();
 
-    DetourRemove((PBYTE)EQAPP_REAL_MapViewMap__Save, (PBYTE)EQAPP_DETOUR_MapViewMap__Save);
-    DetourRemove((PBYTE)EQAPP_REAL_MapViewMap__SaveEx, (PBYTE)EQAPP_DETOUR_MapViewMap__SaveEx);
-}
+            int displayWidth, displayHeight;
+            glfwGetFramebufferSize(g_consoleWindow, &displayWidth, &displayHeight);
+            glViewport(0, 0, displayWidth, displayHeight);
+            glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+            glClear(GL_COLOR_BUFFER_BIT);
+            ImGui::Render();
+            glfwSwapBuffers(g_consoleWindow);
+        }
 
-void EQAPP_LoadGraphicsDllFunctions()
-{
-    DWORD baseAddress = EQ_ReadMemory<DWORD>(EQ_POINTER_GRAPHICS_DLL_BASE_ADDRESS);
+        // print redirected std::cout to the console
+        for (std::string text; std::getline(g_consoleStringStream, text, '\n');)
+        {
+            g_imguiConsoleWindow.AddLog("%s", text.c_str());
+        }
+        g_consoleStringStream.str(std::string());
+        g_consoleStringStream.clear();
 
-    DWORD addressDrawLine = baseAddress + EQ_GRAPHICS_DLL_OFFSET_DrawLine;
-    EQGraphicsDLL__DrawLine = (EQ_FUNCTION_TYPE_EQGraphicsDLL__DrawLine)addressDrawLine;
+        // interpet commands sent to the console
+        for (auto& command : g_imguiConsoleWindow.m_interpretCommands)
+        {
+            EQAPP_InterpretCommand(command.c_str());
+        }
+        g_imguiConsoleWindow.m_interpretCommands.clear();
+    }
 
-    DWORD addressDrawQuad = baseAddress + EQ_GRAPHICS_DLL_OFFSET_DrawQuad;
-    EQGraphicsDLL__DrawQuad = (EQ_FUNCTION_TYPE_EQGraphicsDLL__DrawQuad)addressDrawQuad;
+    ImGui_ImplGlfw_Shutdown();
+    glfwTerminate();
+
+    EQAPP_Console_Unload();
+
+    return 0;
 }
 
 DWORD WINAPI EQAPP_ThreadLoop(LPVOID param)
@@ -6891,11 +4231,12 @@ DWORD WINAPI EQAPP_ThreadLoop(LPVOID param)
         Sleep(100);
     }
 
+    // wait for the console to unload
+    while (g_bConsole == 1);
+
     Sleep(100);
 
-    EQAPP_RemoveDetours();
-
-    FreeConsole();
+    EQAPP_Detours_Remove();
 
     Sleep(1000);
 
@@ -6903,29 +4244,9 @@ DWORD WINAPI EQAPP_ThreadLoop(LPVOID param)
     return 0;
 }
 
-DWORD WINAPI EQAPP_ThreadConsole(LPVOID param)
-{
-    EQAPP_LoadConsole();
-
-    while (g_bExit == 0)
-    {
-        std::string command;
-        std::getline(std::cin, command);
-
-        EQAPP_DoInterpretCommand(command.c_str());
-
-        Sleep(100);
-    }
-
-    FreeConsole();
-
-    return 0;
-}
-
 DWORD WINAPI EQAPP_ThreadLoad(LPVOID param)
 {
     EQAPP_EnableDebugPrivileges();
-
     EQAPP_LoadGraphicsDllFunctions();
 
     g_handleThreadConsole = CreateThread(NULL, 0, &EQAPP_ThreadConsole, NULL, 0, NULL);
@@ -6935,9 +4256,7 @@ DWORD WINAPI EQAPP_ThreadLoad(LPVOID param)
 
     g_handleThreadLoop = CreateThread(NULL, 0, &EQAPP_ThreadLoop, NULL, 0, NULL);
 
-    EQAPP_AddDetours();
-
-    g_bLoaded = 1;
+    EQAPP_Detours_Add();
 
     return 0;
 }

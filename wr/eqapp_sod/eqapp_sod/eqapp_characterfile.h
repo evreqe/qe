@@ -1,0 +1,361 @@
+#ifndef EQAPP_CHARACTERFILE_H
+#define EQAPP_CHARACTERFILE_H
+
+void EQAPP_CharacterFile_Write();
+void EQAPP_CharacterFile_WriteTxt();
+void EQAPP_CharacterFile_WriteJson();
+
+void EQAPP_CharacterFile_Write()
+{
+    EQAPP_CharacterFile_WriteTxt();
+    EQAPP_CharacterFile_WriteJson();
+}
+
+void EQAPP_CharacterFile_WriteTxt()
+{
+    DWORD charInfo = EQ_ReadMemory<DWORD>(EQ_POINTER_CHAR_INFO);
+    if (charInfo == NULL)
+    {
+        std::cout << __FUNCTION__ << ": char info is null" << std::endl;
+        return;
+    }
+
+    DWORD charInfo2 = EQ_GetCharInfo2();
+    if (charInfo2 == NULL)
+    {
+        std::cout << __FUNCTION__ << ": char info 2 is null" << std::endl;
+        return;
+    }
+
+    std::string characterName = EQ_GetCharacterName();
+
+    std::stringstream filePath;
+    filePath << "eqapp/characters/" << characterName << ".txt";
+
+    std::cout << "Writing character file: " << filePath.str() << std::endl;
+
+    std::fstream file;
+    file.open(filePath.str().c_str(), std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+    if (file.is_open() == false)
+    {
+        std::cout << __FUNCTION__ << ": Failed to open file: " << filePath.str() << std::endl;
+        return;
+    }
+
+    file << "Name: " << characterName << std::endl << std::endl;
+
+    file << "---------- BANK ----------" << std::endl << std::endl;
+
+    DWORD bankPlatinum = EQ_ReadMemory<DWORD>(charInfo + 0xF5A4);
+    DWORD bankGold     = EQ_ReadMemory<DWORD>(charInfo + 0xF5A8);
+    DWORD bankSilver   = EQ_ReadMemory<DWORD>(charInfo + 0xF5AC);
+    DWORD bankCopper   = EQ_ReadMemory<DWORD>(charInfo + 0xF5B0);
+
+    file << "Platinum: " << bankPlatinum << std::endl;
+    file << "Gold:     " << bankGold     << std::endl;
+    file << "Silver:   " << bankSilver   << std::endl;
+    file << "Copper:   " << bankCopper   << std::endl;
+
+    file << std::endl;
+
+    for (size_t i = 0; i < EQ_NUM_BANK_SLOTS; i++)
+    {
+        DWORD itemInfo = EQ_ReadMemory<DWORD>(charInfo + (0x1128 + (i * 4)));
+        if (itemInfo == NULL)
+        {
+            file << std::setfill('0') << std::setw(2) << i + 1 << ": EMPTY" << std::endl;
+            continue;
+        }
+
+        DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + 0xD0);
+
+        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + 0xB8);
+        if (itemName != NULL)
+        {
+            file << std::setfill('0') << std::setw(2) << i + 1 << ": ";
+
+            if (itemCount > 1)
+            {
+                file << itemCount << " x ";
+            }
+
+            file << itemName << std::endl;
+        }
+
+        for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
+        {
+            DWORD containerItemInfo = EQ_ReadMemory<DWORD>(itemInfo + (0x0C + (j * 4)));
+            if (containerItemInfo == NULL)
+            {
+                //file << std::setfill('0') << std::setw(2) << i + 1 << "-" << std::setfill('0') << std::setw(2) << j + 1 << ": EMPTY" << std::endl;
+                continue;
+            }
+
+            DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + 0xD0);
+
+            PCHAR containerItemName = EQ_ReadMemory<PCHAR>(containerItemInfo + 0xB8);
+            if (containerItemName != NULL)
+            {
+                file << std::setfill('0') << std::setw(2) << i + 1 << "-" << std::setfill('0') << std::setw(2) << j + 1 << ": ";
+
+                if (containerItemCount > 1)
+                {
+                    file << containerItemCount << " x ";
+                }
+
+                file << containerItemName << std::endl;
+            }
+        }
+    }
+
+    file << std::endl;
+
+    file << "---------- INVENTORY ----------" << std::endl << std::endl;
+
+    DWORD inventoryPlatinum = EQ_ReadMemory<DWORD>(charInfo2 + 0x1654);
+    DWORD inventoryGold     = EQ_ReadMemory<DWORD>(charInfo2 + 0x1658);
+    DWORD inventorySilver   = EQ_ReadMemory<DWORD>(charInfo2 + 0x165C);
+    DWORD inventoryCopper   = EQ_ReadMemory<DWORD>(charInfo2 + 0x1660);
+
+    file << "Platinum: " << inventoryPlatinum << std::endl;
+    file << "Gold:     " << inventoryGold     << std::endl;
+    file << "Silver:   " << inventorySilver   << std::endl;
+    file << "Copper:   " << inventoryCopper   << std::endl;
+
+    file << std::endl;
+
+    for (size_t i = 0; i < EQ_NUM_INVENTORY_SLOTS; i++)
+    {
+        std::string slotName = EQ_LIST_EQUIPMENT_SLOT_NAMES.at(i);
+
+        DWORD itemInfo = EQ_ReadMemory<DWORD>(charInfo2 + (0x10 + (i * 4)));
+        if (itemInfo == NULL)
+        {
+            file << std::setfill('0') << std::setw(2) << i + 1 << "(" << slotName << "): EMPTY" << std::endl;
+            continue;
+        }
+
+        DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + 0xD0);
+
+        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + 0xB8);
+        if (itemName != NULL)
+        {
+            file << std::setfill('0') << std::setw(2) << i + 1 << "(" << slotName << "): ";
+
+            if (itemCount > 1)
+            {
+                file << itemCount << " x ";
+            }
+
+            file << itemName << std::endl;
+        }
+
+        for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
+        {
+            DWORD containerItemInfo = EQ_ReadMemory<DWORD>(itemInfo + (0x0C + (j * 4)));
+            if (containerItemInfo == NULL)
+            {
+                //file << std::setfill('0') << std::setw(2) << i + 1 << "-" << std::setfill('0') << std::setw(2) << j + 1 << ": EMPTY" << std::endl;
+                continue;
+            }
+
+            DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + 0xD0);
+
+            PCHAR containerItemName = EQ_ReadMemory<PCHAR>(containerItemInfo + 0xB8);
+            if (containerItemName != NULL)
+            {
+                file << std::setfill('0') << std::setw(2) << i + 1 << "-" << std::setfill('0') << std::setw(2) << j + 1 << ": ";
+
+                if (containerItemCount > 1)
+                {
+                    file << containerItemCount << " x ";
+                }
+
+                file << containerItemName << std::endl;
+            }
+        }
+    }
+
+    file << std::endl;
+
+    file.close();
+}
+
+void EQAPP_CharacterFile_WriteJson()
+{
+    DWORD charInfo = EQ_ReadMemory<DWORD>(EQ_POINTER_CHAR_INFO);
+    if (charInfo == NULL)
+    {
+        std::cout << __FUNCTION__ << ": char info is null" << std::endl;
+        return;
+    }
+
+    DWORD charInfo2 = EQ_GetCharInfo2();
+    if (charInfo2 == NULL)
+    {
+        std::cout << __FUNCTION__ << ": char info 2 is null" << std::endl;
+        return;
+    }
+
+    char characterName[0x40] = {0};
+    memcpy(characterName, (LPVOID)(charInfo + 0xF210), sizeof(characterName));
+
+    std::stringstream filePath;
+    filePath << "eqapp/characters/" << characterName << ".json";
+
+    std::cout << "Writing character file: " << filePath.str() << std::endl;
+
+    json_t* j_root = json_object();
+
+    json_object_set_new(j_root, "name", json_string(characterName));
+
+    json_t* j_bank_root = json_object();
+    json_object_set_new(j_root, "bank", j_bank_root);
+
+    DWORD bankPlatinum = EQ_ReadMemory<DWORD>(charInfo + 0xF5A4);
+    DWORD bankGold     = EQ_ReadMemory<DWORD>(charInfo + 0xF5A8);
+    DWORD bankSilver   = EQ_ReadMemory<DWORD>(charInfo + 0xF5AC);
+    DWORD bankCopper   = EQ_ReadMemory<DWORD>(charInfo + 0xF5B0);
+
+    json_t* j_bank_currency_node = json_pack("{s: i, s: i, s: i, s: i}", "platinum", bankPlatinum, "gold", bankGold, "silver", bankSilver, "copper", bankCopper);
+    json_object_set_new(j_bank_root, "currency", j_bank_currency_node);
+
+    json_t* j_bank_items_root = json_array();
+    json_object_set_new(j_bank_root, "items", j_bank_items_root);
+
+    for (size_t i = 0; i < EQ_NUM_BANK_SLOTS; i++)
+    {
+        json_t* j_bank_item_node = json_object();
+
+        DWORD itemInfo = EQ_ReadMemory<DWORD>(charInfo + (0x1128 + (i * 4)));
+        if (itemInfo == NULL)
+        {
+            j_bank_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", i + 1, "name", "(empty)", "count", -1, "id", -1, "icon", -1);
+            json_array_append_new(j_bank_items_root, j_bank_item_node);
+            continue;
+        }
+
+        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + 0xB8);
+        if (itemName != NULL)
+        {
+            DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + 0xD0);
+
+            DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + 0xB8);
+
+            DWORD itemId   = EQ_ReadMemory<DWORD>(itemSubInfo + 0xD0);
+            DWORD itemIcon = EQ_ReadMemory<DWORD>(itemSubInfo + 0xDC);
+
+            j_bank_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", i + 1, "name", itemName, "count", itemCount, "id", itemId, "icon", itemIcon);
+            json_array_append_new(j_bank_items_root, j_bank_item_node);
+        }
+
+        json_t* j_bank_item_node_container_items_root = json_array();
+        json_object_set_new(j_bank_item_node, "containerItems", j_bank_item_node_container_items_root);
+
+        for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
+        {
+            json_t* j_bank_container_item_node = json_object();
+
+            DWORD containerItemInfo = EQ_ReadMemory<DWORD>(itemInfo + (0x0C + (j * 4)));
+            if (containerItemInfo == NULL)
+            {
+                j_bank_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", j + 1, "name", "(empty)", "count", -1, "id", -1, "icon", -1);
+                json_array_append_new(j_bank_item_node_container_items_root, j_bank_container_item_node);
+                continue;
+            }
+
+            PCHAR containerItemName = EQ_ReadMemory<PCHAR>(containerItemInfo + 0xB8);
+            if (containerItemName != NULL)
+            {
+                DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + 0xD0);
+
+                DWORD containerItemSubInfo = EQ_ReadMemory<DWORD>(containerItemInfo + 0xB8);
+
+                DWORD containerItemId   = EQ_ReadMemory<DWORD>(containerItemSubInfo + 0xD0);
+                DWORD containerItemIcon = EQ_ReadMemory<DWORD>(containerItemSubInfo + 0xDC);
+
+                j_bank_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", j + 1, "name", containerItemName, "count", containerItemCount, "id", containerItemId, "icon", containerItemIcon);
+                json_array_append_new(j_bank_item_node_container_items_root, j_bank_container_item_node);
+            }
+        }
+    }
+
+    json_t* j_inventory_root = json_object();
+    json_object_set_new(j_root, "inventory", j_inventory_root);
+
+    DWORD inventoryPlatinum = EQ_ReadMemory<DWORD>(charInfo2 + 0x1654);
+    DWORD inventoryGold     = EQ_ReadMemory<DWORD>(charInfo2 + 0x1658);
+    DWORD inventorySilver   = EQ_ReadMemory<DWORD>(charInfo2 + 0x165C);
+    DWORD inventoryCopper   = EQ_ReadMemory<DWORD>(charInfo2 + 0x1660);
+
+    json_t* j_inventory_currency_node = json_pack("{s: i, s: i, s: i, s: i}", "platinum", inventoryPlatinum, "gold", inventoryGold, "silver", inventorySilver, "copper", inventoryCopper);
+    json_object_set_new(j_inventory_root, "currency", j_inventory_currency_node);
+
+    json_t* j_inventory_items_root = json_array();
+    json_object_set_new(j_inventory_root, "items", j_inventory_items_root);
+
+    for (size_t i = 0; i < EQ_NUM_INVENTORY_SLOTS; i++)
+    {
+        json_t* j_inventory_item_node = json_object();
+
+        std::string slotName = EQ_LIST_EQUIPMENT_SLOT_NAMES.at(i);
+
+        DWORD itemInfo = EQ_ReadMemory<DWORD>(charInfo2 + (0x10 + (i * 4)));
+        if (itemInfo == NULL)
+        {
+            j_inventory_item_node = json_pack("{s: i, s: s, s: s, s: i, s: i, s: i}", "slot", i + 1, "slotName", slotName.c_str(), "name", "(empty)", "count", -1, "id", -1, "icon", -1);
+            json_array_append_new(j_inventory_items_root, j_inventory_item_node);
+            continue;
+        }
+
+        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + 0xB8);
+        if (itemName != NULL)
+        {
+            DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + 0xD0);
+
+            DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + 0xB8);
+
+            DWORD itemId   = EQ_ReadMemory<DWORD>(itemSubInfo + 0xD0);
+            DWORD itemIcon = EQ_ReadMemory<DWORD>(itemSubInfo + 0xDC);
+
+            j_inventory_item_node = json_pack("{s: i, s: s, s: s, s: i, s: i, s: i}", "slot", i + 1, "slotName", slotName.c_str(), "name", itemName, "count", itemCount, "id", itemId, "icon", itemIcon);
+            json_array_append_new(j_inventory_items_root, j_inventory_item_node);
+        }
+
+        json_t* j_inventory_item_node_container_items_root = json_array();
+        json_object_set_new(j_inventory_item_node, "containerItems", j_inventory_item_node_container_items_root);
+
+        for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
+        {
+            json_t* j_inventory_container_item_node = json_object();
+
+            DWORD containerItemInfo = EQ_ReadMemory<DWORD>(itemInfo + (0x0C + (j * 4)));
+            if (containerItemInfo == NULL)
+            {
+                j_inventory_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", j + 1, "name", "(empty)", "count", -1, "id", -1, "icon", -1);
+                json_array_append_new(j_inventory_item_node_container_items_root, j_inventory_container_item_node);
+                continue;
+            }
+
+            PCHAR containerItemName = EQ_ReadMemory<PCHAR>(containerItemInfo + 0xB8);
+            if (containerItemName != NULL)
+            {
+                DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + 0xD0);
+
+                DWORD containerItemSubInfo = EQ_ReadMemory<DWORD>(containerItemInfo + 0xB8);
+
+                DWORD containerItemId   = EQ_ReadMemory<DWORD>(containerItemSubInfo + 0xD0);
+                DWORD containerItemIcon = EQ_ReadMemory<DWORD>(containerItemSubInfo + 0xDC);
+
+                j_inventory_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", j + 1, "name", containerItemName, "count", containerItemCount, "id", containerItemId, "icon", containerItemIcon);
+                json_array_append_new(j_inventory_item_node_container_items_root, j_inventory_container_item_node);
+            }
+        }
+    }
+
+    json_dump_file(j_root, filePath.str().c_str(), JSON_PRESERVE_ORDER | JSON_INDENT(4));
+
+    json_decref(j_root);
+}
+
+#endif // EQAPP_CHARACTERFILE_H
