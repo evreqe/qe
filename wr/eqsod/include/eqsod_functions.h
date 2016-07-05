@@ -680,6 +680,18 @@ bool EQ_IsAutoRunEnabled()
     return (b == 1);
 }
 
+void EQ_SetAutoAttack(bool b)
+{
+    if (b == true)
+    {
+        EQ_WriteMemory<BYTE>(EQ_BOOL_AUTO_ATTACK, 0x01);
+    }
+    else
+    {
+        EQ_WriteMemory<BYTE>(EQ_BOOL_AUTO_ATTACK, 0x00);
+    }
+}
+
 void EQ_SetAutoRun(bool b)
 {
     if (b == true)
@@ -1405,7 +1417,7 @@ struct _EQMAPLABEL* EQ_MapWindow_AddLabel(EQMAPLABEL* mapLabel)
     return node;
 }
 
-void EQ_MapWindow_RemoveLabel(DWORD data)
+void EQ_MapWindow_RemoveLabelByData(DWORD data)
 {
     DWORD mapViewWnd = EQ_ReadMemory<DWORD>(EQ_POINTER_CMapViewWnd);
     if (mapViewWnd == NULL)
@@ -1737,115 +1749,6 @@ void EQ_TurnPlayerTowardsLocation(float y, float x)
     EQ_WriteMemory<FLOAT>(playerSpawn + 0x80, targetHeading);
 }
 
-void EQ_TurnPlayerTowardsLocationGradually(float y, float x)
-{
-    DWORD playerSpawn = EQ_GetPlayerSpawn();
-    if (playerSpawn == NULL)
-    {
-        return;
-    }
-
-    FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
-    FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);
-    FLOAT playerZ = EQ_ReadMemory<FLOAT>(playerSpawn + 0x6C);
-
-    FLOAT playerHeading = EQ_ReadMemory<FLOAT>(playerSpawn + 0x80);
-
-    std::cout << __FUNCTION__ << ": playerHeading: " << playerHeading << std::endl;
-
-    EQ_FixHeading(playerHeading);
-
-    std::cout << __FUNCTION__ << ": fixed playerHeading: " << playerHeading << std::endl;
-
-    float targetHeading = EQ_get_bearing(playerY, playerX, y, x);
-
-    std::cout << __FUNCTION__ << ": targetHeading: " << targetHeading << std::endl;
-
-    EQ_FixHeading(targetHeading);
-
-    std::cout << __FUNCTION__ << ": fixed targetHeading: " << targetHeading << std::endl;
-
-    unsigned int numIterations = 0;
-    unsigned int maxIterations = 1024;
-
-    DWORD turnTimer   = EQ_GetTimer();
-    DWORD turnDelay   = 1;
-    DWORD turnTimeout = 5000;
-
-    if (playerHeading > targetHeading)
-    {
-        while (playerHeading > targetHeading)
-        {
-            if (numIterations >= maxIterations)
-            {
-                break;
-            }
-
-            DWORD playerStandingState = EQ_ReadMemory<BYTE>(playerSpawn + 0x279);
-            if (playerStandingState != EQ_STANDING_STATE_STANDING)
-            {
-                break;
-            }
-
-            if (EQ_HasTimePassed(turnTimer, turnTimeout) == true)
-            {
-                std::cout << __FUNCTION__ << ": turn timeout" << std::endl;
-                break;
-            }
-
-            if (EQ_HasTimePassed(turnTimer, turnDelay) == false)
-            {
-                continue;
-            }
-
-            playerHeading = playerHeading - 15.f;
-
-            EQ_WriteMemory<FLOAT>(playerSpawn + 0x80, playerHeading);
-
-            numIterations++;
-
-            //Sleep(1);
-        }
-    }
-    else
-    {
-        while (playerHeading < targetHeading)
-        {
-            if (numIterations >= maxIterations)
-            {
-                break;
-            }
-
-            DWORD playerStandingState = EQ_ReadMemory<BYTE>(playerSpawn + 0x279);
-            if (playerStandingState != EQ_STANDING_STATE_STANDING)
-            {
-                break;
-            }
-
-            if (EQ_HasTimePassed(turnTimer, turnTimeout) == true)
-            {
-                std::cout << __FUNCTION__ << ": turn timeout" << std::endl;
-                break;
-            }
-
-            if (EQ_HasTimePassed(turnTimer, turnDelay) == false)
-            {
-                continue;
-            }
-
-            playerHeading = playerHeading + 15.0f;
-
-            EQ_WriteMemory<FLOAT>(playerSpawn + 0x80, playerHeading);
-
-            numIterations++;
-
-            //Sleep(1);
-        }
-    }
-
-    EQ_WriteMemory<FLOAT>(playerSpawn + 0x80, targetHeading);
-}
-
 void EQ_Door_SetState(DWORD doorInfo, BYTE doorState)
 {
     ((EQSwitch*)doorInfo)->ChangeState(doorState, 0, 0);
@@ -1895,6 +1798,41 @@ DWORD EQ_GetSpawnNearestToLocation(float y, float x, float z)
     }
 
     return distanceList.begin()->second;
+}
+
+void EQ_SetSwimmingSkillMax()
+{
+    DWORD charInfo2 = EQ_GetCharInfo2();
+    if (charInfo2 == NULL)
+    {
+        return;
+    }
+
+    EQ_WriteMemory<BYTE>(charInfo2 + 0x144C, 0xFA); // 0xFA == 250
+}
+
+void EQ_SetWindowTitle(const char* text)
+{
+    HWND window = EQ_ReadMemory<HWND>(EQ_WINDOW_HWND);
+    if (window != NULL)
+    {
+        SetWindowTextA(window, text);
+    }
+}
+
+void EQ_SetSpawnHeight(DWORD spawnInfo, float height)
+{
+    if (spawnInfo == NULL)
+    {
+        return;
+    }
+
+    if (height < 1.0f)
+    {
+        height = 1.0f;
+    }
+
+    ((EQPlayer*)spawnInfo)->ChangeHeight(height);
 }
 
 #endif // EQSOD_FUNCTIONS_H

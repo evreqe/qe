@@ -31,43 +31,7 @@ bool EQAPP_IsAnImportantWindowOpen();
 void EQAPP_Load();
 void EQAPP_Unload();
 
-void EQAPP_Console_Load();
-void EQAPP_Console_Unload();
-
-void EQAPP_WindowTitles_Execute();
-
-void EQAPP_LoadEspCustom();
-void EQAPP_DoHud();
-void EQAPP_DoTargetBeep();
-void EQAPP_DoSpawnBeep(DWORD spawnInfo);
-void EQAPP_DoSpawnMessage(DWORD spawnInfo);
-void EQAPP_DoDespawnMessage(DWORD spawnInfo);
-void EQAPP_DoAlwaysAttack();
-void EQAPP_DoCombatHotbutton();
-void EQAPP_DoAlwaysHotbutton();
-void EQAPP_UpdateEspSpawnList();
-void EQAPP_DoEsp();
-void EQAPP_DrawSpawnSkeleton(DWORD spawnInfo, DWORD argbColor);
-void EQAPP_DoMaxSwimming();
-void EQAPP_DoHeight();
-void EQAPP_DoDrawDistance();
-void EQAPP_DoHideCorpseLooted();
-void EQAPP_DoMapLabels();
-void EQAPP_RemoveMapLabels();
-void EQAPP_DoSpawnCastSpell();
-void EQAPP_DoSpawnCastSpellAddToList(DWORD spawnInfo, DWORD spellId, DWORD spellCastTime);
-void EQAPP_InterpretCommand(const char* command);
-void EQAPP_DoSpawnList(const char* filterSpawnName);
-void EQAPP_AutoLoot_Execute();
-void EQAPP_AutoLoot_Toggle();
-void EQAPP_AutoLoot_Reset();
-void EQAPP_DoBankList(const char* filterItemName);
-void EQAPP_DoInventoryList(const char* filterItemName);
-void EQAPP_DoOnScreenText();
-void EQAPP_DoOnScreenTextAddToList(std::string str);
-void EQAPP_MapLocations_WriteToFile();
-void EQAPP_ZoneShortNames_Load();
-bool EQAPP_IsAnImportantWindowOpen();
+void EQAPP_SetWindowTitles();
 
 //****************************************************************************************************//
 

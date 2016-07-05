@@ -30,7 +30,7 @@ struct EQAPPIMGUIOptionsWindow
 
         if (ImGui::Button("Census"))
         {
-            EQAPP_ToggleCensus();
+            EQAPP_Census_Toggle();
         }
         ImGui::SameLine();
         EQAPP_IMGUI_TextBool(g_censusIsEnabled);

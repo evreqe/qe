@@ -27,7 +27,7 @@ void EQAPP_Census_Off()
     EQAPP_PrintBool("Census", g_censusIsEnabled);
 }
 
-void EQAPP_ToggleCensus()
+void EQAPP_Census_Toggle()
 {
     if (g_censusIsEnabled == false)
     {

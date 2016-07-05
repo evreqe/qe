@@ -6,6 +6,7 @@ std::vector<std::string> g_textOverlayChatTextList;
 int g_textOverlayChatTextDuration = 5000;
 
 void EQAPP_TextOverlayChatText_Load();
+void EQAPP_TextOverlayChatText_DisplayText(std::string text);
 
 void EQAPP_TextOverlayChatText_Load()
 {
@@ -33,6 +34,14 @@ void EQAPP_TextOverlayChatText_Load()
     }
 
     file.close();
+}
+
+void EQAPP_TextOverlayChatText_DisplayText(std::string text)
+{
+    DWORD windowWidth  = EQ_ReadMemory<DWORD>(EQ_WINDOW_WIDTH);
+    DWORD windowHeight = EQ_ReadMemory<DWORD>(EQ_WINDOW_HEIGHT);
+
+    EQ_CTextOverlay->DisplayText(text.c_str(), EQ_TEXT_COLOR_WHITE, 15, 192, (int)(windowWidth / 2), (int)(windowHeight / 3), g_textOverlayChatTextDuration);
 }
 
 #endif // EQAPP_TEXTOVERLAYCHATTEXT_H
