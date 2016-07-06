@@ -81,7 +81,7 @@ struct EQAPPIMGUIConsoleWindow
 
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
         static ImGuiTextFilter filter;
-        filter.Draw("Filter (\"incl,-excl\") (\"error\")", 180);
+        filter.Draw("Filter (\"incl,-excl\") (\"error\") (\"debug\")", 180);
         ImGui::PopStyleVar();
 
         ImGui::Separator();
@@ -111,6 +111,10 @@ struct EQAPPIMGUIConsoleWindow
             if (strstr(item, "[error]"))
             {
                 col = ImColor(1.0f, 0.4f, 0.4f, 1.0f);
+            }
+            else if (strstr(item, "[error]"))
+            {
+                col = ImColor(1.0f, 1.0f, 0.4f, 1.0f);
             }
             else if (strncmp(item, "# ", 2) == 0)
             {

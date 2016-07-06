@@ -63,7 +63,7 @@ void EQAPP_ESP_Custom_Load()
 
         if (result == 8)
         {
-            EQ_StringReplaceUnderscoresWithSpaces(text);
+            EQ_String_ReplaceUnderscoresWithSpaces(text);
 
             EQAPPESPCUSTOM espCustom;
             espCustom.y        = y;
@@ -88,10 +88,6 @@ void EQAPP_ESP_Custom_Draw()
     }
 
     DWORD playerSpawn = EQ_GetPlayerSpawn();
-    if (playerSpawn == NULL)
-    {
-        return;
-    } 
 
     FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
     FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);

@@ -254,15 +254,15 @@ int __fastcall EQAPP_DETOUR_CEverQuest__StartCasting(void* pThis, void* not_used
         {
             if (g_debugIsEnabled == true)
             {
-                std::cout <<  __FUNCTION__ << ": [debug] " << spawnName << " begins to cast " << spellName << std::endl;
+                std::cout << "[debug] " << __FUNCTION__ << ": " << spawnName << " begins to cast " << spellName << std::endl;
             }
 
             std::stringstream ss;
             ss << spawnName << " (" << spellName << ")";
 
-            EQAPP_OnScreenText_AddToList(ss.str());
+            EQAPP_OnScreenTextList_Add(ss.str());
 
-            EQAPP_SpawnCastSpell_AddToList(spawnInfo, spellId, spellCastTime);
+            EQAPP_SpawnCastSpellList_Add(spawnInfo, spellId, spellCastTime);
         }
     }
 
@@ -308,7 +308,7 @@ int __fastcall EQAPP_DETOUR_CDisplay__CreatePlayerActor(void* pThis, void* not_u
 
         if (EQ_DoesSpawnExist(a1) == false)
         {
-            EQAPP_OnScreenText_AddSpawnMessage(a1, false);
+            EQAPP_OnScreenTextList_AddSpawnMessage(a1, false);
         }
 
         if (EQ_IsInGame() == true)
@@ -343,7 +343,7 @@ int __fastcall EQAPP_DETOUR_CDisplay__DeleteActor(void* pThis, void* not_used, D
                 std::cout << "[debug] CDisplay::DeleteActor(): " << spawnName << std::endl;
             }
 
-            EQAPP_OnScreenText_AddSpawnMessage(spawnInfo, true);
+            EQAPP_OnScreenTextList_AddSpawnMessage(spawnInfo, true);
         }
     }
 
@@ -389,7 +389,7 @@ int __fastcall EQAPP_DETOUR_CEverQuest__dsp_chat(void* pThis, void* not_used, co
             if (strstr(a1, text.c_str()) != NULL)
             {
                 EQAPP_TextOverlayChatText_DisplayText(a1);
-                EQAPP_OnScreenText_AddToList(a1);
+                EQAPP_OnScreenTextList_Add(a1);
                 break;
             }
         }

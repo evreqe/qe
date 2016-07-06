@@ -52,19 +52,19 @@ void EQAPP_Hud_Execute()
 
     if (EQ_IsAutoAttackEnabled() == true)
     {
-        ssDrawText << "Auto attack is on.\n";
+        ssDrawText << "Auto Attack is on.\n";
         numDrawText++;
     }
 
     if (EQ_IsAutoFireEnabled() == true)
     {
-        ssDrawText << "Auto fire is on.\n";
+        ssDrawText << "Auto Fire is on.\n";
         numDrawText++;
     }
 
     if (g_alwaysAttackIsEnabled == true)
     {
-        ssDrawText << "Always attack is on.\n";
+        ssDrawText << "Always Attack is on.\n";
         numDrawText++;
     }
 

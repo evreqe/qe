@@ -996,7 +996,7 @@ void EQ_SetHideCorpseLooted(bool b)
     EQ_WriteMemory<BYTE>(display + 0x14, value);
 }
 
-void EQ_StringReplaceUnderscoresWithSpaces(char* str)
+void EQ_String_ReplaceUnderscoresWithSpaces(char* str)
 {
     while (*str)
     {
@@ -1009,7 +1009,7 @@ void EQ_StringReplaceUnderscoresWithSpaces(char* str)
     }
 }
 
-void EQ_StringReplaceSpacesWithUnderscores(char* str)
+void EQ_String_ReplaceSpacesWithUnderscores(char* str)
 {
     while (*str)
     {
@@ -1274,9 +1274,9 @@ void EQ_SetDrawDistance(float distance)
     EQ_WriteMemory<FLOAT>(cameraData + 0x14, distance);
 }
 
-std::string EQ_GetSpellNameById(int spellId)
+std::string EQ_GetSpellNameById(unsigned int spellId)
 {
-    if (spellId > 5009) //21000)
+    if (spellId > EQ_NUM_SPELLS)
     {
         return "Unknown Spell";
     }
@@ -1604,7 +1604,7 @@ std::string EQ_GetSpawnMapLocationString(DWORD spawnInfo)
     char spawnName[0x40] = {0};
     memcpy(spawnName, (LPVOID)(spawnInfo + 0xE4), sizeof(spawnName));
 
-    EQ_StringReplaceSpacesWithUnderscores(spawnName);
+    EQ_String_ReplaceSpacesWithUnderscores(spawnName);
 
     FLOAT spawnY = EQ_ReadMemory<FLOAT>(spawnInfo + 0x64);
     FLOAT spawnX = EQ_ReadMemory<FLOAT>(spawnInfo + 0x68);
@@ -1833,6 +1833,11 @@ void EQ_SetSpawnHeight(DWORD spawnInfo, float height)
     }
 
     ((EQPlayer*)spawnInfo)->ChangeHeight(height);
+}
+
+void EQ_DoHotButton(unsigned int buttonIndex)
+{
+    EQ_CHotButtonWnd->DoHotButton(buttonIndex, 0);
 }
 
 #endif // EQSOD_FUNCTIONS_H

@@ -2,7 +2,7 @@
 #define EQAPP_ZONESHORTNAMES_H
 
 std::vector<std::string> g_zoneShortNamesList;
-std::vector<std::string>::iterator g_zoneShortNamesList_it;
+std::vector<std::string>::iterator g_zoneShortNamesListIterator;
 
 void EQAPP_ZoneShortNames_Load();
 
@@ -31,7 +31,7 @@ void EQAPP_ZoneShortNames_Load()
         g_zoneShortNamesList.push_back(line);
     }
 
-    g_zoneShortNamesList_it = g_zoneShortNamesList.begin();
+    g_zoneShortNamesListIterator = g_zoneShortNamesList.begin();
 
     file.close();
 }

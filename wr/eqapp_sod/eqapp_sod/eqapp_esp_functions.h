@@ -13,6 +13,8 @@ void EQAPP_ESP_Doors_Draw();
 void EQAPP_ESP_ZoneObjects_Draw();
 void EQAPP_ESP_Waypoints_Draw();
 void EQAPP_ESP_Locator_Draw();
+void EQAPP_ESP_Locator_Print();
+void EQAPP_ESP_Find_Print();
 void EQAPP_ESP_SpawnSkeleton_Draw(DWORD spawnInfo, DWORD argbColor);
 
 void EQAPP_ESP_Execute()
@@ -21,6 +23,12 @@ void EQAPP_ESP_Execute()
     {
         return;
     }
+
+    DWORD playerSpawn = EQ_GetPlayerSpawn();
+    if (playerSpawn == NULL)
+    {
+        return;
+    } 
 
     EQAPP_ESP_SpawnList_Update();
 
@@ -565,6 +573,16 @@ void EQAPP_ESP_Locator_Draw()
         EQ_DrawText(ss.str().c_str(), screenX, screenY, g_espLocatorColor, 5);
         g_espNumDrawText++;
     }
+}
+
+void EQAPP_ESP_Locator_Print()
+{
+    std::cout << "Locator: " << g_espLocatorY << ", " << g_espLocatorX << ", " << g_espLocatorZ << std::endl;
+}
+
+void EQAPP_ESP_Find_Print()
+{
+    std::cout << "Find: " << g_espFindSpawnName << std::endl;
 }
 
 void EQAPP_ESP_SpawnSkeleton_Draw(DWORD spawnInfo, DWORD argbColor)

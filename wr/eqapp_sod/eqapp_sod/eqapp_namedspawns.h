@@ -11,6 +11,7 @@ DWORD g_namedSpawnsColor = 0xFFFFFFFF;
 
 void EQAPP_NamedSpawns_Load();
 void EQAPP_NamedSpawns_Execute();
+void EQAPP_NamedSpawnsList_Print();
 
 void EQAPP_NamedSpawns_Load()
 {
@@ -146,6 +147,20 @@ void EQAPP_NamedSpawns_Execute()
     else
     {
         g_namedSpawnsHeight = 0.0f;
+    }
+}
+
+void EQAPP_NamedSpawnsList_Print()
+{
+    std::cout << "Named Spawns:" << std::endl;
+
+    size_t index = 1;
+
+    for (auto& namedSpawn : g_namedSpawnsList)
+    {
+        std::cout << "#" << index << ": " << namedSpawn << std::endl;
+
+        index++;
     }
 }
 

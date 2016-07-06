@@ -4,6 +4,8 @@
 bool g_changeHeightIsEnabled = true;
 float g_changeHeightMinimum = 1.0f;
 float g_changeHeightMaximum = 5.0f;
+DWORD g_changeHeightTimer = 0;
+DWORD g_changeHeightTimerDelay = 1000;
 
 void EQAPP_ChangeHeight_Execute();
 
@@ -14,21 +16,32 @@ void EQAPP_ChangeHeight_Execute()
         return;
     }
 
-    DWORD playerSpawn = EQ_GetPlayerSpawn();
-    if (playerSpawn == NULL)
+    if (EQ_HasTimePassed(g_changeHeightTimer, g_changeHeightTimerDelay) == false)
     {
         return;
     }
 
-    float height = EQ_ReadMemory<FLOAT>(playerSpawn + 0x13C);
+    DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_SPAWN_INFO);
 
-    if (height < g_changeHeightMinimum)
+    while (spawn)
     {
-        EQ_SetSpawnHeight(playerSpawn, g_changeHeightMinimum);
-    }
-    else if (height > g_changeHeightMaximum)
-    {
-        EQ_SetSpawnHeight(playerSpawn, g_changeHeightMaximum);
+        int spawnType = EQ_ReadMemory<BYTE>(spawn + 0x125);
+
+        if (spawnType == EQ_SPAWN_TYPE_PLAYER)
+        {
+            float height = EQ_ReadMemory<FLOAT>(spawn + 0x13C);
+
+            if (height < g_changeHeightMinimum)
+            {
+                EQ_SetSpawnHeight(spawn, g_changeHeightMinimum);
+            }
+            else if (height > g_changeHeightMaximum)
+            {
+                EQ_SetSpawnHeight(spawn, g_changeHeightMaximum);
+            }
+        }
+
+        spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
     }
 }
 

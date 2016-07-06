@@ -41,6 +41,7 @@ unsigned int g_consoleWindowHeight = 900;
 bool g_speedHackIsEnabled = true;
 float g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_SPIRIT_OF_WOLF;
 
+// TODO
 bool g_waypointBotIsEnabled = false;
 std::string g_waypointBotSpawnName;
 DWORD g_waypointBotSpawnInfo;

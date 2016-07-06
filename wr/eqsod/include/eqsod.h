@@ -267,11 +267,13 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_ITEM_TYPE_CONTAINER          0x7900
 #define EQ_ITEM_TYPE_CONTAINER_PLAIN    0x7953
 
-#define EQ_NUM_INVENTORY_SLOTS      31 // 23 equipment slots, 8 bag slots
-#define EQ_NUM_BANK_SLOTS           26 // 24 bag slots, 2 shared bag slots
-#define EQ_NUM_CONTAINER_SLOTS      10 // number of items that can fit in a bag, backpack or box
+#define EQ_NUM_INVENTORY_SLOTS      31      // 23 equipment slots, 8 bag slots
+#define EQ_NUM_BANK_SLOTS           26      // 24 bag slots, 2 shared bag slots
+#define EQ_NUM_CONTAINER_SLOTS      10      // number of items that can fit in a bag, backpack or box
 #define EQ_NUM_LOOT_WINDOW_SLOTS    32
 #define EQ_NUM_GUILDS               1500
+#define EQ_NUM_MAP_LAYERS           3       // does not include the default map layer 0
+#define EQ_NUM_SPELLS               5001
 
 #define EQ_RACE_UNKNOWN          0
 #define EQ_RACE_HUMAN            1
@@ -331,6 +333,9 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_CMD_SET_CAMERA_VIEW_USER_DEFINED1    199
 #define EQ_CMD_SET_CAMERA_VIEW_USER_DEFINED2    200
 #define EQ_CMD_EXIT_GAME                        274
+
+#define EQ_HOTBUTTON_NUMBER_MIN 1
+#define EQ_HOTBUTTON_NUMBER_MAX 10
 
 const std::unordered_map<std::string, std::string> EQ_KEYVALUE_ACTOR_DEFINITIONS
 {
@@ -618,7 +623,7 @@ typedef struct _EQMAPLABEL
 /*0x14*/    EQARGBCOLOR Color;
 /*0x18*/    DWORD Size = 2; // 1-3
 /*0x1C*/    PCHAR Label; // text
-/*0x20*/    DWORD Layer = 0; // 0-3
+/*0x20*/    DWORD Layer = 3; // 0-3
 /*0x24*/    DWORD Width = 20;
 /*0x28*/    DWORD Height = 12;
 /*0x2C*/    DWORD Unknown0x2C; // BYTE X;

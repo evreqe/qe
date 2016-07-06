@@ -141,7 +141,7 @@ void EQAPP_SpawnList_Print(const char* filterSpawnName)
 
             float spawnDistance = EQ_CalculateDistance3d(playerX, playerY, playerZ, spawnX, spawnY, spawnZ);
 
-            std::cout << "    [debug] (Distance: " << (int)spawnDistance << ")";
+            std::cout << "    (Distance: " << (int)spawnDistance << ")";
         }
 
         std::cout << std::endl;

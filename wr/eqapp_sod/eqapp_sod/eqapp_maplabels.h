@@ -12,8 +12,22 @@ DWORD g_mapLabelsLayer = 3;
 DWORD g_mapLabelsWidth = 20;
 DWORD g_mapLabelsHeight = 12;
 
+void EQAPP_MapLabels_Toggle();
 void EQAPP_MapLabels_Remove();
 void EQAPP_MapLabels_Execute();
+void EQAPP_MapLabels_Print();
+void EQAPP_MapLabels_Filter_Print();
+
+void EQAPP_MapLabels_Toggle()
+{
+    EQ_ToggleBool(g_mapLabelsIsEnabled);
+    EQAPP_PrintBool("Map Labels", g_mapLabelsIsEnabled);
+
+    if (g_mapLabelsIsEnabled == false)
+    {
+        EQAPP_MapLabels_Remove();
+    }
+}
 
 void EQAPP_MapLabels_Remove()
 {
@@ -121,6 +135,37 @@ void EQAPP_MapLabels_Execute()
     }
 
     EQ_UpdateMap();
+}
+
+void EQAPP_MapLabels_Print()
+{
+    std::cout << "Map Labels:" << std::endl;
+
+    DWORD mapViewWnd = EQ_ReadMemory<DWORD>(EQ_POINTER_CMapViewWnd);
+    if (mapViewWnd == NULL)
+    {
+        EQAPP_PrintFunctionError(__FUNCTION__, "map window view is NULL");
+        return;
+    }
+
+    struct _EQMAPLABEL* mapLabel = EQ_ReadMemory<struct _EQMAPLABEL*>(mapViewWnd + 0x2D0);
+    if (mapLabel == NULL)
+    {
+        EQAPP_PrintFunctionError(__FUNCTION__, "first map label not found");
+        return;
+    }
+
+    while (mapLabel != NULL)
+    {
+        std::cout << mapLabel->Label << std::endl;
+
+        mapLabel = mapLabel->Next;
+    }
+}
+
+void EQAPP_MapLabels_Filter_Print()
+{
+    std::cout << "Map Labels Filter: " << g_mapLabelsFilterName << std::endl;
 }
 
 #endif //EQAPP_MAPLABELS_H

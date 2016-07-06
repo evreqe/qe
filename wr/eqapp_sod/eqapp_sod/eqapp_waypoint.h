@@ -21,6 +21,24 @@ typedef struct _EQAPPWAYPOINT
 
 std::vector<EQAPPWAYPOINT> g_waypointList;
 
+typedef std::vector<unsigned int> EQAPPWaypointPathList;
+
+PEQAPPWAYPOINT EQAPP_Waypoint_GetByIndex(unsigned int index);
+void EQAPP_Waypoint_Add();
+void EQAPP_Waypoint_Remove(unsigned int index);
+void EQAPP_Waypoint_Connect(unsigned int fromIndex, unsigned int toIndex);
+void EQAPP_Waypoint_Disconnect(unsigned int fromIndex, unsigned int toIndex);
+unsigned int EQAPP_Waypoint_GetGScore(PEQAPPWAYPOINT waypoint1, PEQAPPWAYPOINT waypoint2);
+unsigned int EQAPP_Waypoint_GetHScore(PEQAPPWAYPOINT waypoint1, PEQAPPWAYPOINT waypoint2);
+void EQAPP_Waypoint_ComputeScores(PEQAPPWAYPOINT waypoint, PEQAPPWAYPOINT waypointEnd);
+void EQAPP_WaypointList_Clear();
+void EQAPP_WaypointList_Load();
+void EQAPP_WaypointList_Save();
+void EQAPP_WaypointList_Print();
+unsigned int EQAPP_WaypointList_GetIndexNearestToLocation(float y, float x, float z);
+std::vector<unsigned int> EQAPP_WaypointList_GetPath(unsigned int fromIndex, unsigned int toIndex);
+void EQAPP_WaypointList_PrintPath(std::vector<unsigned int>& pathList, unsigned int fromIndex);
+
 PEQAPPWAYPOINT EQAPP_Waypoint_GetByIndex(unsigned int index)
 {
     for (auto& waypoint : g_waypointList)
@@ -300,7 +318,7 @@ void EQAPP_WaypointList_Load()
 
         if (result == 6)
         {
-            EQ_StringReplaceUnderscoresWithSpaces(name);
+            EQ_String_ReplaceUnderscoresWithSpaces(name);
 
             EQAPPWAYPOINT waypoint;
             waypoint.index = index;
@@ -386,20 +404,6 @@ void EQAPP_WaypointList_Save()
     file.close();
 }
 
-unsigned int EQAPP_WaypointList_GetIndexNearestToLocation(float y, float x, float z)
-{
-    std::map<float, unsigned int> distanceList;
-
-    for (auto& waypoint : g_waypointList)
-    {
-        float distance = EQ_CalculateDistance3d(x, y, z, waypoint.x, waypoint.y, waypoint.z);
-
-        distanceList.insert(std::make_pair(distance, waypoint.index));
-    }
-
-    return distanceList.begin()->second;
-}
-
 void EQAPP_WaypointList_Print()
 {
     std::cout << "Waypoint List: " << std::endl;
@@ -435,9 +439,23 @@ void EQAPP_WaypointList_Print()
     }
 }
 
+unsigned int EQAPP_WaypointList_GetIndexNearestToLocation(float y, float x, float z)
+{
+    std::map<float, unsigned int> distanceList;
+
+    for (auto& waypoint : g_waypointList)
+    {
+        float distance = EQ_CalculateDistance3d(x, y, z, waypoint.x, waypoint.y, waypoint.z);
+
+        distanceList.insert(std::make_pair(distance, waypoint.index));
+    }
+
+    return distanceList.begin()->second;
+}
+
 std::vector<unsigned int> EQAPP_WaypointList_GetPath(unsigned int fromIndex, unsigned int toIndex)
 {
-    std::vector<unsigned int> pathList;
+    EQAPPWaypointPathList pathList;
 
     if (fromIndex == toIndex)
     {
@@ -458,7 +476,7 @@ std::vector<unsigned int> EQAPP_WaypointList_GetPath(unsigned int fromIndex, uns
     }
 
     PEQAPPWAYPOINT start = EQAPP_Waypoint_GetByIndex(fromIndex);
-    PEQAPPWAYPOINT end = EQAPP_Waypoint_GetByIndex(toIndex);
+    PEQAPPWAYPOINT end   = EQAPP_Waypoint_GetByIndex(toIndex);
 
     if (start == NULL || end == NULL)
     {
@@ -471,7 +489,7 @@ std::vector<unsigned int> EQAPP_WaypointList_GetPath(unsigned int fromIndex, uns
 
     std::list<PEQAPPWAYPOINT> openedList;
     std::list<PEQAPPWAYPOINT> closedList;
-    std::list<PEQAPPWAYPOINT>::iterator it;
+    std::list<PEQAPPWAYPOINT>::iterator waypointListIterator;
 
     unsigned int numIterations = 0;
     unsigned int maxIterations = 100;
@@ -481,11 +499,11 @@ std::vector<unsigned int> EQAPP_WaypointList_GetPath(unsigned int fromIndex, uns
 
     while (numIterations == 0 || (current != end && numIterations < maxIterations))
     {
-        for (it = openedList.begin(); it != openedList.end(); ++it)
+        for (waypointListIterator = openedList.begin(); waypointListIterator != openedList.end(); ++waypointListIterator)
         {
-            if (it == openedList.begin() || (*it)->f <= current->f)
+            if (waypointListIterator == openedList.begin() || (*waypointListIterator)->f <= current->f)
             {
-                current = (*it);
+                current = (*waypointListIterator);
             }
         }
 
@@ -532,14 +550,14 @@ std::vector<unsigned int> EQAPP_WaypointList_GetPath(unsigned int fromIndex, uns
         numIterations++;
     }
 
-    for (it = openedList.begin(); it != openedList.end(); ++it)
+    for (waypointListIterator = openedList.begin(); waypointListIterator != openedList.end(); ++waypointListIterator)
     {
-        (*it)->isOpened = false;
+        (*waypointListIterator)->isOpened = false;
     }
 
-    for (it = closedList.begin(); it != closedList.end(); ++it)
+    for (waypointListIterator = closedList.begin(); waypointListIterator != closedList.end(); ++waypointListIterator)
     {
-        (*it)->isClosed = false;
+        (*waypointListIterator)->isClosed = false;
     }
 
     while (current->parent != NULL && current != start)
@@ -551,7 +569,12 @@ std::vector<unsigned int> EQAPP_WaypointList_GetPath(unsigned int fromIndex, uns
 
     std::reverse(pathList.begin(), pathList.end());
 
-    std::cout << "Waypoint Path: " << fromIndex << " -> ";
+    return pathList;
+}
+
+void EQAPP_WaypointList_PrintPath(EQAPPWaypointPathList& pathList)
+{
+    std::cout << "Waypoint Path:";
 
     for (auto& pathIndex : pathList)
     {
@@ -564,8 +587,6 @@ std::vector<unsigned int> EQAPP_WaypointList_GetPath(unsigned int fromIndex, uns
     }
 
     std::cout << std::endl;
-
-    return pathList;
 }
 
 #endif // EQAPP_WAYPOINT_H

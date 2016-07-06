@@ -5,6 +5,8 @@ bool g_spawnBeepIsEnabled = false;
 std::string g_spawnBeepName;
 
 void EQAPP_SpawnBeep_Execute(DWORD spawnInfo);
+void EQAPP_SpawnBeep_Print();
+void EQAPP_SpawnBeep_Set(std::string spawnName);
 
 void EQAPP_SpawnBeep_Execute(DWORD spawnInfo)
 {
@@ -45,6 +47,18 @@ void EQAPP_SpawnBeep_Execute(DWORD spawnInfo)
             MessageBeep(0);
         }
     }
+}
+
+void EQAPP_SpawnBeep_Print()
+{
+    std::cout << "Spawn Beep: " << g_spawnBeepName << std::endl;
+}
+
+void EQAPP_SpawnBeep_Set(std::string spawnName)
+{
+    g_spawnBeepName = spawnName;
+
+    EQAPP_SpawnBeep_Print();
 }
 
 #endif // EQAPP_SPAWNBEEP_H

@@ -16,7 +16,7 @@ std::vector<SPEQAPPSPAWNCASTSPELL> g_spawnCastSpellList;
 DWORD g_spawnCastSpellTimerDelay = 5000;
 
 void EQAPP_SpawnCastSpell_Execute();
-void EQAPP_SpawnCastSpell_AddToList(DWORD spawnInfo, DWORD spellId, DWORD spellCastTime);
+void EQAPP_SpawnCastSpellList_Add(DWORD spawnInfo, DWORD spellId, DWORD spellCastTime);
 
 void EQAPP_SpawnCastSpell_Execute()
 {
@@ -32,9 +32,9 @@ void EQAPP_SpawnCastSpell_Execute()
 
     DWORD currentTime = EQ_GetTimer();
 
-    for (auto spawnCastSpellList_it = g_spawnCastSpellList.begin(); spawnCastSpellList_it != g_spawnCastSpellList.end(); spawnCastSpellList_it++)
+    for (auto spawnCastSpellListIterator = g_spawnCastSpellList.begin(); spawnCastSpellListIterator != g_spawnCastSpellList.end(); spawnCastSpellListIterator++)
     {
-        PEQAPPSPAWNCASTSPELL spawnCastSpell = spawnCastSpellList_it->get();
+        PEQAPPSPAWNCASTSPELL spawnCastSpell = spawnCastSpellListIterator->get();
         if (spawnCastSpell == nullptr)
         {
             continue;
@@ -53,14 +53,14 @@ void EQAPP_SpawnCastSpell_Execute()
             ((currentTime - spawnCastSpell->timer) > delay) || spawnStandingState == EQ_STANDING_STATE_DUCKING
         )
         {
-            spawnCastSpellList_it = g_spawnCastSpellList.erase(spawnCastSpellList_it);
-            spawnCastSpellList_it--;
+            spawnCastSpellListIterator = g_spawnCastSpellList.erase(spawnCastSpellListIterator);
+            spawnCastSpellListIterator--;
             continue;
         }
     }
 }
 
-void EQAPP_SpawnCastSpell_AddToList(DWORD spawnInfo, DWORD spellId, DWORD spellCastTime)
+void EQAPP_SpawnCastSpellList_Add(DWORD spawnInfo, DWORD spellId, DWORD spellCastTime)
 {
     if (spawnInfo == NULL)
     {

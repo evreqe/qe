@@ -15,7 +15,7 @@ void EQAPP_Census_On()
     std::srand(unsigned(std::time(0)));
     std::random_shuffle(g_zoneShortNamesList.begin(), g_zoneShortNamesList.end());
 
-    g_zoneShortNamesList_it = g_zoneShortNamesList.begin();
+    g_zoneShortNamesListIterator = g_zoneShortNamesList.begin();
 
     g_censusIsEnabled = true;
     EQAPP_PrintBool("Census", g_censusIsEnabled);
@@ -62,14 +62,14 @@ void EQAPP_Census_Execute()
         return;
     }
 
-    if (g_zoneShortNamesList_it == g_zoneShortNamesList.end())
+    if (g_zoneShortNamesListIterator == g_zoneShortNamesList.end())
     {
         EQAPP_Census_Off();
         return;
     }
 
     std::stringstream ssCommand;
-    ssCommand << "/who all " << *g_zoneShortNamesList_it;
+    ssCommand << "/who all " << *g_zoneShortNamesListIterator;
 
     std::cout << "Census: " << ssCommand.str() << std::endl;
 
@@ -83,7 +83,7 @@ void EQAPP_Census_Execute()
 
     EQ_CEverQuest->InterpretCmd(playerSpawn, ssCommand.str().c_str());
 
-    g_zoneShortNamesList_it++;
+    g_zoneShortNamesListIterator++;
 }
 
 #endif // EQAPP_CENSUS_H

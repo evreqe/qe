@@ -17,6 +17,7 @@ void EQAPP_Memory_Load();
 void EQAPP_Memory_Unload();
 void EQAPP_Memory_Set(PEQAPPMEMORY pMemory, bool bEnable);
 void EQAPP_Memory_ToggleByIndex(unsigned int index);
+void EQAPP_MemoryList_Print();
 
 void EQAPP_Memory_Load()
 {
@@ -190,6 +191,17 @@ void EQAPP_Memory_ToggleByIndex(unsigned int index)
     EQ_ToggleBool(pMemory->isEnabled);
     EQAPP_Memory_Set(pMemory, pMemory->isEnabled);
     EQAPP_PrintBool(pMemory->name.c_str(), pMemory->isEnabled);
+}
+
+void EQAPP_MemoryList_Print()
+{
+    std::cout << "Memory List:" << std::endl;
+    std::cout << "Index : Enabled : Name (Description)" << std::endl;
+
+    for (auto& memory : g_memoryList)
+    {
+        std::cout << "#" << memory.index << " : " << memory.isEnabled << " : " << memory.name << " (" << memory.description << ")" << std::endl;
+    }
 }
 
 #endif // EQAPP_MEMORY_H
