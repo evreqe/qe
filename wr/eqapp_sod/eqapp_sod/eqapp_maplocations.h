@@ -10,7 +10,7 @@ void EQAPP_MapLocations_WriteToFile()
     std::string zoneShortName = EQ_GetZoneShortName();
     if (zoneShortName.size() == 0)
     {
-        std::cout << __FUNCTION__ << ": zone short name is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "zone short name is NULL");
         return;
     }
 
@@ -21,19 +21,21 @@ void EQAPP_MapLocations_WriteToFile()
     file.open(filePath.str().c_str(), std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
     if (file.is_open() == false)
     {
-        std::cout << __FUNCTION__ << ": failed to open file: " << filePath.str() << std::endl;
+        std::stringstream ss;
+        ss << "failed to open file: " << filePath.str();
+
+        EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
         return;
     }
 
-    DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_SPAWN_INFO);
-
+    DWORD spawn = EQ_GetFirstSpawn();
     while (spawn)
     {
         int spawnType = EQ_ReadMemory<BYTE>(spawn + 0x125);
 
         if (spawnType != EQ_SPAWN_TYPE_NPC)
         {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+            spawn = EQ_GetNextSpawn(spawn); // next
             continue;
         }
 
@@ -41,7 +43,7 @@ void EQAPP_MapLocations_WriteToFile()
 
         file << mapLocation << std::endl;
 
-        spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+        spawn = EQ_GetNextSpawn(spawn); // next
     }
 
     file.close();

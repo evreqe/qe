@@ -144,27 +144,27 @@ void EQAPP_SetWindowTitles()
     {
         SetWindowTextA(window, EQ_STRING_WINDOW_TITLE);
 
-        if (g_hwndConsoleWindow != NULL)
+        if (g_consoleWindowHwnd != NULL)
         {
-            SetWindowTextA(g_hwndConsoleWindow, g_consoleWindowTitle);
+            SetWindowTextA(g_consoleWindowHwnd, g_consoleWindowTitle);
         }
     }
     else
     {
-        char playerName[0x40] = {0};
-        memcpy(playerName, (LPVOID)(playerSpawn + 0xE4), sizeof(playerName));
+        char playerName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
+        memcpy(playerName, (LPVOID)(playerSpawn + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(playerName));
 
         std::stringstream ss;
         ss << EQ_STRING_WINDOW_TITLE << ": " << playerName;
 
         SetWindowTextA(window, ss.str().c_str());
 
-        if (g_hwndConsoleWindow != NULL)
+        if (g_consoleWindowHwnd != NULL)
         {
             std::stringstream ss;
             ss << g_applicationName << ": " << playerName;
 
-            SetWindowTextA(g_hwndConsoleWindow, ss.str().c_str());
+            SetWindowTextA(g_consoleWindowHwnd, ss.str().c_str());
         }
     }
 }
@@ -197,7 +197,10 @@ int __cdecl EQAPP_DETOUR_ExecuteCmd(DWORD a1, BOOL a2, PVOID a3)
         std::string commandName = EQ_GetExecuteCmdName(a1);
         if (a1 != NULL && a2 != NULL && a3 != NULL && commandName.size() != 0)
         {
-            std::cout << "[debug] ExecuteCmd: " << a1 << ", " << a2 << ", " << a3 << " (" << commandName << ")" << std::endl;
+            std::stringstream ss;
+            ss << "ExecuteCmd: " << a1 << ", " << a2 << ", " << a3 << " (" << commandName << ")";
+
+            EQAPP_PrintDebugMessage(__FUNCTION__, ss.str());
         }
     }
 
@@ -218,6 +221,8 @@ int __fastcall EQAPP_DETOUR_CEverQuest__SetGameState(void* pThis, void* not_used
 
 int __fastcall EQAPP_DETOUR_CEverQuest__StartCasting(void* pThis, void* not_used, int a1)
 {
+    // a1 = spawn casting spell structure
+
     if (g_bExit == 1)
     {
         return EQAPP_REAL_CEverQuest__StartCasting(pThis, a1);
@@ -241,8 +246,8 @@ int __fastcall EQAPP_DETOUR_CEverQuest__StartCasting(void* pThis, void* not_used
 
     if (spawnInfo != NULL && spawnInfo != playerSpawn)
     {
-        char spawnName[0x40] = {0};
-        memcpy(spawnName, (LPVOID)(spawnInfo + 0xE4), sizeof(spawnName));
+        char spawnName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
+        memcpy(spawnName, (LPVOID)(spawnInfo + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(spawnName));
         //EQAPP_Log("Spawn Name:", 0);
         //EQAPP_Log(spawnName, 0);
 
@@ -254,15 +259,18 @@ int __fastcall EQAPP_DETOUR_CEverQuest__StartCasting(void* pThis, void* not_used
         {
             if (g_debugIsEnabled == true)
             {
-                std::cout << "[debug] " << __FUNCTION__ << ": " << spawnName << " begins to cast " << spellName << std::endl;
+                std::stringstream ss;
+                ss << spawnName << " begins to cast " << spellName;
+
+                EQAPP_PrintDebugMessage(__FUNCTION__, ss.str());
             }
 
             std::stringstream ss;
             ss << spawnName << " (" << spellName << ")";
 
-            EQAPP_OnScreenTextList_Add(ss.str());
+            EQAPP_OnScreenText_Add(ss.str());
 
-            EQAPP_SpawnCastSpellList_Add(spawnInfo, spellId, spellCastTime);
+            EQAPP_SpawnCastSpell_Add(spawnInfo, spellId, spellCastTime);
         }
     }
 
@@ -272,6 +280,10 @@ int __fastcall EQAPP_DETOUR_CEverQuest__StartCasting(void* pThis, void* not_used
 int __fastcall EQAPP_DETOUR_CDisplay__CreatePlayerActor(void* pThis, void* not_used, int a1, int a2, int a3, int a4, int a5)
 {
     // a1 = spawnInfo
+    // a2 = 0
+    // a3 = 1
+    // a4 = 2
+    // a5 = 1
 
     if (g_bExit == 1)
     {
@@ -285,21 +297,21 @@ int __fastcall EQAPP_DETOUR_CDisplay__CreatePlayerActor(void* pThis, void* not_u
             DWORD playerSpawn = EQ_GetPlayerSpawn();
             if (a1 == playerSpawn)
             {
-                int spawnRace = EQ_ReadMemory<DWORD>(playerSpawn + 0xE64);
+                int spawnRace = EQ_ReadMemory<DWORD>(playerSpawn + EQ_OFFSET_SPAWN_INFO_RACE);
                 if (spawnRace == EQ_RACE_CHOKADAI)
                 {
-                    EQ_WriteMemory<DWORD>(playerSpawn + 0xE64, EQ_RACE_HUMAN);
+                    EQ_WriteMemory<DWORD>(playerSpawn + EQ_OFFSET_SPAWN_INFO_RACE, EQ_RACE_HUMAN);
                 }
             }
         }
 
-        char spawnName[0x40] = {0};
-        memcpy(spawnName, (LPVOID)(a1 + 0xA4), sizeof(spawnName));
+        char spawnNumberedName[EQ_SIZE_SPAWN_INFO_NUMBERED_NAME] = {0};
+        memcpy(spawnNumberedName, (LPVOID)(a1 + EQ_OFFSET_SPAWN_INFO_NUMBERED_NAME), sizeof(spawnNumberedName));
 
-        if (g_debugIsEnabled == true && spawnName != NULL)
+        if (g_debugIsEnabled == true && spawnNumberedName != NULL)
         {
-            std::cout << "[debug] CDisplay::CreatePlayerActor(): " << spawnName << std::endl;
-            std::cout << "[debug] a1: " << a1 << std::endl;
+            std::cout << "[debug] CDisplay::CreatePlayerActor(): " << spawnNumberedName << std::endl;
+            std::cout << "[debug] a1: " << a1 << std::endl; // spawnInfo
             std::cout << "[debug] a2: " << a2 << std::endl; // 0
             std::cout << "[debug] a3: " << a3 << std::endl; // 1
             std::cout << "[debug] a4: " << a4 << std::endl; // 2
@@ -308,7 +320,7 @@ int __fastcall EQAPP_DETOUR_CDisplay__CreatePlayerActor(void* pThis, void* not_u
 
         if (EQ_DoesSpawnExist(a1) == false)
         {
-            EQAPP_OnScreenTextList_AddSpawnMessage(a1, false);
+            EQAPP_OnScreenText_AddSpawnMessage(a1, false);
         }
 
         if (EQ_IsInGame() == true)
@@ -331,19 +343,18 @@ int __fastcall EQAPP_DETOUR_CDisplay__DeleteActor(void* pThis, void* not_used, D
 
     if (a1 != NULL)
     {
-        DWORD spawnInfo = EQ_ReadMemory<DWORD>(a1 + 0x70);
-
+        DWORD spawnInfo = EQ_ReadMemory<DWORD>(a1 + EQ_OFFSET_ACTOR_INSTANCE_INFO_SPAWN_INFO);
         if (spawnInfo != NULL)
         {
-            char spawnName[0x40] = {0};
-            memcpy(spawnName, (LPVOID)(spawnInfo + 0xA4), sizeof(spawnName));
+            char spawnNumberedName[EQ_SIZE_SPAWN_INFO_NUMBERED_NAME] = {0};
+            memcpy(spawnNumberedName, (LPVOID)(spawnInfo + EQ_OFFSET_SPAWN_INFO_NUMBERED_NAME), sizeof(spawnNumberedName));
 
-            if (g_debugIsEnabled == true && spawnName != NULL)
+            if (g_debugIsEnabled == true && spawnNumberedName != NULL)
             {
-                std::cout << "[debug] CDisplay::DeleteActor(): " << spawnName << std::endl;
+                std::cout << "[debug] CDisplay::DeleteActor(): " << spawnNumberedName << std::endl;
             }
 
-            EQAPP_OnScreenTextList_AddSpawnMessage(spawnInfo, true);
+            EQAPP_OnScreenText_AddSpawnMessage(spawnInfo, true);
         }
     }
 
@@ -376,7 +387,7 @@ int __fastcall EQAPP_DETOUR_CEverQuest__dsp_chat(void* pThis, void* not_used, co
         {
             if (strstr(a1, sound.text.c_str()) != NULL)
             {
-                PlaySoundA(sound.filename.c_str(), 0, SND_FILENAME | SND_NODEFAULT | SND_ASYNC);
+                EQAPP_PlaySound(sound.filename.c_str());
                 break;
             }
         }
@@ -389,7 +400,7 @@ int __fastcall EQAPP_DETOUR_CEverQuest__dsp_chat(void* pThis, void* not_used, co
             if (strstr(a1, text.c_str()) != NULL)
             {
                 EQAPP_TextOverlayChatText_DisplayText(a1);
-                EQAPP_OnScreenTextList_Add(a1);
+                EQAPP_OnScreenText_Add(a1);
                 break;
             }
         }
@@ -498,10 +509,10 @@ int __fastcall EQAPP_DETOUR_EQ_Character__eqspa_movement_rate(void* pThis, void*
         DWORD playerSpawn = EQ_GetPlayerSpawn();
         if (playerSpawn != NULL)
         {
-            FLOAT speedModifier = EQ_ReadMemory<FLOAT>(playerSpawn + 0x18);
+            FLOAT speedModifier = EQ_ReadMemory<FLOAT>(playerSpawn + EQ_OFFSET_SPAWN_INFO_SPEED_MODIFIER);
             if (speedModifier < g_speedHackModifier)
             {
-                EQ_WriteMemory<FLOAT>(playerSpawn + 0x18, g_speedHackModifier);
+                EQ_WriteMemory<FLOAT>(playerSpawn + EQ_OFFSET_SPAWN_INFO_SPEED_MODIFIER, g_speedHackModifier);
             }
         }
     }
@@ -518,25 +529,25 @@ int __fastcall EQAPP_DETOUR_EQPlayer__ChangePosition(void* pThis, void* not_used
         return EQAPP_REAL_EQPlayer__ChangePosition(pThis, a1);
     }
 
-    if (g_freeCameraIsEnabled == true)
-    {
-        DWORD playerSpawn = EQ_GetPlayerSpawn();
-        if (playerSpawn != NULL && (DWORD)pThis == playerSpawn)
-        {
-            EQAPP_FreeCamera_Set(false);
-        }
-    }
-
-    if (a1 == EQ_STANDING_STATE_DUCKING)
-    {
-        g_censusIsEnabled = false;
-    }
-
     if (g_neverFrozenIsEnabled == true)
     {
         if (a1 == EQ_STANDING_STATE_FROZEN)
         {
             a1 = EQ_STANDING_STATE_STANDING;
+        }
+    }
+
+    DWORD playerSpawn = EQ_GetPlayerSpawn();
+    if (playerSpawn != NULL && (DWORD)pThis == playerSpawn)
+    {
+        if (a1 == EQ_STANDING_STATE_DUCKING)
+        {
+            if (g_freeCameraIsEnabled == true)
+            {
+                EQAPP_FreeCamera_Set(false);
+            }
+
+            g_censusIsEnabled = false;
         }
     }
 
@@ -709,6 +720,7 @@ int __cdecl EQAPP_DETOUR_DrawNetStatus(int a1, unsigned short a2, unsigned short
 
     if (EQAPP_IsAnImportantWindowOpen() == false && EQ_IsKeyShiftPressed() == false)
     {
+        // these functions draw on the screen
         EQAPP_LineToTarget_Execute();
         EQAPP_ESP_Execute();
         EQAPP_NamedSpawns_Execute();
@@ -748,12 +760,12 @@ DWORD WINAPI EQAPP_ThreadConsole(LPVOID param)
     glfwMakeContextCurrent(g_consoleWindow);
     ImGui_ImplGlfw_Init(g_consoleWindow, true);
 
-    g_hwndConsoleWindow = glfwGetWin32Window(g_consoleWindow);
+    g_consoleWindowHwnd = glfwGetWin32Window(g_consoleWindow);
 
-    EQAPP_CenterWindow(g_hwndConsoleWindow);
+    EQAPP_CenterWindow(g_consoleWindowHwnd);
 
     // disable close button
-    EnableMenuItem(GetSystemMenu(g_hwndConsoleWindow, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
+    EnableMenuItem(GetSystemMenu(g_consoleWindowHwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
     const GLFWvidmode* videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
     g_videoModeWidth  = videoMode->width;
@@ -826,7 +838,8 @@ DWORD WINAPI EQAPP_ThreadLoop(LPVOID param)
 DWORD WINAPI EQAPP_ThreadLoad(LPVOID param)
 {
     EQAPP_EnableDebugPrivileges();
-    EQAPP_LoadGraphicsDllFunctions();
+
+    EQ_LoadGraphicsDllFunctions();
 
     g_handleThreadConsole = CreateThread(NULL, 0, &EQAPP_ThreadConsole, NULL, 0, NULL);
 

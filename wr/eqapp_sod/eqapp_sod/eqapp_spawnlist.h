@@ -7,7 +7,7 @@ void EQAPP_SpawnList_Print(const char* filterSpawnName)
 {
     if (EQ_IsInGame() == false)
     {
-        std::cout << __FUNCTION__ << ": not in-game" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "not in-game");
         return;
     }
 
@@ -22,25 +22,24 @@ void EQAPP_SpawnList_Print(const char* filterSpawnName)
 
     DWORD playerSpawn = EQ_GetPlayerSpawn();
 
-    FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
-    FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);
-    FLOAT playerZ = EQ_ReadMemory<FLOAT>(playerSpawn + 0x6C);
+    FLOAT playerY = EQ_GetSpawnY(playerSpawn);
+    FLOAT playerX = EQ_GetSpawnX(playerSpawn);
+    FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
 
-    DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_SPAWN_INFO);
-
+    DWORD spawn = EQ_GetFirstSpawn();
     while (spawn)
     {
-        char spawnName[0x40] = {0};
-        memcpy(spawnName, (LPVOID)(spawn + 0xE4), sizeof(spawnName));
+        char spawnName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
+        memcpy(spawnName, (LPVOID)(spawn + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(spawnName));
 
-        char spawnLastName[0x20] = {0};
-        memcpy(spawnLastName, (LPVOID)(spawn + 0x38), sizeof(spawnLastName));
+        char spawnLastName[EQ_SIZE_SPAWN_INFO_LAST_NAME] = {0};
+        memcpy(spawnLastName, (LPVOID)(spawn + EQ_OFFSET_SPAWN_INFO_LAST_NAME), sizeof(spawnLastName));
 
         int spawnLevel = EQ_ReadMemory<BYTE>(spawn + 0x315);
 
         if (spawnLevel < 1 || spawnLevel > 100)
         {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+            spawn = EQ_GetNextSpawn(spawn); // next
             continue;
         }
 
@@ -48,7 +47,7 @@ void EQAPP_SpawnList_Print(const char* filterSpawnName)
         {
             if (strstr(spawnName, filterSpawnName) == NULL)
             {
-                spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+                spawn = EQ_GetNextSpawn(spawn); // next
                 continue;
             }
         }
@@ -97,7 +96,7 @@ void EQAPP_SpawnList_Print(const char* filterSpawnName)
             if (spawnType == EQ_SPAWN_TYPE_NPC || spawnType == EQ_SPAWN_TYPE_NPC_CORPSE)
             {
                 std::cout << ")";
-            }
+            }EQ_ReadMemory<FLOAT>(spawn + 0x64);
         }
 
         if (spawnType == EQ_SPAWN_TYPE_PLAYER)
@@ -135,9 +134,9 @@ void EQAPP_SpawnList_Print(const char* filterSpawnName)
 
         if (g_debugIsEnabled == true && playerSpawn != NULL)
         {
-            FLOAT spawnY = EQ_ReadMemory<FLOAT>(spawn + 0x64);
-            FLOAT spawnX = EQ_ReadMemory<FLOAT>(spawn + 0x68);
-            FLOAT spawnZ = EQ_ReadMemory<FLOAT>(spawn + 0x6C);
+            FLOAT spawnY = EQ_GetSpawnY(spawn);
+            FLOAT spawnX = EQ_GetSpawnX(spawn);
+            FLOAT spawnZ = EQ_GetSpawnZ(spawn);
 
             float spawnDistance = EQ_CalculateDistance3d(playerX, playerY, playerZ, spawnX, spawnY, spawnZ);
 
@@ -146,7 +145,7 @@ void EQAPP_SpawnList_Print(const char* filterSpawnName)
 
         std::cout << std::endl;
 
-        spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+        spawn = EQ_GetNextSpawn(spawn); // next
     }
 
     EQAPP_COUT_RestoreFlags();

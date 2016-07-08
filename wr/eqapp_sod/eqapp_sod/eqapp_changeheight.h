@@ -2,7 +2,6 @@
 #define EQAPP_CHANGEHEIGHT_H
 
 bool g_changeHeightIsEnabled = true;
-float g_changeHeightMinimum = 1.0f;
 float g_changeHeightMaximum = 5.0f;
 DWORD g_changeHeightTimer = 0;
 DWORD g_changeHeightTimerDelay = 1000;
@@ -21,27 +20,22 @@ void EQAPP_ChangeHeight_Execute()
         return;
     }
 
-    DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_SPAWN_INFO);
-
+    DWORD spawn = EQ_GetFirstSpawn();
     while (spawn)
     {
-        int spawnType = EQ_ReadMemory<BYTE>(spawn + 0x125);
+        int spawnType = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_TYPE);
 
         if (spawnType == EQ_SPAWN_TYPE_PLAYER)
         {
-            float height = EQ_ReadMemory<FLOAT>(spawn + 0x13C);
+            float height = EQ_ReadMemory<FLOAT>(spawn + EQ_OFFSET_SPAWN_INFO_HEIGHT);
 
-            if (height < g_changeHeightMinimum)
-            {
-                EQ_SetSpawnHeight(spawn, g_changeHeightMinimum);
-            }
-            else if (height > g_changeHeightMaximum)
+            if (height > g_changeHeightMaximum)
             {
                 EQ_SetSpawnHeight(spawn, g_changeHeightMaximum);
             }
         }
 
-        spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+        spawn = EQ_GetNextSpawn(spawn); // next
     }
 }
 

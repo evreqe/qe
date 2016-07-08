@@ -76,7 +76,7 @@ void EQAPP_Census_Execute()
     DWORD playerSpawn = EQ_GetPlayerSpawn();
     if (playerSpawn == NULL)
     {
-        std::cout << __FUNCTION__ << ": player spawn is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "player spawn is NULL");
         EQAPP_Census_Off();
         return;
     }

@@ -9,9 +9,9 @@ DWORD g_autoLootTimerDelay = 500;
 void EQAPP_AutoLoot_Execute();
 void EQAPP_AutoLoot_Toggle();
 void EQAPP_AutoLoot_Reset();
-void EQAPP_AutoLootList_Add(const char* itemName);
-void EQAPP_AutoLootList_Remove(const char* itemName);
-void EQAPP_AutoLootList_Print();
+void EQAPP_AutoLoot_Add(const char* itemName);
+void EQAPP_AutoLoot_Remove(const char* itemName);
+void EQAPP_AutoLoot_Print();
 
 void EQAPP_AutoLoot_Execute()
 {
@@ -60,14 +60,14 @@ void EQAPP_AutoLoot_Reset()
     std::cout << "Auto Loot reset." << std::endl;
 }
 
-void EQAPP_AutoLootList_Add(const char* itemName)
+void EQAPP_AutoLoot_Add(const char* itemName)
 {
     g_autoLootList.push_back(itemName);
 
     std::cout << "Auto Loot item added: " << itemName << std::endl;
 }
 
-void EQAPP_AutoLootList_Remove(const char* itemName)
+void EQAPP_AutoLoot_Remove(const char* itemName)
 {
     for (auto autoLootListIterator = g_autoLootList.begin(); autoLootListIterator != g_autoLootList.end(); autoLootListIterator++)
     {
@@ -81,7 +81,7 @@ void EQAPP_AutoLootList_Remove(const char* itemName)
     }
 }
 
-void EQAPP_AutoLootList_Print()
+void EQAPP_AutoLoot_Print()
 {
     std::cout << "Auto Loot List:" << std::endl;
 

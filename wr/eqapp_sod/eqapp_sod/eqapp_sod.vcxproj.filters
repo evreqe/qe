@@ -159,6 +159,12 @@
     <ClInclude Include="eqapp_esp_custom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="eqsod_offsets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="eqsod_sizes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

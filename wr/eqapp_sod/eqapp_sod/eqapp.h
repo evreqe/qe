@@ -23,19 +23,19 @@ std::ios g_coutFlags(NULL);
 
 int g_killSwitchKey = VK_PAUSE;
 
-bool g_debugIsEnabled               = false;
-bool g_neverFrozenIsEnabled         = true;
-bool g_replaceRacesIsEnabled        = true;
-bool g_autoScreenshotIsEnabled      = false;
+bool g_debugIsEnabled          = false;
+bool g_neverFrozenIsEnabled    = true;
+bool g_replaceRacesIsEnabled   = true;
+bool g_autoScreenshotIsEnabled = false;
 
 unsigned int g_videoModeWidth  = 1920;
 unsigned int g_videoModeHeight = 1080;
 
 GLFWwindow* g_consoleWindow;
 ImVec4 g_consoleWindowClearColor = ImColor(0, 128, 96);
-HWND g_hwndConsoleWindow;
+HWND g_consoleWindowHwnd;
 const char* g_consoleWindowTitle = "EQAPP Console";
-unsigned int g_consoleWindowWidth = 1440;
+unsigned int g_consoleWindowWidth  = 1440;
 unsigned int g_consoleWindowHeight = 900;
 
 bool g_speedHackIsEnabled = true;

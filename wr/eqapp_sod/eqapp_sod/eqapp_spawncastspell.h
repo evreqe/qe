@@ -16,7 +16,7 @@ std::vector<SPEQAPPSPAWNCASTSPELL> g_spawnCastSpellList;
 DWORD g_spawnCastSpellTimerDelay = 5000;
 
 void EQAPP_SpawnCastSpell_Execute();
-void EQAPP_SpawnCastSpellList_Add(DWORD spawnInfo, DWORD spellId, DWORD spellCastTime);
+void EQAPP_SpawnCastSpell_Add(DWORD spawnInfo, DWORD spellId, DWORD spellCastTime);
 
 void EQAPP_SpawnCastSpell_Execute()
 {
@@ -60,7 +60,7 @@ void EQAPP_SpawnCastSpell_Execute()
     }
 }
 
-void EQAPP_SpawnCastSpellList_Add(DWORD spawnInfo, DWORD spellId, DWORD spellCastTime)
+void EQAPP_SpawnCastSpell_Add(DWORD spawnInfo, DWORD spellId, DWORD spellCastTime)
 {
     if (spawnInfo == NULL)
     {

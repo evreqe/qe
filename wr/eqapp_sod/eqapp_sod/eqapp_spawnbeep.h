@@ -15,8 +15,8 @@ void EQAPP_SpawnBeep_Execute(DWORD spawnInfo)
         return;
     }
 
-    char spawnName[0x40] = {0};
-    memcpy(spawnName, (LPVOID)(spawnInfo + 0xE4), sizeof(spawnName));
+    char spawnName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
+    memcpy(spawnName, (LPVOID)(spawnInfo + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(spawnName));
 
     if (strlen(spawnName) < 2)
     {
@@ -35,7 +35,7 @@ void EQAPP_SpawnBeep_Execute(DWORD spawnInfo)
     {
         if (namedSpawn.size() != 0 && strstr(spawnName, namedSpawn.c_str()) != NULL)
         {
-            MessageBeep(0);
+            EQAPP_Beep();
             break;
         }
     }
@@ -44,7 +44,7 @@ void EQAPP_SpawnBeep_Execute(DWORD spawnInfo)
     {
         if (g_spawnBeepName.size() != 0 && strstr(spawnName, g_spawnBeepName.c_str()) != NULL)
         {
-            MessageBeep(0);
+            EQAPP_Beep();
         }
     }
 }

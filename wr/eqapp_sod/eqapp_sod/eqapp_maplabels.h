@@ -49,14 +49,17 @@ void EQAPP_MapLabels_Execute()
     EQAPP_MapLabels_Remove();
 
     DWORD playerSpawn = EQ_GetPlayerSpawn();
+    if (playerSpawn == NULL)
+    {
+        return;
+    }
 
-    DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_SPAWN_INFO);
-
+    DWORD spawn = EQ_GetFirstSpawn();
     while (spawn)
     {
         if (spawn == playerSpawn)
         {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+            spawn = EQ_GetNextSpawn(spawn); // next
             continue;
         }
 
@@ -64,7 +67,7 @@ void EQAPP_MapLabels_Execute()
 
         if (spawnLevel < 1 || spawnLevel > 100)
         {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+            spawn = EQ_GetNextSpawn(spawn); // next
             continue;
         }
 
@@ -72,19 +75,19 @@ void EQAPP_MapLabels_Execute()
 
         if (g_mapLabelsFilterIsEnabled == true && spawnType == EQ_SPAWN_TYPE_NPC)
         {
-            char spawnName[0x40] = {0};
-            memcpy(spawnName, (LPVOID)(spawn + 0xA4), sizeof(spawnName));
+            char spawnNumberedName[EQ_SIZE_SPAWN_INFO_NUMBERED_NAME] = {0};
+            memcpy(spawnNumberedName, (LPVOID)(spawn + EQ_OFFSET_SPAWN_INFO_NUMBERED_NAME), sizeof(spawnNumberedName));
 
-            if (strstr(spawnName, g_mapLabelsFilterName.c_str()) == NULL)
+            if (strstr(spawnNumberedName, g_mapLabelsFilterName.c_str()) == NULL)
             {
-                spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+                spawn = EQ_GetNextSpawn(spawn); // next
                 continue;
             }
         }
 
-        FLOAT spawnY = EQ_ReadMemory<FLOAT>(spawn + 0x64);
-        FLOAT spawnX = EQ_ReadMemory<FLOAT>(spawn + 0x68);
-        FLOAT spawnZ = EQ_ReadMemory<FLOAT>(spawn + 0x6C);
+        FLOAT spawnY = EQ_GetSpawnY(spawn);
+        FLOAT spawnX = EQ_GetSpawnX(spawn);
+        FLOAT spawnZ = EQ_GetSpawnZ(spawn);
 
         EQXYZ location;
         location.X = -spawnX; // X and Y must be negative
@@ -123,7 +126,7 @@ void EQAPP_MapLabels_Execute()
         mapLabel.Location    = location;
         mapLabel.Color       = color;
         mapLabel.Size        = g_mapLabelsSize;
-        mapLabel.Label       = (PCHAR)(spawn + 0xE4); // spawn name
+        mapLabel.Label       = (PCHAR)(spawn + EQ_OFFSET_SPAWN_INFO_NAME); // spawn name
         mapLabel.Layer       = g_mapLabelsLayer;
         mapLabel.Width       = g_mapLabelsWidth;
         mapLabel.Height      = g_mapLabelsHeight;
@@ -131,7 +134,7 @@ void EQAPP_MapLabels_Execute()
 
         EQ_MapWindow_AddLabel(&mapLabel);
 
-        spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+        spawn = EQ_GetNextSpawn(spawn); // next
     }
 
     EQ_UpdateMap();
@@ -144,14 +147,14 @@ void EQAPP_MapLabels_Print()
     DWORD mapViewWnd = EQ_ReadMemory<DWORD>(EQ_POINTER_CMapViewWnd);
     if (mapViewWnd == NULL)
     {
-        EQAPP_PrintFunctionError(__FUNCTION__, "map window view is NULL");
+        EQAPP_PrintErrorMessage(__FUNCTION__, "map window view is NULL");
         return;
     }
 
     struct _EQMAPLABEL* mapLabel = EQ_ReadMemory<struct _EQMAPLABEL*>(mapViewWnd + 0x2D0);
     if (mapLabel == NULL)
     {
-        EQAPP_PrintFunctionError(__FUNCTION__, "first map label not found");
+        EQAPP_PrintErrorMessage(__FUNCTION__, "first map label not found");
         return;
     }
 

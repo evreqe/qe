@@ -29,8 +29,8 @@ void EQAPP_TargetBeep_Execute()
         return;
     }
 
-    char spawnName[0x40] = {0};
-    memcpy(spawnName, (LPVOID)(targetSpawn + 0xE4), sizeof(spawnName));
+    char spawnName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
+    memcpy(spawnName, (LPVOID)(targetSpawn + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(spawnName));
 
     if (strlen(spawnName) < 2)
     {
@@ -39,7 +39,7 @@ void EQAPP_TargetBeep_Execute()
 
     if (g_targetBeepName.size() != 0 && strstr(spawnName, g_targetBeepName.c_str()) != NULL)
     {
-        MessageBeep(0);
+        EQAPP_Beep();
     }
 }
 
@@ -47,7 +47,7 @@ void EQAPP_TargetBeep_Print()
 {
     if (g_targetBeepTimerDelay == 0)
     {
-        std::cout << "[error] " << __FUNCTION__ << ": timer delay is zero" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "timer delay is zero");
         return;
     }
 
@@ -58,7 +58,7 @@ void EQAPP_TargetBeep_Set(std::string spawnName, DWORD timerDelayInSeconds)
 {
     if (spawnName.size() == 0)
     {
-        std::cout << "[error] " << __FUNCTION__ << ": spawn name size is zero" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "spawn name is NULL");
     }
 
     g_targetBeepName = spawnName;

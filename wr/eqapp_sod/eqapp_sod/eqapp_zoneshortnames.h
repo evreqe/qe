@@ -12,11 +12,16 @@ void EQAPP_ZoneShortNames_Load()
 
     g_zoneShortNamesList.clear();
 
+    std::string filePathStr = "eqapp/zoneshortnames.txt";
+
     std::ifstream file;
-    file.open("eqapp/zoneshortnames.txt", std::ios::in);
+    file.open(filePathStr.c_str(), std::ios::in);
     if (file.is_open() == false)
     {
-        std::cout << __FUNCTION__ << ": failed to open file: eqapp/zoneshortnames.txt" << std::endl;
+        std::stringstream ss;
+        ss << "failed to open file: " << filePathStr;
+
+        EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
         return;
     }
 

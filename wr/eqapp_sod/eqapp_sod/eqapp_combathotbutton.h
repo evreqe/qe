@@ -5,6 +5,7 @@ bool g_combatHotbuttonIsEnabled = false;
 unsigned int g_combatHotbuttonIndex = 0;
 DWORD g_combatHotbuttonTimer = 0;
 DWORD g_combatHotbuttonTimerDelay = 1000;
+DWORD g_combatHotbuttonTimerDelayInSeconds = 1;
 
 void EQAPP_CombatHotbutton_Execute();
 void EQAPP_CombatHotbutton_Set(unsigned buttonNumber, DWORD timerDelayInSeconds);
@@ -50,13 +51,18 @@ void EQAPP_CombatHotbutton_Set(unsigned buttonNumber, DWORD timerDelayInSeconds)
 {
     if (buttonNumber < EQ_HOTBUTTON_NUMBER_MIN || buttonNumber > EQ_HOTBUTTON_NUMBER_MAX)
     {
-        std::cout << "[error] " << __FUNCTION__ << ": invalid hotbutton number specified: " << buttonNumber << std::endl;
+        std::stringstream ss;
+        ss << "invalid hotbutton number specified: " << buttonNumber;
+
+        EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
         return;
     }
 
     g_combatHotbuttonIndex = buttonNumber - 1; // convert number to index
 
     g_combatHotbuttonTimerDelay = (DWORD)(timerDelayInSeconds * 1000); // convert seconds to milliseconds
+
+    g_combatHotbuttonTimerDelayInSeconds = timerDelayInSeconds;
 
     std::cout << "Combat Hotbutton: " << buttonNumber << " (" << timerDelayInSeconds << " second(s))" << std::endl;
 }

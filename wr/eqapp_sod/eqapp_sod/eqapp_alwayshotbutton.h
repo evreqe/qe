@@ -5,6 +5,7 @@ bool g_alwaysHotbuttonIsEnabled = false;
 unsigned int g_alwaysHotbuttonIndex = 0;
 DWORD g_alwaysHotbuttonTimer = 0;
 DWORD g_alwaysHotbuttonTimerDelay = 1000;
+DWORD g_alwaysHotbuttonTimerDelayInSeconds = 1;
 
 void EQAPP_AlwaysHotbutton_Execute();
 void EQAPP_AlwaysHotbutton_Set(unsigned buttonNumber, DWORD timerDelayInSeconds);
@@ -28,13 +29,18 @@ void EQAPP_AlwaysHotbutton_Set(unsigned buttonNumber, DWORD timerDelayInSeconds)
 {
     if (buttonNumber < EQ_HOTBUTTON_NUMBER_MIN || buttonNumber > EQ_HOTBUTTON_NUMBER_MAX)
     {
-        std::cout << "[error] " << __FUNCTION__ << ": invalid hotbutton number specified: " << buttonNumber << std::endl;
+        std::stringstream ss;
+        ss << "invalid hotbutton number specified: " << buttonNumber;
+
+        EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
         return;
     }
 
     g_alwaysHotbuttonIndex = buttonNumber - 1; // convert number to index
 
     g_alwaysHotbuttonTimerDelay = (DWORD)(timerDelayInSeconds * 1000); // convert seconds to milliseconds
+
+    g_alwaysHotbuttonTimerDelayInSeconds = timerDelayInSeconds;
 
     std::cout << "Always Hotbutton: " << buttonNumber << " (" << timerDelayInSeconds << " second(s))" << std::endl;
 }

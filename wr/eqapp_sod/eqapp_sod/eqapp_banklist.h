@@ -7,14 +7,14 @@ void EQAPP_BankList_Print(const char* filterItemName)
 {
     if (EQ_IsInGame() == false)
     {
-        std::cout << __FUNCTION__ << ": not in-game" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "not in-game");
         return;
     }
 
-    DWORD charInfo = EQ_ReadMemory<DWORD>(EQ_POINTER_CHAR_INFO);
+    DWORD charInfo = EQ_GetCharInfo();
     if (charInfo == NULL)
     {
-        std::cout << __FUNCTION__ << ": char info is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "char info is NULL");
         return;
     }
 
@@ -112,4 +112,4 @@ void EQAPP_BankList_Print(const char* filterItemName)
     EQAPP_COUT_RestoreFlags();
 }
 
-#endif // 
+#endif // EQAPP_BANKLIST_H

@@ -15,7 +15,8 @@ bool EQAPP_IsForegroundWindowCurrentProcessId();
 void EQAPP_PrintBool(const char* text, bool& b);
 void EQAPP_IMGUI_TextBool(bool& b);
 
-void EQAPP_PrintFunctionError(const char* functionName, const char* errorText);
+void EQAPP_PrintErrorMessage(const char* functionName, std::string text);
+void EQAPP_PrintDebugMessage(const char* functionName, std::string text);
 
 void EQAPP_COUT_SaveFlags();
 void EQAPP_COUT_RestoreFlags();
@@ -25,7 +26,6 @@ bool EQAPP_INI_ReadBool(const char* filename, const char* section, const char* k
 float EQAPP_INI_ReadFloat(const char* filename, const char* section, const char* key, float defaultValue);
 std::string EQAPP_INI_ReadString(const char* filename, const char* section, const char* key, const char* defaultValue);
 
-void EQAPP_LoadGraphicsDllFunctions();
 bool EQAPP_IsAnImportantWindowOpen();
 
 void EQAPP_LootDebugInformation_Print();
@@ -36,6 +36,8 @@ void EQAPP_MeleeRangeToTarget_Print();
 void EQAPP_ZoneInformation_Print();
 
 void EQAPP_OpenZoneMapFile();
+void EQAPP_PlaySound(const char* filename);
+void EQAPP_Beep();
 
 //****************************************************************************************************//
 
@@ -50,7 +52,7 @@ template <class T>
 void EQAPP_Log(const char* text, T number)
 {
     std::fstream file;
-    file.open("eqapp/log.txt", std::ios::out | std::ios::app);
+    file.open("eqapp/eqapplog.txt", std::ios::out | std::ios::app);
     file << "[" << __TIME__ << "] " << text << " (" << number << ")" << " Hex(" << std::hex << number << std::dec << ")" << std::endl;
     file.close();
 }
@@ -191,9 +193,14 @@ void EQAPP_IMGUI_TextBool(bool& b)
     }
 }
 
-void EQAPP_PrintFunctionError(const char* functionName, const char* errorText)
+void EQAPP_PrintErrorMessage(const char* functionName, std::string text)
 {
-    std::cout << "[error] " << functionName << ": " << errorText << std::endl;
+    std::cout << "[error] " << functionName << ": " << text << std::endl;
+}
+
+void EQAPP_PrintDebugMessage(const char* functionName, std::string text)
+{
+    std::cout << "[debug] " << functionName << ": " << text << std::endl;
 }
 
 void EQAPP_COUT_SaveFlags()
@@ -236,17 +243,6 @@ std::string EQAPP_INI_ReadString(const char* filename, const char* section, cons
     char result[1024];
     GetPrivateProfileStringA(section, key, defaultValue, result, 1024, filename);
     return result;
-}
-
-void EQAPP_LoadGraphicsDllFunctions()
-{
-    DWORD baseAddress = EQ_ReadMemory<DWORD>(EQ_POINTER_GRAPHICS_DLL_BASE_ADDRESS);
-
-    DWORD addressDrawLine = baseAddress + EQ_GRAPHICS_DLL_OFFSET_DrawLine;
-    EQGraphicsDLL__DrawLine = (EQ_FUNCTION_TYPE_EQGraphicsDLL__DrawLine)addressDrawLine;
-
-    DWORD addressDrawQuad = baseAddress + EQ_GRAPHICS_DLL_OFFSET_DrawQuad;
-    EQGraphicsDLL__DrawQuad = (EQ_FUNCTION_TYPE_EQGraphicsDLL__DrawQuad)addressDrawQuad;
 }
 
 bool EQAPP_IsAnImportantWindowOpen()
@@ -304,7 +300,7 @@ void EQAPP_SpawnInformation_Print(DWORD spawnInfo)
 {
     if (spawnInfo == NULL)
     {
-        EQAPP_PrintFunctionError(__FUNCTION__ , " spawn is NULL");
+        EQAPP_PrintErrorMessage(__FUNCTION__ , " spawn is NULL");
         return;
     }
 
@@ -312,18 +308,18 @@ void EQAPP_SpawnInformation_Print(DWORD spawnInfo)
 
     // name
 
-    char spawnName[0x40] = {0};
-    memcpy(spawnName, (LPVOID)(spawnInfo + 0xA4), sizeof(spawnName));
+    char spawnNumberedName[EQ_SIZE_SPAWN_INFO_NUMBERED_NAME] = {0};
+    memcpy(spawnNumberedName, (LPVOID)(spawnInfo + EQ_OFFSET_SPAWN_INFO_NUMBERED_NAME), sizeof(spawnNumberedName));
 
-    std::cout << "NAME:  " << spawnName;
+    std::cout << "NAME:  " << spawnNumberedName;
 
     int spawnType = EQ_ReadMemory<BYTE>(spawnInfo + 0x125);
     if (spawnType != EQ_SPAWN_TYPE_PLAYER)
     {
-        char spawnNameEx[0x40] = {0};
-        memcpy(spawnNameEx, (LPVOID)(spawnInfo + 0xE4), sizeof(spawnNameEx));
+        char spawnName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
+        memcpy(spawnName, (LPVOID)(spawnInfo + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(spawnName));
 
-        std::cout << " (" << spawnNameEx << ")";
+        std::cout << " (" << spawnName << ")";
     }
 
     std::cout << std::endl;
@@ -375,7 +371,7 @@ void EQAPP_SpawnInformation_Print(DWORD spawnInfo)
 
 void EQAPP_BankCurrency_Print()
 {
-    DWORD charInfo = EQ_ReadMemory<DWORD>(EQ_POINTER_CHAR_INFO);
+    DWORD charInfo = EQ_GetCharInfo();
     if (charInfo == NULL)
     {
         return;
@@ -402,13 +398,13 @@ void EQAPP_CastRayToTarget_Print()
         DWORD targetSpawn = EQ_GetTargetSpawn();
         if (targetSpawn == NULL)
         {
-            std::cout << "[error] " << __FUNCTION__ ": target not found" << std::endl;
+            EQAPP_PrintErrorMessage(__FUNCTION__, "target not found");
             return;
         }
 
-        FLOAT targetY = EQ_ReadMemory<FLOAT>(targetSpawn + 0x64);
-        FLOAT targetX = EQ_ReadMemory<FLOAT>(targetSpawn + 0x68);
-        FLOAT targetZ = EQ_ReadMemory<FLOAT>(targetSpawn + 0x6C);
+        FLOAT targetY = EQ_GetSpawnY(targetSpawn);
+        FLOAT targetX = EQ_GetSpawnX(targetSpawn);
+        FLOAT targetZ = EQ_GetSpawnZ(targetSpawn);
 
         int result = EQ_CastRay(playerSpawn, targetY, targetX, targetZ);
 
@@ -434,7 +430,7 @@ void EQAPP_MeleeRangeToTarget_Print()
         DWORD targetSpawn = EQ_GetTargetSpawn();
         if (targetSpawn == NULL)
         {
-            std::cout << "[error] " << __FUNCTION__ << ": target not found" << std::endl;
+            EQAPP_PrintErrorMessage(__FUNCTION__, "target not found");
             return;
         }
 
@@ -451,14 +447,14 @@ void EQAPP_ZoneInformation_Print()
     std::string zoneLongName = EQ_GetZoneLongName();
     if (zoneLongName.size() == 0)
     {
-        EQAPP_PrintFunctionError(__FUNCTION__, "zone long name is NULL");
+        EQAPP_PrintErrorMessage(__FUNCTION__, "zone long name is NULL");
         return;
     }
 
     std::string zoneShortName = EQ_GetZoneShortName();
     if (zoneShortName.size() == 0)
     {
-        EQAPP_PrintFunctionError(__FUNCTION__, "zone short name is NULL");
+        EQAPP_PrintErrorMessage(__FUNCTION__, "zone short name is NULL");
         return;
     }
 
@@ -470,7 +466,7 @@ void EQAPP_OpenZoneMapFile()
     std::string zoneShortName = EQ_GetZoneShortName();
     if (zoneShortName.size() == 0)
     {
-        EQAPP_PrintFunctionError(__FUNCTION__, "zone short name is NULL");
+        EQAPP_PrintErrorMessage(__FUNCTION__, "zone short name is NULL");
         return;
     }
 
@@ -490,6 +486,16 @@ void EQAPP_OpenZoneMapFile()
 
         std::cout << "Opening zone map file: " << filePath.str() << std::endl;
     }
+}
+
+void EQAPP_PlaySound(const char* filename)
+{
+    PlaySoundA(filename, 0, SND_FILENAME | SND_NODEFAULT | SND_ASYNC);
+}
+
+void EQAPP_Beep()
+{
+    MessageBeep(0);
 }
 
 #endif // EQAPP_FUNCTIONS_H

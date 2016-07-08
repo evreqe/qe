@@ -17,10 +17,10 @@ void EQAPP_FreeCamera_Set(bool b)
 
     // this function uses hardcoded offsets and values
 
-    DWORD baseAddress = EQ_ReadMemory<DWORD>(EQ_POINTER_GRAPHICS_DLL_BASE_ADDRESS);
+    DWORD baseAddress = EQ_ReadMemory<DWORD>(EQ_GRAPHICS_DLL_POINTER_BASE_ADDRESS);
     if (baseAddress == NULL)
     {
-        std::cout << __FUNCTION__ << ": base address is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "base address is NULL");
         return;
     }
 

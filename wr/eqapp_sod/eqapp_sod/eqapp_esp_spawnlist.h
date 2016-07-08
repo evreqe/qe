@@ -4,8 +4,8 @@
 typedef struct _EQAPPESPSPAWN
 {
     DWORD spawnInfo;
-    char name[0x40];
-    char lastName[0x20];
+    char name[EQ_SIZE_SPAWN_INFO_NAME];
+    char lastName[EQ_SIZE_SPAWN_INFO_LAST_NAME];
     float y;
     float x;
     float z;
@@ -49,56 +49,55 @@ void EQAPP_ESP_SpawnList_Update()
     DWORD targetSpawn = EQ_GetTargetSpawn();
     DWORD playerSpawn = EQ_GetPlayerSpawn();
 
-    FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
-    FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);
-    FLOAT playerZ = EQ_ReadMemory<FLOAT>(playerSpawn + 0x6C);
+    FLOAT playerY = EQ_GetSpawnY(playerSpawn);
+    FLOAT playerX = EQ_GetSpawnX(playerSpawn);
+    FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
 
-    // creature spawn
-    DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_SPAWN_INFO);
-
+    // spawn
+    DWORD spawn = EQ_GetFirstSpawn();
     while (spawn)
     {
         if (spawn == playerSpawn)
         {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+            spawn = EQ_GetNextSpawn(spawn); // next
             continue;
         }
 
         EQAPPESPSPAWN espSpawn;
         espSpawn.spawnInfo = spawn;
 
-        memcpy(espSpawn.name, (LPVOID)(spawn + 0xE4), sizeof(espSpawn.name));
-        memcpy(espSpawn.lastName, (LPVOID)(spawn + 0x38), sizeof(espSpawn.lastName));
+        memcpy(espSpawn.name,     (LPVOID)(spawn + EQ_OFFSET_SPAWN_INFO_NAME),      sizeof(espSpawn.name));
+        memcpy(espSpawn.lastName, (LPVOID)(spawn + EQ_OFFSET_SPAWN_INFO_LAST_NAME), sizeof(espSpawn.lastName));
 
-        espSpawn.y = EQ_ReadMemory<FLOAT>(spawn + 0x64);
-        espSpawn.x = EQ_ReadMemory<FLOAT>(spawn + 0x68);
-        espSpawn.z = EQ_ReadMemory<FLOAT>(spawn + 0x6C);
+        espSpawn.y = EQ_GetSpawnY(spawn);
+        espSpawn.x = EQ_GetSpawnX(spawn);
+        espSpawn.z = EQ_GetSpawnZ(spawn);
 
         espSpawn.distance = EQ_CalculateDistance3d(playerX, playerY, playerZ, espSpawn.x, espSpawn.y, espSpawn.z);
 
-        espSpawn.level = EQ_ReadMemory<BYTE>(spawn + 0x315);
+        espSpawn.level = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_LEVEL);
 
-        if (espSpawn.level < 1 || espSpawn.level > 100)
+        if (espSpawn.level < EQ_LEVEL_MIN || espSpawn.level > EQ_LEVEL_MAX)
         {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+            spawn = EQ_GetNextSpawn(spawn); // next
             continue;
         }
 
-        espSpawn.type = EQ_ReadMemory<BYTE>(spawn + 0x125);
-        espSpawn._class = EQ_ReadMemory<BYTE>(spawn + 0xE68);
-        espSpawn.guildId = EQ_ReadMemory<DWORD>(spawn + 0x30C);
+        espSpawn.type = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_TYPE);
+        espSpawn._class = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_CLASS);
+        espSpawn.guildId = EQ_ReadMemory<DWORD>(spawn + EQ_OFFSET_SPAWN_INFO_GUILD_ID);
 
-        espSpawn.standingState = EQ_ReadMemory<BYTE>(spawn + 0x279);
+        espSpawn.standingState = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_STANDING_STATE);
 
-        espSpawn.isHoldingPrimary   = EQ_ReadMemory<BYTE>(spawn + 0x10E0);
-        espSpawn.isHoldingSecondary = EQ_ReadMemory<BYTE>(spawn + 0x10E4);
+        espSpawn.isHoldingPrimary   = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_IS_HOLDING_PRIMARY);
+        espSpawn.isHoldingSecondary = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_IS_HOLDING_SECONDARY);
 
-        espSpawn.isPet    = EQ_ReadMemory<DWORD>(spawn + 0x260);
-        espSpawn.isLfg    = EQ_ReadMemory<BYTE>(spawn + 0x1F1);
-        espSpawn.isPvp    = EQ_ReadMemory<BYTE>(spawn + 0x2BC);
-        espSpawn.isTrader = EQ_ReadMemory<DWORD>(spawn + 0x228);
-        espSpawn.isAfk    = EQ_ReadMemory<DWORD>(spawn + 0x284);
-        espSpawn.isGm     = EQ_ReadMemory<BYTE>(spawn + 0x4DA);
+        espSpawn.isPet    = EQ_ReadMemory<DWORD>(spawn + EQ_OFFSET_SPAWN_INFO_PET_OWNER_SPAWN_INFO);
+        espSpawn.isLfg    = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_IS_LFG);
+        espSpawn.isPvp    = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_IS_PVP);
+        espSpawn.isTrader = EQ_ReadMemory<DWORD>(spawn + EQ_OFFSET_SPAWN_INFO_IS_TRADER);
+        espSpawn.isAfk    = EQ_ReadMemory<DWORD>(spawn + EQ_OFFSET_SPAWN_INFO_IS_AFK);
+        espSpawn.isGm     = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_IS_GM);
 
         if (spawn == targetSpawn)
         {
@@ -134,7 +133,7 @@ void EQAPP_ESP_SpawnList_Update()
             {
                 if (numNpcCorpse > g_espNumNpcCorpseMax)
                 {
-                    spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+                    spawn = EQ_GetNextSpawn(spawn); // next
                     continue;
                 }
             }
@@ -142,7 +141,7 @@ void EQAPP_ESP_SpawnList_Update()
 
         if (espSpawn.type == EQ_SPAWN_TYPE_NPC && espSpawn.distance > g_espSpawnDistance && espSpawn.showAtAnyDistance == false)
         {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+            spawn = EQ_GetNextSpawn(spawn); // next
             continue;
         }
 
@@ -153,7 +152,7 @@ void EQAPP_ESP_SpawnList_Update()
 
         g_espSpawnList.push_back(espSpawn);
 
-        spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+        spawn = EQ_GetNextSpawn(spawn); // next
     }
 }
 

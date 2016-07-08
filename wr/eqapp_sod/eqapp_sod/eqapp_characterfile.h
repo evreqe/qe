@@ -13,17 +13,17 @@ void EQAPP_CharacterFile_Write()
 
 void EQAPP_CharacterFile_WriteTxt()
 {
-    DWORD charInfo = EQ_ReadMemory<DWORD>(EQ_POINTER_CHAR_INFO);
+    DWORD charInfo = EQ_GetCharInfo();
     if (charInfo == NULL)
     {
-        std::cout << __FUNCTION__ << ": char info is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "char info is NULL");
         return;
     }
 
     DWORD charInfo2 = EQ_GetCharInfo2();
     if (charInfo2 == NULL)
     {
-        std::cout << __FUNCTION__ << ": char info 2 is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "char info 2 is NULL");
         return;
     }
 
@@ -38,7 +38,10 @@ void EQAPP_CharacterFile_WriteTxt()
     file.open(filePath.str().c_str(), std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
     if (file.is_open() == false)
     {
-        std::cout << __FUNCTION__ << ": Failed to open file: " << filePath.str() << std::endl;
+        std::stringstream ss;
+        ss << "failed to open file: " << filePath.str();
+
+        EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
         return;
     }
 
@@ -183,22 +186,22 @@ void EQAPP_CharacterFile_WriteTxt()
 
 void EQAPP_CharacterFile_WriteJson()
 {
-    DWORD charInfo = EQ_ReadMemory<DWORD>(EQ_POINTER_CHAR_INFO);
+    DWORD charInfo = EQ_GetCharInfo();
     if (charInfo == NULL)
     {
-        std::cout << __FUNCTION__ << ": char info is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "char info is NULL");
         return;
     }
 
     DWORD charInfo2 = EQ_GetCharInfo2();
     if (charInfo2 == NULL)
     {
-        std::cout << __FUNCTION__ << ": char info 2 is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "char info 2 is NULL");
         return;
     }
 
-    char characterName[0x40] = {0};
-    memcpy(characterName, (LPVOID)(charInfo + 0xF210), sizeof(characterName));
+    char characterName[EQ_SIZE_CHAR_INFO_CHARACTER_NAME] = {0};
+    memcpy(characterName, (LPVOID)(charInfo + EQ_OFFSET_CHAR_INFO_CHARACTER_NAME), sizeof(characterName));
 
     std::stringstream filePath;
     filePath << "eqapp/characters/" << characterName << ".json";

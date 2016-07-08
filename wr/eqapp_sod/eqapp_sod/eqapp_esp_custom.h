@@ -27,7 +27,7 @@ void EQAPP_ESP_Custom_Load()
     std::string zoneShortName = EQ_GetZoneShortName();
     if (zoneShortName.size() == 0)
     {
-        std::cout << __FUNCTION__ << ": zone short name is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "zone short name is NULL");
         return;
     }
 
@@ -38,7 +38,10 @@ void EQAPP_ESP_Custom_Load()
     file.open(filePath.str().c_str(), std::ios::in);
     if (file.is_open() == false)
     {
-        std::cout << __FUNCTION__ << ": failed to open file: " << filePath.str() << std::endl;
+        std::stringstream ss;
+        ss << "failed to open file: " << filePath.str();
+
+        EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
         return;
     }
 
@@ -65,11 +68,13 @@ void EQAPP_ESP_Custom_Load()
         {
             EQ_String_ReplaceUnderscoresWithSpaces(text);
 
+            unsigned int alpha = 255;
+
             EQAPPESPCUSTOM espCustom;
             espCustom.y        = y;
             espCustom.x        = x;
             espCustom.z        = z;
-            espCustom.color    = (255 << 24) + (red << 16) + (green << 8) + blue;
+            espCustom.color    = (alpha << 24) + (red << 16) + (green << 8) + blue; // 0xAARRGGBB
             espCustom.size     = size;
             espCustom.text     = text;
 
@@ -89,9 +94,9 @@ void EQAPP_ESP_Custom_Draw()
 
     DWORD playerSpawn = EQ_GetPlayerSpawn();
 
-    FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
-    FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);
-    FLOAT playerZ = EQ_ReadMemory<FLOAT>(playerSpawn + 0x6C);
+    FLOAT playerY = EQ_GetSpawnY(playerSpawn);
+    FLOAT playerX = EQ_GetSpawnX(playerSpawn);
+    FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
 
     for (auto& espCustom : g_espCustomList)
     {

@@ -20,7 +20,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -54,13 +54,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EQAPP_SOD_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Code\everquest\eqsod\include;D:\Code\_libraries\detours\include;D:\Code\_libraries\jansson-2.7\include;C:\VisualLeakDetector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Code\everquest\eqsod\include;D:\Code\_libraries\detours\include;D:\Code\_libraries\jansson-2.7\include;D:\Code\_libraries\glfw\include;D:\Code\_libraries\imgui;C:\VisualLeakDetector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Code\_libraries\detours\lib;D:\Code\_libraries\jansson-2.7\lib;C:\VisualLeakDetector\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>winmm.lib;psapi.lib;detours.lib;jansson.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Code\_libraries\detours\lib;D:\Code\_libraries\jansson-2.7\lib;D:\Code\_libraries\glfw\lib;D:\Code\_libraries\imgui;C:\VisualLeakDetector\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>psapi.lib;detours.lib;jansson.lib;glfw3.lib;opengl32.lib;gdi32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -133,6 +133,8 @@
     <ClInclude Include="eqapp_targetbeep.h" />
     <ClInclude Include="eqapp_textoverlaychattext.h" />
     <ClInclude Include="eqapp_zoneshortnames.h" />
+    <ClInclude Include="eqsod_offsets.h" />
+    <ClInclude Include="eqsod_sizes.h" />
     <ClInclude Include="imgui_impl_glfw.h" />
     <ClInclude Include="eqapp_waypoint.h" />
   </ItemGroup>

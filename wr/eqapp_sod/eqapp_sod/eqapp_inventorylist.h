@@ -7,14 +7,14 @@ void EQAPP_InventoryList_Print(const char* filterItemName)
 {
     if (EQ_IsInGame() == false)
     {
-        std::cout << __FUNCTION__ << ": not in-game" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "not in-game");
         return;
     }
 
     DWORD charInfo2 = EQ_GetCharInfo2();
     if (charInfo2 == NULL)
     {
-        std::cout << __FUNCTION__ << ": char info 2 is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "char info 2 is NULL");
         return;
     }
 

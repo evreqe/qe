@@ -17,7 +17,7 @@ void EQAPP_Memory_Load();
 void EQAPP_Memory_Unload();
 void EQAPP_Memory_Set(PEQAPPMEMORY pMemory, bool bEnable);
 void EQAPP_Memory_ToggleByIndex(unsigned int index);
-void EQAPP_MemoryList_Print();
+void EQAPP_Memory_Print();
 
 void EQAPP_Memory_Load()
 {
@@ -29,7 +29,7 @@ void EQAPP_Memory_Load()
 
     if (g_memoryIsEnabled == false)
     {
-        std::cout << __FUNCTION__ << ": memory is disabled" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "memory is disabled");
         return;
     }
 
@@ -88,7 +88,7 @@ void EQAPP_Memory_Set(PEQAPPMEMORY pMemory, bool bEnable)
 {
     if (pMemory == NULL)
     {
-        std::cout << __FUNCTION__ << ": memory is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "memory is NULL");
         return;
     }
 
@@ -130,7 +130,7 @@ void EQAPP_Memory_Set(PEQAPPMEMORY pMemory, bool bEnable)
         }
         else if (sAddress.find("eqgraphicsdx9.dll") != std::string::npos || sAddress.find("EQGraphicsDX9.dll") != std::string::npos)
         {
-            baseAddress = EQ_ReadMemory<DWORD>(EQ_POINTER_GRAPHICS_DLL_BASE_ADDRESS);
+            baseAddress = EQ_ReadMemory<DWORD>(EQ_GRAPHICS_DLL_POINTER_BASE_ADDRESS);
         }
 
         std::istringstream addressSplit(sAddress);
@@ -183,7 +183,10 @@ void EQAPP_Memory_ToggleByIndex(unsigned int index)
 {
     if (index > (g_memoryList.size() - 1))
     {
-        std::cout << __FUNCTION__ << ": no memory found at specified index: " << index << std::endl;
+        std::stringstream ss;
+        ss << "no memory found at specified index: " << index;
+
+        EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
         return;
     }
 
@@ -193,7 +196,7 @@ void EQAPP_Memory_ToggleByIndex(unsigned int index)
     EQAPP_PrintBool(pMemory->name.c_str(), pMemory->isEnabled);
 }
 
-void EQAPP_MemoryList_Print()
+void EQAPP_Memory_Print()
 {
     std::cout << "Memory List:" << std::endl;
     std::cout << "Index : Enabled : Name (Description)" << std::endl;

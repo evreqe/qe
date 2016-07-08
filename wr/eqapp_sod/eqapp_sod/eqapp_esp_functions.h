@@ -52,9 +52,9 @@ void EQAPP_ESP_Spawns_Draw()
 
     DWORD playerSpawn = EQ_GetPlayerSpawn();
 
-    FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
-    FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);
-    FLOAT playerZ = EQ_ReadMemory<FLOAT>(playerSpawn + 0x6C);
+    FLOAT playerY = EQ_GetSpawnY(playerSpawn);
+    FLOAT playerX = EQ_GetSpawnX(playerSpawn);
+    FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
 
     for (auto& spawn : g_espSpawnList)
     {
@@ -111,7 +111,7 @@ void EQAPP_ESP_Spawns_Draw()
 
             if (strlen(spawn.name) < 2)
             {
-                textColor = 0xFFC0C0C0;
+                textColor = 0xFFC0C0C0; // gray
             }
         }
 
@@ -260,10 +260,10 @@ void EQAPP_ESP_Spawns_Draw()
 
         if (g_espFindIsEnabled == true && spawn.isFindSpawn == true)
         {
-            DWORD windowWidth  = EQ_ReadMemory<DWORD>(EQ_WINDOW_WIDTH);
-            DWORD windowHeight = EQ_ReadMemory<DWORD>(EQ_WINDOW_HEIGHT);
+            DWORD windowWidth  = EQ_GetWindowWidth();
+            DWORD windowHeight = EQ_GetWindowHeight();
 
-            EQ_DrawLine((float)(windowWidth / 2), (float)windowHeight, 0.0f, (float)screenX, (float)screenY, 0.0f, g_espFindColor);
+            EQ_DrawLine((float)(windowWidth * 0.5f), (float)windowHeight, 0.0f, (float)screenX, (float)screenY, 0.0f, g_espFindColor);
         }
     }
 }
@@ -277,24 +277,24 @@ void EQAPP_ESP_GroundSpawns_Draw()
 
     DWORD playerSpawn = EQ_GetPlayerSpawn();
 
-    FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
-    FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);
-    FLOAT playerZ = EQ_ReadMemory<FLOAT>(playerSpawn + 0x6C);
+    FLOAT playerY = EQ_GetSpawnY(playerSpawn);
+    FLOAT playerX = EQ_GetSpawnX(playerSpawn);
+    FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
 
     // ground spawn
-    DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_GROUND_SPAWN_INFO);
-
+    DWORD spawn = EQ_GetFirstGroundSpawn();
     while (spawn)
     {
-        FLOAT spawnZ = EQ_ReadMemory<FLOAT>(spawn + 0x2C);
-        FLOAT spawnX = EQ_ReadMemory<FLOAT>(spawn + 0x30);
-        FLOAT spawnY = EQ_ReadMemory<FLOAT>(spawn + 0x34);
+        // note Z X Y instead of Y X Z
+        FLOAT spawnZ = EQ_GetGroundSpawnZ(spawn);
+        FLOAT spawnX = EQ_GetGroundSpawnX(spawn);
+        FLOAT spawnY = EQ_GetGroundSpawnY(spawn);
 
         float spawnDistance = EQ_CalculateDistance3d(playerX, playerY, playerZ, spawnX, spawnY, spawnZ);
 
         if (spawnDistance > g_espGroundSpawnDistance)
         {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x04); // next
+            spawn = EQ_GetNextGroundSpawn(spawn); // next
             continue;
         }
 
@@ -303,12 +303,12 @@ void EQAPP_ESP_GroundSpawns_Draw()
         bool result = EQ_WorldSpaceToScreenSpace(spawnX, spawnY, spawnZ, screenX, screenY);
         if (result == false)
         {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x04); // next
+            spawn = EQ_GetNextGroundSpawn(spawn); // next
             continue;
         }
 
-        char spawnName[0x18] = {0};
-        memcpy(spawnName, (LPVOID)(spawn + 0x38), sizeof(spawnName));
+        char spawnName[EQ_SIZE_GROUND_SPAWN_INFO_NAME] = {0};
+        memcpy(spawnName, (LPVOID)(spawn + EQ_OFFSET_GROUND_SPAWN_INFO_NAME), sizeof(spawnName));
 
         std::string spawnNameEx = spawnName;
 
@@ -324,7 +324,7 @@ void EQAPP_ESP_GroundSpawns_Draw()
             g_espNumDrawText++;
         }
 
-        spawn = EQ_ReadMemory<DWORD>(spawn + 0x04); // next
+        spawn = EQ_GetNextGroundSpawn(spawn); // next
     }
 }
 
@@ -337,27 +337,27 @@ void EQAPP_ESP_Doors_Draw()
 
     DWORD playerSpawn = EQ_GetPlayerSpawn();
 
-    FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
-    FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);
-    FLOAT playerZ = EQ_ReadMemory<FLOAT>(playerSpawn + 0x6C);
+    FLOAT playerY = EQ_GetSpawnY(playerSpawn);
+    FLOAT playerX = EQ_GetSpawnX(playerSpawn);
+    FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
 
     DWORD switchManager = EQ_ReadMemory<DWORD>(EQ_POINTER_SWITCH_MANAGER);
     if (switchManager != NULL)
     {
-        DWORD numDoors = EQ_ReadMemory<DWORD>(switchManager + 0x00);
+        DWORD numDoors = EQ_ReadMemory<DWORD>(switchManager + EQ_OFFSET_SWITCH_MANAGER_NUM_DOORS);
         if (numDoors != 0)
         {
             for (size_t i = 0; i < numDoors; i++)
             {
-                DWORD doorInfo = EQ_ReadMemory<DWORD>(switchManager + 0x04 + (i * 4));
+                DWORD doorInfo = EQ_ReadMemory<DWORD>(switchManager + EQ_OFFSET_SWITCH_MANAGER_DOOR_INFO_FIRST + (i * 4));
                 if (doorInfo == NULL)
                 {
                     continue;
                 }
 
-                FLOAT doorY = EQ_ReadMemory<FLOAT>(doorInfo + 0x44);
-                FLOAT doorX = EQ_ReadMemory<FLOAT>(doorInfo + 0x48);
-                FLOAT doorZ = EQ_ReadMemory<FLOAT>(doorInfo + 0x4C);
+                FLOAT doorY = EQ_ReadMemory<FLOAT>(doorInfo + EQ_OFFSET_DOOR_INFO_Y);
+                FLOAT doorX = EQ_ReadMemory<FLOAT>(doorInfo + EQ_OFFSET_DOOR_INFO_X);
+                FLOAT doorZ = EQ_ReadMemory<FLOAT>(doorInfo + EQ_OFFSET_DOOR_INFO_Z);
 
                 float doorDistance = EQ_CalculateDistance3d(playerX, playerY, playerZ, doorX, doorY, doorZ);
                 if (doorDistance > g_espDoorDistance)
@@ -373,8 +373,8 @@ void EQAPP_ESP_Doors_Draw()
                     continue;
                 }
 
-                char doorName[32] = {0};
-                memcpy(doorName, (LPVOID)(doorInfo + 0x06), sizeof(doorName));
+                char doorName[EQ_SIZE_DOOR_INFO_NAME] = {0};
+                memcpy(doorName, (LPVOID)(doorInfo + EQ_OFFSET_DOOR_INFO_NAME), sizeof(doorName));
 
                 std::stringstream ss;
                 ss << "+ " << doorName << " [#" << i + 1 << "]" << " (" << (int)doorDistance << ")";
@@ -388,6 +388,8 @@ void EQAPP_ESP_Doors_Draw()
 
 void EQAPP_ESP_ZoneObjects_Draw()
 {
+    // TODO: fix magic numbers for addresses and offsets
+
     if (g_espZoneObjectIsEnabled == false)
     {
         return;
@@ -395,9 +397,9 @@ void EQAPP_ESP_ZoneObjects_Draw()
 
     DWORD playerSpawn = EQ_GetPlayerSpawn();
 
-    FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
-    FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);
-    FLOAT playerZ = EQ_ReadMemory<FLOAT>(playerSpawn + 0x6C);
+    FLOAT playerY = EQ_GetSpawnY(playerSpawn);
+    FLOAT playerX = EQ_GetSpawnX(playerSpawn);
+    FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
 
     DWORD pointer1 = EQ_ReadMemory<DWORD>(0x00B112C0);
     if (pointer1 != NULL)
@@ -405,9 +407,6 @@ void EQAPP_ESP_ZoneObjects_Draw()
         DWORD pointer2 = EQ_ReadMemory<DWORD>(pointer1 + 0x94);
         if (pointer2 != NULL)
         {
-            unsigned int fontSize   = 2;
-            unsigned int fontHeight = EQ_GetFontHeight(fontSize);
-
             DWORD zoneObject = EQ_ReadMemory<DWORD>(pointer2 + 0x5C);
 
             while (zoneObject)
@@ -416,7 +415,7 @@ void EQAPP_ESP_ZoneObjects_Draw()
 
                 if (zoneObject0x0C == 2)
                 {
-                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + 0x04); // next
+                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
                     continue;
                 }
 
@@ -426,18 +425,18 @@ void EQAPP_ESP_ZoneObjects_Draw()
                 // skip player and npc models
                 //if (EQ_IsKeyControlPressed() == false && zoneObject0x2C == 1 && zoneObject0x2D == 0)
                 //{
-                    //zoneObject = EQ_ReadMemory<DWORD>(zoneObject + 0x04); // next
+                    //zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
                     //continue;
                 //}
 
-                FLOAT zoneObjectY = EQ_ReadMemory<FLOAT>(zoneObject + 0x30);
-                FLOAT zoneObjectX = EQ_ReadMemory<FLOAT>(zoneObject + 0x34);
-                FLOAT zoneObjectZ = EQ_ReadMemory<FLOAT>(zoneObject + 0x38);
+                FLOAT zoneObjectY = EQ_ReadMemory<FLOAT>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_Y);
+                FLOAT zoneObjectX = EQ_ReadMemory<FLOAT>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_X);
+                FLOAT zoneObjectZ = EQ_ReadMemory<FLOAT>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_Z);
 
                 float zoneObjectDistance = EQ_CalculateDistance3d(playerX, playerY, playerZ, zoneObjectX, zoneObjectY, zoneObjectZ);
                 if (zoneObjectDistance > g_espZoneObjectDistance)
                 {
-                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + 0x04); // next
+                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
                     continue;
                 }
 
@@ -446,7 +445,7 @@ void EQAPP_ESP_ZoneObjects_Draw()
                 bool result = EQ_WorldSpaceToScreenSpace(zoneObjectX, zoneObjectY, zoneObjectZ, screenX, screenY);
                 if (result == false)
                 {
-                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + 0x04); // next
+                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
                     continue;
                 }
 
@@ -473,9 +472,9 @@ void EQAPP_ESP_ZoneObjects_Draw()
                 ssDrawText << "X: " << zoneObjectX << "\n";
                 ssDrawText << "Z: " << zoneObjectZ << "\n";
 
-                EQ_DrawText(ssDrawText.str().c_str(), screenX, screenY, g_espZoneObjectColor, fontSize);
+                EQ_DrawText(ssDrawText.str().c_str(), screenX, screenY, g_espZoneObjectColor, 2);
 
-                zoneObject = EQ_ReadMemory<DWORD>(zoneObject + 0x04); // next
+                zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
             }
         }
     }
@@ -490,9 +489,9 @@ void EQAPP_ESP_Waypoints_Draw()
 
     DWORD playerSpawn = EQ_GetPlayerSpawn();
 
-    FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
-    FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);
-    FLOAT playerZ = EQ_ReadMemory<FLOAT>(playerSpawn + 0x6C);
+    FLOAT playerY = EQ_GetSpawnY(playerSpawn);
+    FLOAT playerX = EQ_GetSpawnX(playerSpawn);
+    FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
 
     for (auto& waypoint : g_waypointList)
     {
@@ -520,7 +519,7 @@ void EQAPP_ESP_Waypoints_Draw()
             PEQAPPWAYPOINT connectWaypoint = EQAPP_Waypoint_GetByIndex(connectIndex);
             if (connectWaypoint == NULL)
             {
-                std::cout << __FUNCTION__ << ": connect waypoint is null" << std::endl;
+                EQAPP_PrintErrorMessage(__FUNCTION__ , "connect waypoint is NULL");
                 continue;
             }
 
@@ -556,9 +555,9 @@ void EQAPP_ESP_Locator_Draw()
 
     DWORD playerSpawn = EQ_GetPlayerSpawn();
 
-    FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
-    FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);
-    FLOAT playerZ = EQ_ReadMemory<FLOAT>(playerSpawn + 0x6C);
+    FLOAT playerY = EQ_GetSpawnY(playerSpawn);
+    FLOAT playerX = EQ_GetSpawnX(playerSpawn);
+    FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
 
     int screenX = -1;
     int screenY = -1;
@@ -592,25 +591,25 @@ void EQAPP_ESP_SpawnSkeleton_Draw(DWORD spawnInfo, DWORD argbColor)
         return;
     }
 
-    //char spawnName[0x40] = {0};
-    //memcpy(spawnName, (LPVOID)(spawnInfo + 0xA4), sizeof(spawnName));
+    //char spawnNumberedName[EQ_SIZE_SPAWN_INFO_NUMBERED_NAME] = {0};
+    //memcpy(spawnNumberedName, (LPVOID)(spawnInfo + EQ_OFFSET_SPAWN_INFO_NUMBERED_NAME), sizeof(spawnNumberedName));
 
     //EQAPP_Log("----------", 0);
-    //EQAPP_Log(spawnName, 0);
+    //EQAPP_Log(spawnNumberedName, 0);
 
-    DWORD actorInfo = EQ_ReadMemory<DWORD>(spawnInfo + 0xF84);
+    DWORD actorInfo = EQ_GetSpawnActorInfo(spawnInfo);
     if (actorInfo == NULL)
     {
         return;
     }
 
-    DWORD modelInfo = EQ_ReadMemory<DWORD>(actorInfo + 0x11C);
+    DWORD modelInfo = EQ_ReadMemory<DWORD>(actorInfo + EQ_OFFSET_ACTOR_INFO_MODEL_INFO);
     if (modelInfo == NULL)
     {
         return;
     }
 
-    DWORD boneList = EQ_ReadMemory<DWORD>(modelInfo + 0x58);
+    DWORD boneList = EQ_ReadMemory<DWORD>(modelInfo + EQ_OFFSET_MODEL_INFO_BONE_LIST);
     if (boneList == NULL)
     {
         return;
@@ -628,7 +627,7 @@ void EQAPP_ESP_SpawnSkeleton_Draw(DWORD spawnInfo, DWORD argbColor)
         return;
     }
 
-    for (size_t i = 0; i < 64; i++)
+    for (size_t i = 0; i < EQ_NUM_BONES; i++)
     {
         //EQAPP_Log("boneIndex", i);
 
@@ -663,9 +662,9 @@ void EQAPP_ESP_SpawnSkeleton_Draw(DWORD spawnInfo, DWORD argbColor)
 
         //EQAPP_Log("boneMagicNumber", boneMagicNumber);
 
-        FLOAT boneY = EQ_ReadMemory<FLOAT>(boneInfo + 0x90);
-        FLOAT boneX = EQ_ReadMemory<FLOAT>(boneInfo + 0x94);
-        FLOAT boneZ = EQ_ReadMemory<FLOAT>(boneInfo + 0x98);
+        FLOAT boneY = EQ_ReadMemory<FLOAT>(boneInfo + EQ_OFFSET_BONE_INFO_Y);
+        FLOAT boneX = EQ_ReadMemory<FLOAT>(boneInfo + EQ_OFFSET_BONE_INFO_X);
+        FLOAT boneZ = EQ_ReadMemory<FLOAT>(boneInfo + EQ_OFFSET_BONE_INFO_Z);
 
         //EQAPP_Log("boneY", boneY);
         //EQAPP_Log("boneX", boneX);

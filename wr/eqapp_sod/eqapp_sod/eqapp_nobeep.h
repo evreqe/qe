@@ -11,11 +11,16 @@ void EQAPP_NoBeep_Load()
 
     g_noBeepList.clear();
 
+    std::string filePathStr = "eqapp/nobeep.txt";
+
     std::ifstream file;
-    file.open("eqapp/nobeep.txt", std::ios::in);
+    file.open(filePathStr.c_str(), std::ios::in);
     if (file.is_open() == false)
     {
-        std::cout << __FUNCTION__ << ": failed to open file: eqapp/nobeep.txt" << std::endl;
+        std::stringstream ss;
+        ss << "failed to open file: " << filePathStr;
+
+        EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
         return;
     }
 

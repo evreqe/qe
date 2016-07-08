@@ -6,6 +6,7 @@ int g_hudX = 5;
 int g_hudY = 28;
 float g_hudWidth  = 127.0f;
 float g_hudHeight = 0.0f;
+DWORD g_hudTextColor = 0xFFFFFFFF;
 
 void EQAPP_Hud_Execute();
 
@@ -70,19 +71,19 @@ void EQAPP_Hud_Execute()
 
     if (g_alwaysHotbuttonIsEnabled == true)
     {
-        ssDrawText << "Always Hotbutton: " << (g_alwaysHotbuttonIndex + 1) << " (" << (g_alwaysHotbuttonTimerDelay / 1000) << "s)\n";
+        ssDrawText << "Always Hotbutton: " << (g_alwaysHotbuttonIndex + 1) << " (" << g_alwaysHotbuttonTimerDelayInSeconds << "s)\n";
         numDrawText++;
     }
 
     if (g_combatHotbuttonIsEnabled == true)
     {
-        ssDrawText << "Combat Hotbutton: " << (g_combatHotbuttonIndex + 1) << " (" << (g_combatHotbuttonTimerDelay / 1000) << "s)\n";
+        ssDrawText << "Combat Hotbutton: " << (g_combatHotbuttonIndex + 1) << " (" << g_combatHotbuttonTimerDelayInSeconds << "s)\n";
         numDrawText++;
     }
 
     if (g_targetBeepIsEnabled == true)
     {
-        ssDrawText << "Target Beep: " << g_targetBeepName << " (" << (g_targetBeepTimerDelay / 1000) << "s)\n";
+        ssDrawText << "Target Beep: " << g_targetBeepName << " (" << g_targetBeepTimerDelayInSeconds << "s)\n";
         numDrawText++;
     }
 
@@ -125,7 +126,7 @@ void EQAPP_Hud_Execute()
         numDrawText++;
     }
 
-    EQ_DrawText(ssDrawText.str().c_str(), g_hudX, g_hudY, 0xFFFFFFFF, 2);
+    EQ_DrawText(ssDrawText.str().c_str(), g_hudX, g_hudY, g_hudTextColor, fontSize);
 
     if (numDrawText > 0)
     {

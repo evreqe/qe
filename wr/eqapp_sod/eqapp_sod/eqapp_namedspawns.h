@@ -11,7 +11,7 @@ DWORD g_namedSpawnsColor = 0xFFFFFFFF;
 
 void EQAPP_NamedSpawns_Load();
 void EQAPP_NamedSpawns_Execute();
-void EQAPP_NamedSpawnsList_Print();
+void EQAPP_NamedSpawns_Print();
 
 void EQAPP_NamedSpawns_Load()
 {
@@ -22,10 +22,15 @@ void EQAPP_NamedSpawns_Load()
     std::ifstream file;
     std::string line;
 
-    file.open("eqapp/namedspawns.txt", std::ios::in);
+    std::string filePathStr = "eqapp/namedspawns.txt";
+
+    file.open(filePathStr.c_str(), std::ios::in);
     if (file.is_open() == false)
     {
-        std::cout << __FUNCTION__ << ": failed to open file: eqapp/namedspawns.txt" << std::endl;
+        std::stringstream ss;
+        ss << "failed to open file: " << filePathStr;
+
+        EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
         return;
     }
 
@@ -46,7 +51,7 @@ void EQAPP_NamedSpawns_Load()
     std::string zoneShortName = EQ_GetZoneShortName();
     if (zoneShortName.size() == 0)
     {
-        std::cout << __FUNCTION__ << ": zone short name is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "zone short name is NULL");
         return;
     }
 
@@ -56,7 +61,10 @@ void EQAPP_NamedSpawns_Load()
     file.open(filePath.str().c_str(), std::ios::in);
     if (file.is_open() == false)
     {
-        std::cout << __FUNCTION__ << ": failed to open file: " << filePath.str() << std::endl;
+        std::stringstream ss;
+        ss << "failed to open file: " << filePath.str();
+
+        EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
         return;
     }
 
@@ -94,15 +102,14 @@ void EQAPP_NamedSpawns_Execute()
 
     std::stringstream ssDrawText;
 
-    DWORD spawn = EQ_ReadMemory<DWORD>(EQ_POINTER_FIRST_SPAWN_INFO);
-
+    DWORD spawn = EQ_GetFirstSpawn();
     while (spawn)
     {
         int spawnType = EQ_ReadMemory<BYTE>(spawn + 0x125);
 
         if (spawnType != EQ_SPAWN_TYPE_NPC)
         {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+            spawn = EQ_GetNextSpawn(spawn); // next
             continue;
         }
 
@@ -110,7 +117,7 @@ void EQAPP_NamedSpawns_Execute()
 
         if (spawnIsPet != 0)
         {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+            spawn = EQ_GetNextSpawn(spawn); // next
             continue;
         }
 
@@ -118,12 +125,12 @@ void EQAPP_NamedSpawns_Execute()
 
         if (spawnLevel < 1 || spawnLevel > 100)
         {
-            spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+            spawn = EQ_GetNextSpawn(spawn); // next
             continue;
         }
 
-        char spawnName[0x40] = {0};
-        memcpy(spawnName, (LPVOID)(spawn + 0xE4), sizeof(spawnName));
+        char spawnName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
+        memcpy(spawnName, (LPVOID)(spawn + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(spawnName));
 
         for (auto& namedSpawn : g_namedSpawnsList)
         {
@@ -135,7 +142,7 @@ void EQAPP_NamedSpawns_Execute()
             }
         }
 
-        spawn = EQ_ReadMemory<DWORD>(spawn + 0x08); // next
+        spawn = EQ_GetNextSpawn(spawn); // next
     }
 
     EQ_DrawText(ssDrawText.str().c_str(), g_namedSpawnsX, g_namedSpawnsY, g_namedSpawnsColor, fontSize);
@@ -150,7 +157,7 @@ void EQAPP_NamedSpawns_Execute()
     }
 }
 
-void EQAPP_NamedSpawnsList_Print()
+void EQAPP_NamedSpawns_Print()
 {
     std::cout << "Named Spawns:" << std::endl;
 

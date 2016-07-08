@@ -9,92 +9,112 @@ const std::vector<std::string> g_interpretCommandList
     "//debug",
     "//test",
     "//hud",
-    "//lootdebug",
+    "//lootdebug, //ld",
     "//loot (item name)",
     "//autoloot, //al",
-    "//resetautoloot, //resetal, //ral",
-    "//autoloot (item name), //al (item name)",
+    "//autolootlist, //all",
+    "//autolootreset",
+    "//autolootadd (item name), //ala (item name)",
+    "//autolootremove (item name), //alr (item name)",
     "//castray, //cr",
-    "//getmeleerange, //getmr, //gmr",
-    "//getspellname (spell id), //getsn (spell id), //gsn (spell id)",
-    "//gettargetinfo, //getti, //gti",
-    "//bank, //money",
+    "//meleerange, //mr",
+    "//getspellname (spell id)",
+    "//targetinfo, //ti",
+    "//bank, //currency",
     "//banklist, //bl",
     "//banklist (item name), //bl (item name)",
-    "//inventorylist, //invlist, //il",
-    "//inventorylist (item name), //invlist (item name), //il (item name)",
+    "//inventorylist, //il",
+    "//inventorylist (item name), //il (item name)",
     "//spawnlist, //sl",
     "//spawnlist (spawn name), //sl (spawn name)",
     "//esp",
     "//espspawn, //esps",
-    "//espgroundspawn, //espg",
+    "//espgroundspawn, //espgs",
     "//espdoor, //espd",
     "//espskeleton, //espsk",
     "//espzoneobject, //espzo",
     "//espcustom, //espc",
+    "//espwaypoint, //espwp",
     "//setespspawndistance (distance), //setesps (distance), //setesp (distance)",
-    "//setespgroundspawndistance (distance), //setespg (distance)",
+    "//setespgroundspawndistance (distance), //setespgs (distance)",
     "//setespdoordistance (distance), //setespd (distance)",
     "//setespskeletondistance (distance), //setespsk (distance)",
     "//setespzoneobjectdistance (distance), //setespzo (distance)",
     "//setespcustomdistance (distance), //setespc (distance)",
+    "//setespwaypointdistance (distance), //setespwp (distance)",
+    "//getespcustomlocation, //getecl",
     "//speed",
     "//setspeed sow",
     "//setspeed run1",
     "//setspeed run2",
     "//setspeed run3",
-    "//setspeed (speed), //sets (speed), //ss (speed)",
+    "//setspeed (speed), //ss (speed)",
     "//locator, //loc",
+    "//getlocator, //getloc",
     "//setlocator (y) (x) (z), //setloc (y) (x) (z)",
     "//find",
+    "//getfind",
     "//setfind (spawn name)",
     "//linetotarget, //ltt",
-    "//memorylist, //memlist",
+    "//memorylist, //ml",
     "//memory (index), //mem (index)",
     "//alwaysattack, //aa",
     "//combathotbutton, //chb",
     "//setcombathotbutton (index), //setchb (index), //schb (index)",
     "//alwayshotbutton, //ahb",
     "//setalwayshotbutton (index), //setahb (index), //sahb (index)",
-    "//setcollisionradius (radius), //setcr (radius), //scr (radius)",
+    "//setcollisionradius (radius), //setcr (radius)",
     "//drawdistance, //dd",
+    "//getdrawdistance, //getdd",
     "//setdrawdistance (distance), //setdd  (distance)",
     "//setfieldofview (fov), //setfov (fov)",
     "//targetbeep, //tbeep",
+    "//gettargetbeep, //gettbeep",
     "//settargetbeep (name) (delay), //settbeep (name) (delay), //stb (name) (delay)",
     "//spawnbeep, //sbeep",
+    "//getspawnbeep, //getsbeep",
     "//setspawnbeep (name), //setsbeep (name), //ssb (name)",
-    "//height",
-    "//setheight (height), //seth (height), //sh (height)",
-    "//maplabels, //ml",
-    "//addmaplabels, //addml, //aml",
-    "//removemaplabels, //removeml, //rml",
-    "//getmaplabels, //getml, //gml",
-    "//filtermaplabels, //filterml, //fml",
-    "//filtermaplabels (spawn name), //filterml (spawn name), //fml (spawn name)",
-    "//getzoneinfo, //getzone, //getzi, //gzi",
-    "//loadmemory, //loadm, //lm",
+    "//changeheight",
+    "//setheight (height), //sh (height)",
+    "//maplabels",
+    "//addmaplabels, //addml",
+    "//removemaplabels, //removeml",
+    "//getmaplabels, //getml",
+    "//filtermaplabels, //filterml",
+    "//getfiltermaplabels, //getfilterml",
+    "//setfiltermaplabels (spawn name), //setfilterml (spawn name)",
+    "//getzoneinfo, //getzi",
+    "//loadmemory, //loadmem",
     "//sounds",
-    "//loadsounds, //loads, //ls",
+    "//loadsounds",
     "//namedspawns, //ns",
-    "//loadnamedspawns, //loadns, //lns",
-    "//loadespcustom, //loadec, //lec",
-    "//getnamedspawns, //getns, //gns",
-    "//writecharacterfile, //writechar, //writecf, //wcf",
-    "//loadtextoverlaychattext, //loadtoct, //ltoct",
-    "//loadnobeep, //loadnb, //lnb",
-    "//loadshortzonenames, //loadzsn, //lzsn",
+    "//loadnamedspawns, //loadns",
+    "//loadespcustom, //loadespc",
+    "//getnamedspawns, //getns",
+    "//writecharacterfile, //writechar, //writecf",
+    "//loadtextoverlaychattext, //loadtoct",
+    "//loadnobeep, //loadnb",
+    "//loadshortzonenames, //loadzsn",
     "//hidecorpselooted, //hcl",
-    "//openalldoors, //opendoors, //oad",
+    "//openalldoors, //opendoors",
+    "//closealldoors, //closedoors",
     "//census",
     "//freecamera, //freecam, //fc",
-    "//setviewactor (spawn name), //setview (spawn name), //setva (spawn name), //sva (spawn name)",
-    "//setviewtarget, //setvt, //svt",
-    "//resetviewactor, //resetview, //resetva, //rva",
+    "//setviewactor (spawn name), //setva (spawn name)",
+    "//setviewactortarget, //setvat",
+    "//resetviewactor, //resetva",
     "//maplocations, //maplocs",
     "//getmaplocation, //getmaploc",
-    "//getespcustomlocation, //getecl, //gecl",
-    "//openmapfile, //omf",
+    "//openzonemapfile, //openzmf",
+    "//waypointadd, //wpa",
+    "//waypointremove (index), //wpr (index)",
+    "//waypointconnect (index), //wpc (index)",
+    "//waypointdisconnect (index), //wpd (index)",
+    "//waypointlist, //wpl",
+    "//waypointlistclear, //wplc",
+    "//waypointlistload, //wpll",
+    "//waypointlistsave, //wpls",
+    "//waypointgetpath (from index) (to index), //wpgp (from index) (to index)",
 };
 
 void EQAPP_InterpretCommand(const char* command);
@@ -146,13 +166,13 @@ void EQAPP_InterpretCommand(const char* command)
             return;
         }
 
-        FLOAT playerY = EQ_ReadMemory<FLOAT>(playerSpawn + 0x64);
-        FLOAT playerX = EQ_ReadMemory<FLOAT>(playerSpawn + 0x68);
-        FLOAT playerZ = EQ_ReadMemory<FLOAT>(playerSpawn + 0x6C);
+        FLOAT playerY = EQ_GetSpawnY(playerSpawn);
+        FLOAT playerX = EQ_GetSpawnX(playerSpawn);
+        FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
 
-        unsigned int waypointIndex = EQAPP_WaypointList_GetIndexNearestToLocation(playerY, playerX, playerZ);
+        unsigned int waypointIndex = EQAPP_Waypoint_GetIndexNearestToLocation(playerY, playerX, playerZ);
 
-        std::cout << "EQAPP_WaypointList_GetIndexNearestToSpawn: " << waypointIndex << std::endl;
+        std::cout << "nearest waypoint index: " << waypointIndex << std::endl;
 
         PEQAPPWAYPOINT waypoint = EQAPP_Waypoint_GetByIndex(waypointIndex);
         if (waypoint != NULL)
@@ -180,7 +200,7 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // print loot debug information
-    if (strcmp(command, "//lootdebug") == 0)
+    if (strcmp(command, "//lootdebug") == 0 || strcmp(command, "//ld") == 0)
     {
         EQAPP_LootDebugInformation_Print();
         return;
@@ -214,7 +234,7 @@ void EQAPP_InterpretCommand(const char* command)
     // print auto loot list
     if (strcmp(command, "//autolootlist") == 0 || strcmp(command, "//all") == 0)
     {
-        EQAPP_AutoLootList_Print();
+        EQAPP_AutoLoot_Print();
         return;
     }
 
@@ -237,7 +257,7 @@ void EQAPP_InterpretCommand(const char* command)
         {
             EQ_String_ReplaceUnderscoresWithSpaces(itemName);
 
-            EQAPP_AutoLootList_Add(itemName);
+            EQAPP_AutoLoot_Add(itemName);
 
             g_autoLootIsEnabled = true;
         }
@@ -255,19 +275,19 @@ void EQAPP_InterpretCommand(const char* command)
         {
             EQ_String_ReplaceUnderscoresWithSpaces(itemName);
 
-            EQAPP_AutoLootList_Remove(itemName);
+            EQAPP_AutoLoot_Remove(itemName);
         }
     }
 
     // print cast ray to target
-    if (strcmp(command, "//castray") == 0)
+    if (strcmp(command, "//castray") == 0 || strcmp(command, "//cr") == 0)
     {
         EQAPP_CastRayToTarget_Print();
         return;
     }
 
     // print melee range to target
-    if (strcmp(command, "//getmeleerange") == 0)
+    if (strcmp(command, "//meleerange") == 0 || strcmp(command, "//mr") == 0)
     {
         EQAPP_MeleeRangeToTarget_Print();
         return;
@@ -292,7 +312,7 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // print target info
-    if (strcmp(command, "//targetinfo") == 0)
+    if (strcmp(command, "//targetinfo") == 0 || strcmp(command, "//ti") == 0)
     {
         DWORD targetSpawn = EQ_GetTargetSpawn();
         EQAPP_SpawnInformation_Print(targetSpawn);
@@ -300,7 +320,7 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // print bank currency
-    if (strcmp(command, "//bank") == 0)
+    if (strcmp(command, "//bank") == 0 || strcmp(command, "//currency") == 0)
     {
         EQAPP_BankCurrency_Print();
         return;
@@ -743,12 +763,12 @@ void EQAPP_InterpretCommand(const char* command)
     // print memory list
     if (strcmp(command, "//memorylist") == 0 || strcmp(command, "//ml") == 0)
     {
-        EQAPP_MemoryList_Print();
+        EQAPP_Memory_Print();
         return;
     }
 
     // toggle memory by index
-    if (strncmp(command, "//memory ", 9) == 0)
+    if (strncmp(command, "//memory ", 9) == 0 || strncmp(command, "//mem ", 6) == 0)
     {
         char commandEx[128];
 
@@ -826,7 +846,7 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // set collision radius
-    if (strncmp(command, "//setcollisionradius ", 21) == 0 || strncmp(command, "//setcoll ", 10) == 0)
+    if (strncmp(command, "//setcollisionradius ", 21) == 0 || strncmp(command, "//setcr ", 8) == 0)
     {
         char commandEx[128];
 
@@ -935,7 +955,7 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // print target beep
-    if (strcmp(command, "//gettargetbeep") == 0 || strcmp(command, "//gettbeep") == 0 || strcmp(command, "//targetbeepprint") == 0)
+    if (strcmp(command, "//gettargetbeep") == 0 || strcmp(command, "//gettbeep") == 0)
     {
         EQAPP_TargetBeep_Print();
         return;
@@ -971,6 +991,13 @@ void EQAPP_InterpretCommand(const char* command)
         return;
     }
 
+    // get spawn beep
+    if (strcmp(command, "//getspawnbeep") == 0 || strcmp(command, "//getsbeep") == 0)
+    {
+        EQAPP_SpawnBeep_Print();
+        return;
+    }
+
     // set spawn beep
     if (strncmp(command, "//setspawnbeep ", 15) == 0 || strncmp(command, "//setsbeep ", 11) == 0 || strncmp(command, "//ssb ", 6) == 0)
     {
@@ -1000,7 +1027,7 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // set height
-    if (strncmp(command, "//setheight ", 12) == 0)
+    if (strncmp(command, "//setheight ", 12) == 0 || strncmp(command, "//sh ", 5) == 0)
     {
         DWORD targetSpawn = EQ_GetTargetSpawn();
         if (targetSpawn == NULL)
@@ -1032,7 +1059,7 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // add map labels
-    if (strcmp(command, "//addmaplabels") == 0)
+    if (strcmp(command, "//addmaplabels") == 0 || strcmp(command, "//addml") == 0)
     {
         EQAPP_MapLabels_Execute();
         std::cout << "Adding map labels..." << std::endl;
@@ -1040,7 +1067,7 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // remove map labels
-    if (strcmp(command, "//removemaplabels") == 0)
+    if (strcmp(command, "//removemaplabels") == 0 || strcmp(command, "//removeml") == 0)
     {
         EQAPP_MapLabels_Remove();
         std::cout << "Removing map labels..." << std::endl;
@@ -1048,14 +1075,14 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // print map labels
-    if (strcmp(command, "//getmaplabels") == 0)
+    if (strcmp(command, "//getmaplabels") == 0 || strcmp(command, "//getml") == 0)
     {
         EQAPP_MapLabels_Print();
         return;
     }
 
     // toggle filter map labels
-    if (strcmp(command, "//filtermaplabels") == 0)
+    if (strcmp(command, "//filtermaplabels") == 0 || strcmp(command, "//filterml") == 0)
     {
         EQ_ToggleBool(g_mapLabelsFilterIsEnabled);
         EQAPP_PrintBool("Map Labels Filter", g_mapLabelsFilterIsEnabled);
@@ -1063,14 +1090,14 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // get filter map labels
-    if (strcmp(command, "//getfiltermaplabels") == 0)
+    if (strcmp(command, "//getfiltermaplabels") == 0 || strcmp(command, "//getfilterml") == 0)
     {
         EQAPP_MapLabels_Filter_Print();
         return;
     }
 
     // set filter map labels
-    if (strncmp(command, "//setfiltermaplabels ", 21) == 0)
+    if (strncmp(command, "//setfiltermaplabels ", 21) == 0 || strncmp(command, "//setfilterml ", 14) == 0)
     {
         char commandEx[128];
 
@@ -1099,7 +1126,7 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // load memory
-    if (strcmp(command, "//loadmemory") == 0)
+    if (strcmp(command, "//loadmemory") == 0 || strcmp(command, "//loadmem") == 0)
     {
         EQAPP_Memory_Unload();
         EQAPP_Memory_Load();
@@ -1137,14 +1164,14 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // print named spawns list
-    if (strcmp(command, "//namedspawnslist") == 0 || strcmp(command, "//nsl") == 0 || strcmp(command, "//getnamedspawns") == 0)
+    if (strcmp(command, "//getnamedspawns") == 0 || strcmp(command, "//getns") == 0)
     {
-        EQAPP_NamedSpawnsList_Print();
+        EQAPP_NamedSpawns_Print();
         return;
     }
 
     // write character file
-    if (strcmp(command, "//writecharacterfile") == 0 || strcmp(command, "//writechar"))
+    if (strcmp(command, "//writecharacterfile") == 0 || strcmp(command, "//writechar") || strcmp(command, "//writecf"))
     {
         EQAPP_CharacterFile_Write();
         return;
@@ -1250,7 +1277,7 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // map locations
-    if (strcmp(command, "//maplocations") == 0 || strcmp(command, "//maploc") == 0)
+    if (strcmp(command, "//maplocations") == 0 || strcmp(command, "//maplocs") == 0)
     {
         EQAPP_MapLocations_WriteToFile();
         return;
@@ -1277,7 +1304,7 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // open zone map file
-    if (strcmp(command, "//openzonemapfile") == 0 || strcmp(command, "//ozmf") == 0)
+    if (strcmp(command, "//openzonemapfile") == 0 || strcmp(command, "//openzmf") == 0)
     {
         EQAPP_OpenZoneMapFile();
         return;
@@ -1369,7 +1396,7 @@ void EQAPP_InterpretCommand(const char* command)
     }
 
     // waypoint list get path
-    if (strncmp(command, "//waypointlistgetpath ", 22) == 0 || strncmp(command, "//wplgp ", 8) == 0)
+    if (strncmp(command, "//waypointgetpath ", 22) == 0 || strncmp(command, "//wpgp ", 8) == 0)
     {
         char commandEx[128];
 
@@ -1380,9 +1407,9 @@ void EQAPP_InterpretCommand(const char* command)
 
         if (result == 3)
         {
-            EQAPPWaypointPathList pathList = EQAPP_WaypointList_GetPath(fromIndex, toIndex);
+            EQAPPWaypointPathList pathList = EQAPP_Waypoint_GetPath(fromIndex, toIndex);
 
-            EQAPP_WaypointList_PrintPath(pathList);
+            EQAPP_Waypoint_PrintPath(pathList, fromIndex);
         }
 
         return;

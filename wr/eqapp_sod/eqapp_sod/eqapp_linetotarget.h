@@ -19,19 +19,19 @@ void EQAPP_LineToTarget_Execute()
         return;
     }
 
-    FLOAT targetY = EQ_ReadMemory<FLOAT>(targetSpawn + 0x64);
-    FLOAT targetX = EQ_ReadMemory<FLOAT>(targetSpawn + 0x68);
-    FLOAT targetZ = EQ_ReadMemory<FLOAT>(targetSpawn + 0x6C);
+    FLOAT targetY = EQ_GetSpawnY(targetSpawn);
+    FLOAT targetX = EQ_GetSpawnX(targetSpawn);
+    FLOAT targetZ = EQ_GetSpawnZ(targetSpawn);
 
     int screenX = -1;
     int screenY = -1;
     bool result = EQ_WorldSpaceToScreenSpace(targetX, targetY, targetZ, screenX, screenY);
     if (result == true)
     {
-        DWORD windowWidth  = EQ_ReadMemory<DWORD>(EQ_WINDOW_WIDTH);
-        DWORD windowHeight = EQ_ReadMemory<DWORD>(EQ_WINDOW_HEIGHT);
+        DWORD windowWidth  = EQ_GetWindowWidth();
+        DWORD windowHeight = EQ_GetWindowHeight();
 
-        EQ_DrawLine((float)(windowWidth / 2), (float)windowHeight, 0.0f, (float)screenX, (float)screenY, 0.0f, g_lineToTargetColor);
+        EQ_DrawLine((float)(windowWidth * 0.5f), (float)windowHeight, 0.0f, (float)screenX, (float)screenY, 0.0f, g_lineToTargetColor);
     }
 }
 

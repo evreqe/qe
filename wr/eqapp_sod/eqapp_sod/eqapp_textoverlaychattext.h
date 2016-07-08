@@ -14,11 +14,16 @@ void EQAPP_TextOverlayChatText_Load()
 
     g_textOverlayChatTextList.clear();
 
+    std::string filePathStr = "eqapp/textoverlaychattext.txt";
+
     std::ifstream file;
-    file.open("eqapp/textoverlaychattext.txt", std::ios::in);
+    file.open(filePathStr.c_str(), std::ios::in);
     if (file.is_open() == false)
     {
-        std::cout << __FUNCTION__ << ": failed to open file: eqapp/textoverlaychattext.txt" << std::endl;
+        std::stringstream ss;
+        ss << "failed to open file: " << filePathStr;
+
+        EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
         return;
     }
 
@@ -38,10 +43,7 @@ void EQAPP_TextOverlayChatText_Load()
 
 void EQAPP_TextOverlayChatText_DisplayText(std::string text)
 {
-    DWORD windowWidth  = EQ_ReadMemory<DWORD>(EQ_WINDOW_WIDTH);
-    DWORD windowHeight = EQ_ReadMemory<DWORD>(EQ_WINDOW_HEIGHT);
-
-    EQ_CTextOverlay->DisplayText(text.c_str(), EQ_TEXT_COLOR_WHITE, 15, 192, (int)(windowWidth / 2), (int)(windowHeight / 3), g_textOverlayChatTextDuration);
+    EQ_DisplayText(text.c_str(), g_textOverlayChatTextDuration);
 }
 
 #endif // EQAPP_TEXTOVERLAYCHATTEXT_H

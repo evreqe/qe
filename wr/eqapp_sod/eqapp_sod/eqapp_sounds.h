@@ -24,7 +24,7 @@ void EQAPP_Sounds_Load()
 
     if (g_soundsIsEnabled == false)
     {
-        std::cout << __FUNCTION__ << ": sounds are disabled" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "sounds are disabled");
         return;
     }
 

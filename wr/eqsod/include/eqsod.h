@@ -1,22 +1,15 @@
 #ifndef EQSOD_H
 #define EQSOD_H
 
+#include "eqsod_offsets.h"
+#include "eqsod_sizes.h"
+
 #include <string>
 #include <unordered_map>
 
 const char* EQ_STRING_WINDOW_TITLE      = "EverQuest";
 const char* EQ_STRING_PROCESS_NAME      = "eqgame.exe";
 const char* EQ_STRING_GRAPHICS_DLL_NAME = "EQGraphicsDX9.dll";
-
-const float EQ_PI = 3.14159265358979f;
-
-const float EQ_HEADING_MAX        = 512.0f;
-const float EQ_HEADING_MAX_HALVED = 256.0f;
-
-const float EQ_FIELD_OF_VIEW_DEFAULT = 45.0f;
-
-const float EQ_DRAW_DISTANCE_DEFAULT = 400.0f;
-const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 
 #define EQ_BASE_ADDRESS 0x00400000
 
@@ -45,10 +38,12 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_BOOL_KEYBOARD_RIGHT_CONTROL   0x00A609B7 // BYTE
 #define EQ_BOOL_KEYBOARD_RIGHT_ALT       0x00A609B8 // BYTE
 
-#define EQ_POINTER_GRAPHICS_DLL_BASE_ADDRESS 0x00B112A8 // EQGraphicsDX9.DLL
+#define EQ_GRAPHICS_DLL_POINTER_BASE_ADDRESS 0x00B112A8 // EQGraphicsDX9.DLL
 
-#define EQ_GRAPHICS_DLL_OFFSET_DrawLine  0x7A850
-#define EQ_GRAPHICS_DLL_OFFSET_DrawQuad  0x7A560
+#define EQ_GRAPHICS_DLL_OFFSET_FRAMES_PER_SECOND 0x173CB0 // FLOAT
+
+#define EQ_GRAPHICS_DLL_OFFSET_DrawLine 0x7A850
+#define EQ_GRAPHICS_DLL_OFFSET_DrawQuad 0x7A560
 
 #define EQ_GRAPHICS_DLL_ORDINAL_DrawLine 0x84
 #define EQ_GRAPHICS_DLL_ORDINAL_DrawQuad 0x9C
@@ -93,11 +88,11 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 
 #define EQ_POINTER_CHAR_INFO                  0x00A425E4 // pinstCharData
 
-#define EQ_POINTER_FIRST_SPAWN_INFO           0x00AD3A0C // pinstSpawnManager
-#define EQ_POINTER_PLAYER_SPAWN_INFO          0x00A4260C // pinstCharSpawn
-#define EQ_POINTER_TARGET_SPAWN_INFO          0x00A42610 // pinstTarget
+#define EQ_POINTER_SPAWN_INFO_FIRST           0x00AD3A0C // pinstSpawnManager
+#define EQ_POINTER_SPAWN_INFO_PLAYER          0x00A4260C // pinstCharSpawn
+#define EQ_POINTER_SPAWN_INFO_TARGET          0x00A42610 // pinstTarget
 
-#define EQ_POINTER_FIRST_GROUND_SPAWN_INFO    0x00A425C8 // pinstEQItemList
+#define EQ_POINTER_GROUND_SPAWN_INFO_FIRST    0x00A425C8 // pinstEQItemList
 
 #define EQ_POINTER_GROUP_INFO                 0x00A40ABE // pinstGroup
 
@@ -105,14 +100,17 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 
 #define EQ_EXECUTECMD_LIST 0x00851940
 
-#define EQ_ZONEINFO_CHARACTER_NAME    0x00A6057C // string 64  [0x40]
-#define EQ_ZONEINFO_SHORT_NAME        0x00A605BC // string 32  [0x20]
-#define EQ_ZONEINFO_LONG_NAME         0x00A6063C // string 128 [0x80]
-#define EQ_ZONEINFO_FOG_MIN_CLIP      0x00A60760 // FLOAT
-#define EQ_ZONEINFO_FOG_MAX_CLIP      0x00A60770 // FLOAT
-#define EQ_ZONEINFO_GRAVITY           0x00A60780 // FLOAT
-#define EQ_ZONEINFO_MIN_CLIP          0x00A607E0 // FLOAT
-#define EQ_ZONEINFO_MAX_CLIP          0x00A607E4 // FLOAT
+#define EQ_FONT_INFO_2_COLOR_ADDRESS 0x0046D8FF
+#define EQ_FONT_INFO_2_COLOR_VALUE   0xFF000000
+
+#define EQ_ZONE_INFO_CHARACTER_NAME    0x00A6057C // STRING [0x40]
+#define EQ_ZONE_INFO_SHORT_NAME        0x00A605BC // STRING [0x20]
+#define EQ_ZONE_INFO_LONG_NAME         0x00A6063C // STRING [0x80]
+#define EQ_ZONE_INFO_FOG_MIN_CLIP      0x00A60760 // FLOAT
+#define EQ_ZONE_INFO_FOG_MAX_CLIP      0x00A60770 // FLOAT
+#define EQ_ZONE_INFO_GRAVITY           0x00A60780 // FLOAT
+#define EQ_ZONE_INFO_MIN_CLIP          0x00A607E0 // FLOAT
+#define EQ_ZONE_INFO_MAX_CLIP          0x00A607E4 // FLOAT
 
 #define EQ_FUNCTION_Exit 0x004B06B0 // called by the "/exit" slash command
 
@@ -267,14 +265,6 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_ITEM_TYPE_CONTAINER          0x7900
 #define EQ_ITEM_TYPE_CONTAINER_PLAIN    0x7953
 
-#define EQ_NUM_INVENTORY_SLOTS      31      // 23 equipment slots, 8 bag slots
-#define EQ_NUM_BANK_SLOTS           26      // 24 bag slots, 2 shared bag slots
-#define EQ_NUM_CONTAINER_SLOTS      10      // number of items that can fit in a bag, backpack or box
-#define EQ_NUM_LOOT_WINDOW_SLOTS    32
-#define EQ_NUM_GUILDS               1500
-#define EQ_NUM_MAP_LAYERS           3       // does not include the default map layer 0
-#define EQ_NUM_SPELLS               5001
-
 #define EQ_RACE_UNKNOWN          0
 #define EQ_RACE_HUMAN            1
 #define EQ_RACE_BARBARIAN        2
@@ -296,7 +286,7 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_RACE_CHOKADAI         356
 #define EQ_RACE_SKELETON2        367
 #define EQ_RACE_SKELETON3        484
-#define EQ_RACE_DRAKKIN          522 // drakkin?
+#define EQ_RACE_DRAKKIN          522 // confirm?
 
 #define EQ_CLASS_UNKNOWN                  0
 #define EQ_CLASS_WARRIOR                  1
@@ -334,8 +324,35 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_CMD_SET_CAMERA_VIEW_USER_DEFINED2    200
 #define EQ_CMD_EXIT_GAME                        274
 
+#define EQ_NUM_INVENTORY_SLOTS      31      // 23 equipment slots, 8 bag slots
+#define EQ_NUM_BANK_SLOTS           26      // 24 bag slots, 2 shared bag slots
+#define EQ_NUM_CONTAINER_SLOTS      10      // number of items that can fit in a bag, backpack or box
+#define EQ_NUM_LOOT_WINDOW_SLOTS    32
+#define EQ_NUM_GUILDS               1500
+#define EQ_NUM_MAP_LAYERS           3       // does not include the default map layer 0
+#define EQ_NUM_SPELLS               5001
+#define EQ_NUM_BONES                64      // number of bones for model info skeleton
+#define EQ_NUM_GROUP_MEMBERS        6
+
+const float EQ_PI = 3.14159265358979f;
+
+const float EQ_HEADING_MAX        = 512.0f;
+const float EQ_HEADING_MAX_HALVED = 256.0f;
+
+const float EQ_FIELD_OF_VIEW_DEFAULT = 45.0f;
+
+const float EQ_DRAW_DISTANCE_DEFAULT = 400.0f;
+const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
+
 #define EQ_HOTBUTTON_NUMBER_MIN 1
 #define EQ_HOTBUTTON_NUMBER_MAX 10
+
+#define EQ_LEVEL_MIN 1
+#define EQ_LEVEL_MAX 100
+
+#define EQ_SKILL_MAX 250
+
+#define EQ_SPAWN_NAME_LENGTH_MIN 2
 
 const std::unordered_map<std::string, std::string> EQ_KEYVALUE_ACTOR_DEFINITIONS
 {

@@ -23,35 +23,21 @@ std::vector<EQAPPWAYPOINT> g_waypointList;
 
 typedef std::vector<unsigned int> EQAPPWaypointPathList;
 
-PEQAPPWAYPOINT EQAPP_Waypoint_GetByIndex(unsigned int index);
 void EQAPP_Waypoint_Add();
 void EQAPP_Waypoint_Remove(unsigned int index);
 void EQAPP_Waypoint_Connect(unsigned int fromIndex, unsigned int toIndex);
 void EQAPP_Waypoint_Disconnect(unsigned int fromIndex, unsigned int toIndex);
+PEQAPPWAYPOINT EQAPP_Waypoint_GetByIndex(unsigned int index);
+unsigned int EQAPP_Waypoint_GetIndexNearestToLocation(float y, float x, float z);
 unsigned int EQAPP_Waypoint_GetGScore(PEQAPPWAYPOINT waypoint1, PEQAPPWAYPOINT waypoint2);
 unsigned int EQAPP_Waypoint_GetHScore(PEQAPPWAYPOINT waypoint1, PEQAPPWAYPOINT waypoint2);
 void EQAPP_Waypoint_ComputeScores(PEQAPPWAYPOINT waypoint, PEQAPPWAYPOINT waypointEnd);
+EQAPPWaypointPathList EQAPP_Waypoint_GetPath(unsigned int fromIndex, unsigned int toIndex);
+void EQAPP_Waypoint_PrintPath(EQAPPWaypointPathList& pathList, unsigned int fromIndex);
 void EQAPP_WaypointList_Clear();
 void EQAPP_WaypointList_Load();
 void EQAPP_WaypointList_Save();
 void EQAPP_WaypointList_Print();
-unsigned int EQAPP_WaypointList_GetIndexNearestToLocation(float y, float x, float z);
-std::vector<unsigned int> EQAPP_WaypointList_GetPath(unsigned int fromIndex, unsigned int toIndex);
-void EQAPP_WaypointList_PrintPath(std::vector<unsigned int>& pathList, unsigned int fromIndex);
-
-PEQAPPWAYPOINT EQAPP_Waypoint_GetByIndex(unsigned int index)
-{
-    for (auto& waypoint : g_waypointList)
-    {
-        if (waypoint.index == index)
-        {
-            return &waypoint;
-        }
-    }
-
-    std::cout << __FUNCTION__ << ": index not found: " << index << std::endl;
-    return NULL;
-}
 
 void EQAPP_Waypoint_Add()
 {
@@ -72,7 +58,7 @@ void EQAPP_Waypoint_Add()
         spawnInfo = EQ_GetPlayerSpawn();
         if (spawnInfo == NULL)
         {
-            std::cout << __FUNCTION__ << ": target and player spawn info is null" << std::endl;
+            EQAPP_PrintErrorMessage(__FUNCTION__, "target and player spawns are NULL");
             return;
         }
     }
@@ -93,20 +79,20 @@ void EQAPP_Waypoint_Add()
 
     g_waypointList.push_back(waypoint);
 
-    std::cout << __FUNCTION__ << ": added waypoint " << index << std::endl;
+    std::cout << "[error] " << __FUNCTION__ << ": added waypoint " << index << std::endl;
 }
 
 void EQAPP_Waypoint_Remove(unsigned int index)
 {
     if (g_waypointList.empty() == true)
     {
-        std::cout << __FUNCTION__ << ": waypoint list is empty" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "waypoint list is empty");
         return;
     }
 
     if (index > g_waypointList.size())
     {
-        std::cout << __FUNCTION__ << ": index out of bounds: " << index << std::endl;
+        std::cout << "[error] " << __FUNCTION__ << ": index out of bounds: " << index << std::endl;
         return;
     }
 
@@ -131,33 +117,33 @@ void EQAPP_Waypoint_Remove(unsigned int index)
         }
     }
 
-    std::cout << __FUNCTION__ << ": removed waypoint " << index << std::endl;
+    std::cout << "[error] " << __FUNCTION__ << ": removed waypoint " << index << std::endl;
 }
 
 void EQAPP_Waypoint_Connect(unsigned int fromIndex, unsigned int toIndex)
 {
     if (fromIndex == toIndex)
     {
-        std::cout << __FUNCTION__ << ": cannot connect waypoint to itself" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "cannot connect waypoint to itself");
         return;
     }
 
     if (fromIndex > g_waypointList.size())
     {
-        std::cout << __FUNCTION__ << ": from index out of bounds: " << fromIndex << std::endl;
+        std::cout << "[error] " << __FUNCTION__ << ": from index out of bounds: " << fromIndex << std::endl;
         return;
     }
 
     if (toIndex > g_waypointList.size())
     {
-        std::cout << __FUNCTION__ << ": to index out of bounds: " << toIndex << std::endl;
+        std::cout << "[error] " << __FUNCTION__ << ": to index out of bounds: " << toIndex << std::endl;
         return;
     }
 
     PEQAPPWAYPOINT fromWaypoint = EQAPP_Waypoint_GetByIndex(fromIndex);
     if (fromWaypoint == NULL)
     {
-        std::cout << __FUNCTION__ << ": from waypoint is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "from waypoint is NULL");
         return;
     }
 
@@ -165,7 +151,7 @@ void EQAPP_Waypoint_Connect(unsigned int fromIndex, unsigned int toIndex)
     {
         if (connectIndex == toIndex)
         {
-            std::cout << __FUNCTION__ << ": connection already exists for waypoints " << fromIndex << " and " << toIndex << std::endl;
+            std::cout << "[error] " << __FUNCTION__ << ": connection already exists for waypoints " << fromIndex << " and " << toIndex << std::endl;
             return;
         }
     }
@@ -175,7 +161,7 @@ void EQAPP_Waypoint_Connect(unsigned int fromIndex, unsigned int toIndex)
     PEQAPPWAYPOINT toWaypoint = EQAPP_Waypoint_GetByIndex(toIndex);
     if (toWaypoint == NULL)
     {
-        std::cout << __FUNCTION__ << ": to waypoint is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "to waypoint is NULL");
         return;
     }
 
@@ -183,40 +169,40 @@ void EQAPP_Waypoint_Connect(unsigned int fromIndex, unsigned int toIndex)
     {
         if (connectIndex == fromIndex)
         {
-            std::cout << __FUNCTION__ << ": connection already exists for waypoints " << fromIndex << " and " << toIndex << std::endl;
+            std::cout << "[error] " << __FUNCTION__ << ": connection already exists for waypoints " << fromIndex << " and " << toIndex << std::endl;
             return;
         }
     }
 
     toWaypoint->connectList.push_back(fromIndex);
 
-    std::cout << __FUNCTION__ << ": connected waypoints " << fromIndex << " and " << toIndex << std::endl;
+    std::cout << "[error] " << __FUNCTION__ << ": connected waypoints " << fromIndex << " and " << toIndex << std::endl;
 }
 
 void EQAPP_Waypoint_Disconnect(unsigned int fromIndex, unsigned int toIndex)
 {
     if (fromIndex == toIndex)
     {
-        std::cout << __FUNCTION__ << ": cannot disconnect waypoint from itself" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "cannot disconnect waypoint from itself");
         return;
     }
 
     if (fromIndex > g_waypointList.size())
     {
-        std::cout << __FUNCTION__ << ": from index out of bounds: " << fromIndex << std::endl;
+        std::cout << "[error] " << __FUNCTION__ << ": from index out of bounds: " << fromIndex << std::endl;
         return;
     }
 
     if (toIndex > g_waypointList.size())
     {
-        std::cout << __FUNCTION__ << ": to index out of bounds: " << toIndex << std::endl;
+        std::cout << "[error] " << __FUNCTION__ << ": to index out of bounds: " << toIndex << std::endl;
         return;
     }
 
     PEQAPPWAYPOINT fromWaypoint = EQAPP_Waypoint_GetByIndex(fromIndex);
     if (fromWaypoint == NULL)
     {
-        std::cout << __FUNCTION__ << ": from waypoint is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "from waypoint is NULL");
         return;
     }
 
@@ -233,7 +219,7 @@ void EQAPP_Waypoint_Disconnect(unsigned int fromIndex, unsigned int toIndex)
     PEQAPPWAYPOINT toWaypoint = EQAPP_Waypoint_GetByIndex(toIndex);
     if (toWaypoint == NULL)
     {
-        std::cout << __FUNCTION__ << ": to waypoint is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "to waypoint is NULL");
         return;
     }
 
@@ -247,7 +233,35 @@ void EQAPP_Waypoint_Disconnect(unsigned int fromIndex, unsigned int toIndex)
         }
     }
 
-    std::cout << __FUNCTION__ << ": disconnected waypoints " << fromIndex << " and " << toIndex << std::endl;
+    std::cout << "[error] " << __FUNCTION__ << ": disconnected waypoints " << fromIndex << " and " << toIndex << std::endl;
+}
+
+PEQAPPWAYPOINT EQAPP_Waypoint_GetByIndex(unsigned int index)
+{
+    for (auto& waypoint : g_waypointList)
+    {
+        if (waypoint.index == index)
+        {
+            return &waypoint;
+        }
+    }
+
+    std::cout << "[error] " << __FUNCTION__ << ": index not found: " << index << std::endl;
+    return NULL;
+}
+
+unsigned int EQAPP_Waypoint_GetIndexNearestToLocation(float y, float x, float z)
+{
+    std::map<float, unsigned int> distanceList;
+
+    for (auto& waypoint : g_waypointList)
+    {
+        float distance = EQ_CalculateDistance3d(x, y, z, waypoint.x, waypoint.y, waypoint.z);
+
+        distanceList.insert(std::make_pair(distance, waypoint.index));
+    }
+
+    return distanceList.begin()->second;
 }
 
 unsigned int EQAPP_Waypoint_GetGScore(PEQAPPWAYPOINT waypoint1, PEQAPPWAYPOINT waypoint2)
@@ -272,206 +286,25 @@ void EQAPP_Waypoint_ComputeScores(PEQAPPWAYPOINT waypoint, PEQAPPWAYPOINT waypoi
     waypoint->f = waypoint->g + waypoint->h;
 }
 
-void EQAPP_WaypointList_Clear()
-{
-    g_waypointList.clear();
-}
-
-void EQAPP_WaypointList_Load()
-{
-    g_waypointList.clear();
-
-    std::string zoneShortName = EQ_GetZoneShortName();
-    if (zoneShortName.size() == 0)
-    {
-        std::cout << __FUNCTION__ << ": zone short name is null" << std::endl;
-        return;
-    }
-
-    std::stringstream filePath;
-    filePath << "eqapp/waypoints/" << zoneShortName << ".txt";
-
-    std::ifstream file;
-    file.open(filePath.str().c_str(), std::ios::in);
-    if (file.is_open() == false)
-    {
-        std::cout << __FUNCTION__ << ": failed to open file: " << filePath.str() << std::endl;
-        return;
-    }
-
-    std::string line;
-    while (std::getline(file, line))
-    {
-        if (line.size() == 0)
-        {
-            continue;
-        }
-
-        unsigned int index;
-        float y;
-        float x;
-        float z;
-        char connect[1024];
-        char name[1024];
-
-        int result = sscanf_s(line.c_str(), "%d %f %f %f %s %s", &index, &y, &x, &z, connect, sizeof(connect), name, sizeof(name));
-
-        if (result == 6)
-        {
-            EQ_String_ReplaceUnderscoresWithSpaces(name);
-
-            EQAPPWAYPOINT waypoint;
-            waypoint.index = index;
-            waypoint.y = y;
-            waypoint.x = x;
-            waypoint.z = z;
-            waypoint.name = name;
-
-            if (strcmp(connect, "none") != 0)
-            {
-                std::istringstream connectSplit(connect);
-                std::vector<std::string> connectTokens;
-                for (std::string connectToken; std::getline(connectSplit, connectToken, ','); waypoint.connectList.push_back(std::stoul(connectToken, nullptr, 10)));
-            }
-
-            g_waypointList.push_back(waypoint);
-        }
-    }
-
-    std::cout << __FUNCTION__ << ": waypoints loaded from file: " << filePath.str() << std::endl;
-
-    file.close();
-}
-
-void EQAPP_WaypointList_Save()
-{
-    if (g_waypointList.empty() == true)
-    {
-        std::cout << __FUNCTION__ << ": waypoint list is empty" << std::endl;
-        return;
-    }
-
-    std::string zoneShortName = EQ_GetZoneShortName();
-    if (zoneShortName.size() == 0)
-    {
-        std::cout << __FUNCTION__ << ": zone short name is null" << std::endl;
-        return;
-    }
-
-    std::stringstream filePath;
-    filePath << "eqapp/waypoints/" << zoneShortName << ".txt";
-
-    std::fstream file;
-    file.open(filePath.str().c_str(), std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
-    if (file.is_open() == false)
-    {
-        std::cout << __FUNCTION__ << ": failed to open file: " << filePath.str() << std::endl;
-        return;
-    }
-
-    for (auto& waypoint : g_waypointList)
-    {
-        // index y x z connect name
-        std::stringstream ss;
-        ss.precision(5);
-
-        ss << waypoint.index << " " << waypoint.y << " " << waypoint.x << " " << waypoint.z << " ";
-
-        if (waypoint.connectList.size() == 0)
-        {
-            ss << "none";
-        }
-        else
-        {
-            for (auto& connectIndex : waypoint.connectList)
-            {
-                ss << connectIndex;
-
-                if (&connectIndex != &waypoint.connectList.back())
-                {
-                    ss << ",";
-                }
-            }
-        }
-
-        ss << " Waypoint_" << waypoint.index;
-
-        file << ss.str() << std::endl;
-    }
-
-    std::cout << __FUNCTION__ << ": waypoints saved to file: " << filePath.str() << std::endl;
-
-    file.close();
-}
-
-void EQAPP_WaypointList_Print()
-{
-    std::cout << "Waypoint List: " << std::endl;
-
-    if (g_waypointList.size() == 0)
-    {
-        std::cout << "empty" << std::endl;
-        return;
-    }
-
-    for (auto& waypoint : g_waypointList)
-    {
-        std::cout << waypoint.index << " " << waypoint.y << " " << waypoint.x << " " << waypoint.z << " ";
-
-        if (waypoint.connectList.size() == 0)
-        {
-            std::cout << "none";
-        }
-        else
-        {
-            for (auto& connect : waypoint.connectList)
-            {
-                std::cout << connect;
-
-                if (&connect != &waypoint.connectList.back())
-                {
-                    std::cout << ",";
-                }
-            }
-        }
-
-        std::cout << " " << waypoint.name << std::endl;
-    }
-}
-
-unsigned int EQAPP_WaypointList_GetIndexNearestToLocation(float y, float x, float z)
-{
-    std::map<float, unsigned int> distanceList;
-
-    for (auto& waypoint : g_waypointList)
-    {
-        float distance = EQ_CalculateDistance3d(x, y, z, waypoint.x, waypoint.y, waypoint.z);
-
-        distanceList.insert(std::make_pair(distance, waypoint.index));
-    }
-
-    return distanceList.begin()->second;
-}
-
-std::vector<unsigned int> EQAPP_WaypointList_GetPath(unsigned int fromIndex, unsigned int toIndex)
+EQAPPWaypointPathList EQAPP_Waypoint_GetPath(unsigned int fromIndex, unsigned int toIndex)
 {
     EQAPPWaypointPathList pathList;
 
     if (fromIndex == toIndex)
     {
-        std::cout << __FUNCTION__ << ": from index and to index are the same" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "from index and to index are the same");
         return pathList;
     }
 
     if (fromIndex > g_waypointList.size())
     {
-        std::cout << __FUNCTION__ << ": from index out of bounds: " << fromIndex << std::endl;
+        std::cout << "[error] " << __FUNCTION__ << ": from index out of bounds: " << fromIndex << std::endl;
         return pathList;
     }
 
     if (toIndex > g_waypointList.size())
     {
-        std::cout << __FUNCTION__ << ": to index out of bounds: " << toIndex << std::endl;
+        std::cout << "[error] " << __FUNCTION__ << ": to index out of bounds: " << toIndex << std::endl;
         return pathList;
     }
 
@@ -480,7 +313,7 @@ std::vector<unsigned int> EQAPP_WaypointList_GetPath(unsigned int fromIndex, uns
 
     if (start == NULL || end == NULL)
     {
-        std::cout << __FUNCTION__ << ": start or end waypoint is null" << std::endl;
+        EQAPP_PrintErrorMessage(__FUNCTION__, "start or end waypoint is NULL");
         return pathList;
     }
 
@@ -572,9 +405,9 @@ std::vector<unsigned int> EQAPP_WaypointList_GetPath(unsigned int fromIndex, uns
     return pathList;
 }
 
-void EQAPP_WaypointList_PrintPath(EQAPPWaypointPathList& pathList)
+void EQAPP_Waypoint_PrintPath(EQAPPWaypointPathList& pathList, unsigned int fromIndex)
 {
-    std::cout << "Waypoint Path:";
+    std::cout << "Waypoint Path: " << fromIndex << " -> ";
 
     for (auto& pathIndex : pathList)
     {
@@ -587,6 +420,185 @@ void EQAPP_WaypointList_PrintPath(EQAPPWaypointPathList& pathList)
     }
 
     std::cout << std::endl;
+}
+
+void EQAPP_WaypointList_Clear()
+{
+    g_waypointList.clear();
+}
+
+void EQAPP_WaypointList_Load()
+{
+    g_waypointList.clear();
+
+    std::string zoneShortName = EQ_GetZoneShortName();
+    if (zoneShortName.size() == 0)
+    {
+        EQAPP_PrintErrorMessage(__FUNCTION__, "zone short name is NULL");
+        return;
+    }
+
+    std::stringstream filePath;
+    filePath << "eqapp/waypoints/" << zoneShortName << ".txt";
+
+    std::ifstream file;
+    file.open(filePath.str().c_str(), std::ios::in);
+    if (file.is_open() == false)
+    {
+        std::stringstream ss;
+        ss << "failed to open file: " << filePath.str();
+
+        EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
+        return;
+    }
+
+    std::string line;
+    while (std::getline(file, line))
+    {
+        if (line.size() == 0)
+        {
+            continue;
+        }
+
+        unsigned int index;
+        float y;
+        float x;
+        float z;
+        char connect[1024];
+        char name[1024];
+
+        int result = sscanf_s(line.c_str(), "%d %f %f %f %s %s", &index, &y, &x, &z, connect, sizeof(connect), name, sizeof(name));
+
+        if (result == 6)
+        {
+            EQ_String_ReplaceUnderscoresWithSpaces(name);
+
+            EQAPPWAYPOINT waypoint;
+            waypoint.index = index;
+            waypoint.y = y;
+            waypoint.x = x;
+            waypoint.z = z;
+            waypoint.name = name;
+
+            if (strcmp(connect, "none") != 0)
+            {
+                std::istringstream connectSplit(connect);
+                std::vector<std::string> connectTokens;
+                for (std::string connectToken; std::getline(connectSplit, connectToken, ','); waypoint.connectList.push_back(std::stoul(connectToken, nullptr, 10)));
+            }
+
+            g_waypointList.push_back(waypoint);
+        }
+    }
+
+    std::stringstream ss;
+    ss << "waypoints loaded from file: " << filePath.str();
+
+    EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
+
+    file.close();
+}
+
+void EQAPP_WaypointList_Save()
+{
+    if (g_waypointList.empty() == true)
+    {
+        EQAPP_PrintErrorMessage(__FUNCTION__, "waypoint list is empty");
+        return;
+    }
+
+    std::string zoneShortName = EQ_GetZoneShortName();
+    if (zoneShortName.size() == 0)
+    {
+        EQAPP_PrintErrorMessage(__FUNCTION__, "zone short name is NULL");
+        return;
+    }
+
+    std::stringstream filePath;
+    filePath << "eqapp/waypoints/" << zoneShortName << ".txt";
+
+    std::fstream file;
+    file.open(filePath.str().c_str(), std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+    if (file.is_open() == false)
+    {
+        std::stringstream ss;
+        ss << "failed to open file: " << filePath.str();
+
+        EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
+        return;
+    }
+
+    for (auto& waypoint : g_waypointList)
+    {
+        // index y x z connect name
+        std::stringstream ss;
+        ss.precision(5);
+
+        ss << waypoint.index << " " << waypoint.y << " " << waypoint.x << " " << waypoint.z << " ";
+
+        if (waypoint.connectList.size() == 0)
+        {
+            ss << "none";
+        }
+        else
+        {
+            for (auto& connectIndex : waypoint.connectList)
+            {
+                ss << connectIndex;
+
+                if (&connectIndex != &waypoint.connectList.back())
+                {
+                    ss << ",";
+                }
+            }
+        }
+
+        ss << " Waypoint_" << waypoint.index;
+
+        file << ss.str() << std::endl;
+    }
+
+    std::stringstream ss;
+    ss << "waypoints  saved to file: " << filePath.str();
+
+    EQAPP_PrintErrorMessage(__FUNCTION__, ss.str());
+
+    file.close();
+}
+
+void EQAPP_WaypointList_Print()
+{
+    std::cout << "Waypoint List: " << std::endl;
+
+    if (g_waypointList.size() == 0)
+    {
+        std::cout << "empty" << std::endl;
+        return;
+    }
+
+    for (auto& waypoint : g_waypointList)
+    {
+        std::cout << waypoint.index << " " << waypoint.y << " " << waypoint.x << " " << waypoint.z << " ";
+
+        if (waypoint.connectList.size() == 0)
+        {
+            std::cout << "none";
+        }
+        else
+        {
+            for (auto& connect : waypoint.connectList)
+            {
+                std::cout << connect;
+
+                if (&connect != &waypoint.connectList.back())
+                {
+                    std::cout << ",";
+                }
+            }
+        }
+
+        std::cout << " " << waypoint.name << std::endl;
+    }
 }
 
 #endif // EQAPP_WAYPOINT_H
