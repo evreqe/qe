@@ -1,7 +1,6 @@
 #ifndef EQAPP_INTERPRETCOMMAND_H
 #define EQAPP_INTERPRETCOMMAND_H
 
-// TODO: update the list
 const std::vector<std::string> g_interpretCommandList
 {
     "//help",
@@ -60,8 +59,10 @@ const std::vector<std::string> g_interpretCommandList
     "//memory (index), //mem (index)",
     "//alwaysattack, //aa",
     "//combathotbutton, //chb",
+    "//getcombathotbutton, //getchb",
     "//setcombathotbutton (index), //setchb (index), //schb (index)",
     "//alwayshotbutton, //ahb",
+    "//getalwayshotbutton, //getahb",
     "//setalwayshotbutton (index), //setahb (index), //sahb (index)",
     "//setcollisionradius (radius), //setcr (radius)",
     "//drawdistance, //dd",
@@ -87,14 +88,19 @@ const std::vector<std::string> g_interpretCommandList
     "//loadmemory, //loadmem",
     "//sounds",
     "//loadsounds",
+    "//getsounds",
     "//namedspawns, //ns",
     "//loadnamedspawns, //loadns",
     "//loadespcustom, //loadespc",
     "//getnamedspawns, //getns",
     "//writecharacterfile, //writechar, //writecf",
     "//loadtextoverlaychattext, //loadtoct",
+    "//gettextoverlaychattext, //gettoct",
+    "//getonscreentext, //getost",
     "//loadnobeep, //loadnb",
+    "//getnobeep, //getnb",
     "//loadshortzonenames, //loadzsn",
+    "//getshortzonenames, //getzsn",
     "//hidecorpselooted, //hcl",
     "//openalldoors, //opendoors",
     "//closealldoors, //closedoors",
@@ -799,6 +805,13 @@ void EQAPP_InterpretCommand(const char* command)
         return;
     }
 
+    // get combat hotbutton
+    if (strcmp(command, "//getcombathotbutton") == 0 || strcmp(command, "//getchb") == 0)
+    {
+        EQAPP_CombatHotbutton_Print();
+        return;
+    }
+
     // set combat hotbutton
     if (strncmp(command, "//setcombathotbutton ", 21) == 0 || strncmp(command, "//setchb ", 9) == 0)
     {
@@ -823,6 +836,13 @@ void EQAPP_InterpretCommand(const char* command)
     {
         EQ_ToggleBool(g_alwaysHotbuttonIsEnabled);
         EQAPP_PrintBool("Always Hotbutton", g_alwaysHotbuttonIsEnabled);
+        return;
+    }
+
+    // get always hotbutton
+    if (strcmp(command, "//getalwayshotbutton") == 0 || strcmp(command, "//getahb") == 0)
+    {
+        EQAPP_AlwaysHotbutton_Print();
         return;
     }
 
@@ -1148,6 +1168,13 @@ void EQAPP_InterpretCommand(const char* command)
         return;
     }
 
+    // get sounds
+    if (strcmp(command, "//getsounds") == 0)
+    {
+        EQAPP_Sounds_Print();
+        return;
+    }
+
     // toggle named spawns
     if (strcmp(command, "//namedspawns") == 0 || strcmp(command, "//ns") == 0)
     {
@@ -1163,7 +1190,7 @@ void EQAPP_InterpretCommand(const char* command)
         return;
     }
 
-    // print named spawns list
+    // get named spawns list
     if (strcmp(command, "//getnamedspawns") == 0 || strcmp(command, "//getns") == 0)
     {
         EQAPP_NamedSpawns_Print();
@@ -1184,6 +1211,20 @@ void EQAPP_InterpretCommand(const char* command)
         return;
     }
 
+    // get text overlay chat text
+    if (strcmp(command, "//gettextoverlaychattext") == 0 || strcmp(command, "//gettoct") == 0)
+    {
+        EQAPP_TextOverlayChatText_Print();
+        return;
+    }
+
+    // get on screen text
+    if (strcmp(command, "//getonscreentext") == 0 || strcmp(command, "//getost") == 0)
+    {
+        EQAPP_OnScreenText_Print();
+        return;
+    }
+
     // load no beep
     if (strcmp(command, "//loadnobeep") == 0 || strcmp(command, "//loadnb") == 0)
     {
@@ -1191,10 +1232,24 @@ void EQAPP_InterpretCommand(const char* command)
         return;
     }
 
+    // get no beep
+    if (strcmp(command, "//getnobeep") == 0 || strcmp(command, "//getnb") == 0)
+    {
+        EQAPP_NoBeep_Print();
+        return;
+    }
+
     // load zone short names
     if (strcmp(command, "//loadzoneshortnames") == 0 || strcmp(command, "//loadzsn") == 0)
     {
         EQAPP_ZoneShortNames_Load();
+        return;
+    }
+
+    // load zone short names
+    if (strcmp(command, "//getloadzoneshortnames") == 0 || strcmp(command, "//getzsn") == 0)
+    {
+        EQAPP_ZoneShortNames_Print();
         return;
     }
 

@@ -408,7 +408,6 @@ void EQAPP_ESP_ZoneObjects_Draw()
         if (pointer2 != NULL)
         {
             DWORD zoneObject = EQ_ReadMemory<DWORD>(pointer2 + 0x5C);
-
             while (zoneObject)
             {
                 DWORD zoneObject0x0C = EQ_ReadMemory<DWORD>(zoneObject + 0x0C);

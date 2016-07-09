@@ -1258,7 +1258,7 @@ DWORD EQ_GetCameraData()
 
 bool EQ_WorldSpaceToScreenSpace(float worldX, float worldY, float worldZ, int& screenX, int& screenY)
 {
-    // this function uses hard-coded offsets
+    // this function uses hardcoded offsets
 
     DWORD cameraData = EQ_GetCameraData();
     if (cameraData == NULL)
@@ -1944,8 +1944,15 @@ void EQ_SetSpawnHeight(DWORD spawnInfo, float height)
     ((EQPlayer*)spawnInfo)->ChangeHeight(height);
 }
 
-void EQ_DoHotButton(unsigned int buttonIndex)
+void EQ_DoHotButton(unsigned int buttonNumber)
 {
+    unsigned int buttonIndex = buttonNumber - 1; // convert number to index that starts at 0
+
+    if (buttonIndex < (EQ_HOTBUTTON_NUMBER_MIN - 1) || buttonIndex > (EQ_HOTBUTTON_NUMBER_MAX - 1))
+    {
+        return;
+    }
+
     EQ_CHotButtonWnd->DoHotButton(buttonIndex, 0);
 }
 

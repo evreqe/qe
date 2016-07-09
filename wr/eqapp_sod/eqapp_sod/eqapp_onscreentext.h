@@ -11,6 +11,7 @@ DWORD g_onScreenTextTimerDelay = 5000;
 DWORD g_onScreenTextColor = 0xFFFFFFFF;
 
 void EQAPP_OnScreenText_Execute();
+void EQAPP_OnScreenText_Print();
 void EQAPP_OnScreenText_Add(std::string str);
 void EQAPP_OnScreenText_AddSpawnMessage(DWORD spawnInfo, bool bDespawn);
 
@@ -45,6 +46,16 @@ void EQAPP_OnScreenText_Execute()
     }
 
     EQ_DrawText(ssDrawText.str().c_str(), g_onScreenTextX, g_onScreenTextY, g_onScreenTextColor, 2);
+}
+
+void EQAPP_OnScreenText_Print()
+{
+    std::cout << "On Screen Text List:" << std::endl;
+
+    for (auto& onScreenText : g_onScreenTextList)
+    {
+        std::cout << onScreenText << std::endl;
+    }
 }
 
 void EQAPP_OnScreenText_Add(std::string str)

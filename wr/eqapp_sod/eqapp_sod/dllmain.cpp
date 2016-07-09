@@ -8,6 +8,8 @@
 #include <sstream>
 #include <unordered_map>
 #include <vector>
+#include <chrono>
+#include <random>
 
 #include <cstdio>
 #include <cstdlib>

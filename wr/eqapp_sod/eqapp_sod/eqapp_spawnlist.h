@@ -35,9 +35,9 @@ void EQAPP_SpawnList_Print(const char* filterSpawnName)
         char spawnLastName[EQ_SIZE_SPAWN_INFO_LAST_NAME] = {0};
         memcpy(spawnLastName, (LPVOID)(spawn + EQ_OFFSET_SPAWN_INFO_LAST_NAME), sizeof(spawnLastName));
 
-        int spawnLevel = EQ_ReadMemory<BYTE>(spawn + 0x315);
+        int spawnLevel = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_LEVEL);
 
-        if (spawnLevel < 1 || spawnLevel > 100)
+        if (spawnLevel < EQ_LEVEL_MIN || spawnLevel > EQ_LEVEL_MAX)
         {
             spawn = EQ_GetNextSpawn(spawn); // next
             continue;
@@ -52,9 +52,9 @@ void EQAPP_SpawnList_Print(const char* filterSpawnName)
             }
         }
 
-        int spawnType = EQ_ReadMemory<BYTE>(spawn + 0x125);
+        int spawnType = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_TYPE);
 
-        int spawnClass = EQ_ReadMemory<BYTE>(spawn + 0xE68);
+        int spawnClass = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_CLASS);
 
         if (spawnType == EQ_SPAWN_TYPE_PLAYER)
         {
@@ -96,36 +96,36 @@ void EQAPP_SpawnList_Print(const char* filterSpawnName)
             if (spawnType == EQ_SPAWN_TYPE_NPC || spawnType == EQ_SPAWN_TYPE_NPC_CORPSE)
             {
                 std::cout << ")";
-            }EQ_ReadMemory<FLOAT>(spawn + 0x64);
+            }
         }
 
         if (spawnType == EQ_SPAWN_TYPE_PLAYER)
         {
-            int spawnIsLfg = EQ_ReadMemory<BYTE>(spawn + 0x1F1);
+            int spawnIsLfg = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_IS_LFG);
             if (spawnIsLfg == 1)
             {
                 std::cout << "  LFG";
             }
 
-            int spawnIsPvp = EQ_ReadMemory<BYTE>(spawn + 0x2BC);
+            int spawnIsPvp = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_IS_PVP);
             if (spawnIsPvp == 1)
             {
                 std::cout << "  PVP";
             }
 
-            int spawnIsTrader = EQ_ReadMemory<DWORD>(spawn + 0x228);
+            int spawnIsTrader = EQ_ReadMemory<DWORD>(spawn + EQ_OFFSET_SPAWN_INFO_IS_TRADER);
             if (spawnIsTrader == 1)
             {
                 std::cout << "  TRADER";
             }
 
-            int spawnIsAfk = EQ_ReadMemory<DWORD>(spawn + 0x284);
+            int spawnIsAfk = EQ_ReadMemory<DWORD>(spawn + EQ_OFFSET_SPAWN_INFO_IS_AFK);
             if (spawnIsAfk == 1)
             {
                 std::cout << "  AFK";
             }
 
-            int spawnIsGm = EQ_ReadMemory<BYTE>(spawn + 0x4DA);
+            int spawnIsGm = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_IS_GM);
             if (spawnIsGm == 1)
             {
                 std::cout << "  *GM*";

@@ -46,7 +46,7 @@ void EQAPP_SpawnCastSpell_Execute()
             delay = g_spawnCastSpellTimerDelay;
         }
 
-        DWORD spawnStandingState = EQ_ReadMemory<BYTE>(spawnCastSpell->spawnInfo + 0x278);
+        DWORD spawnStandingState = EQ_ReadMemory<BYTE>(spawnCastSpell->spawnInfo + EQ_OFFSET_SPAWN_INFO_STANDING_STATE);
 
         if
         (

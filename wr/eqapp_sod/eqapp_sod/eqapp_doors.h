@@ -15,7 +15,7 @@ void EQAPP_Doors_OpenAll(bool bOpen)
         return;
     }
 
-    DWORD numDoors = EQ_ReadMemory<DWORD>(switchManager + 0x00);
+    DWORD numDoors = EQ_ReadMemory<DWORD>(switchManager + EQ_OFFSET_SWITCH_MANAGER_NUM_DOORS);
     if (numDoors == 0)
     {
         EQAPP_PrintErrorMessage(__FUNCTION__, "number of doors is zero");
@@ -24,7 +24,7 @@ void EQAPP_Doors_OpenAll(bool bOpen)
 
     for (size_t i = 0; i < numDoors; i++)
     {
-        DWORD doorInfo = EQ_ReadMemory<DWORD>(switchManager + 0x04 + (i * 4));
+        DWORD doorInfo = EQ_ReadMemory<DWORD>(switchManager + EQ_OFFSET_SWITCH_MANAGER_DOOR_INFO_FIRST + (i * 4));
         if (doorInfo == NULL)
         {
             continue;
@@ -57,7 +57,7 @@ void EQAPP_Doors_Print()
         return;
     }
 
-    DWORD numDoors = EQ_ReadMemory<DWORD>(switchManager + 0x00);
+    DWORD numDoors = EQ_ReadMemory<DWORD>(switchManager + EQ_OFFSET_SWITCH_MANAGER_NUM_DOORS);
     if (numDoors == 0)
     {
         EQAPP_PrintErrorMessage(__FUNCTION__, "number of doors is zero");
@@ -72,20 +72,20 @@ void EQAPP_Doors_Print()
 
     for (size_t i = 0; i < numDoors; i++)
     {
-        DWORD doorInfo = EQ_ReadMemory<DWORD>(switchManager + 0x04 + (i * 4));
+        DWORD doorInfo = EQ_ReadMemory<DWORD>(switchManager + EQ_OFFSET_SWITCH_MANAGER_DOOR_INFO_FIRST + (i * 4));
         if (doorInfo == NULL)
         {
             continue;
         }
 
-        FLOAT doorY = EQ_ReadMemory<FLOAT>(doorInfo + 0x44);
-        FLOAT doorX = EQ_ReadMemory<FLOAT>(doorInfo + 0x48);
-        FLOAT doorZ = EQ_ReadMemory<FLOAT>(doorInfo + 0x4C);
+        FLOAT doorY = EQ_ReadMemory<FLOAT>(doorInfo + EQ_OFFSET_DOOR_INFO_Y);
+        FLOAT doorX = EQ_ReadMemory<FLOAT>(doorInfo + EQ_OFFSET_DOOR_INFO_X);
+        FLOAT doorZ = EQ_ReadMemory<FLOAT>(doorInfo + EQ_OFFSET_DOOR_INFO_Z);
 
         float doorDistance = EQ_CalculateDistance3d(playerX, playerY, playerZ, doorX, doorY, doorZ);
 
-        char doorName[32] = {0};
-        memcpy(doorName, (LPVOID)(doorInfo + 0x06), sizeof(doorName));
+        char doorName[EQ_SIZE_DOOR_INFO_NAME] = {0};
+        memcpy(doorName, (LPVOID)(doorInfo + EQ_OFFSET_DOOR_INFO_NAME), sizeof(doorName));
 
         if (strlen(doorName) == 0)
         {

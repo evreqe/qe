@@ -5,6 +5,7 @@ std::vector<std::string> g_zoneShortNamesList;
 std::vector<std::string>::iterator g_zoneShortNamesListIterator;
 
 void EQAPP_ZoneShortNames_Load();
+void EQAPP_ZoneShortNames_Print();
 
 void EQAPP_ZoneShortNames_Load()
 {
@@ -39,6 +40,16 @@ void EQAPP_ZoneShortNames_Load()
     g_zoneShortNamesListIterator = g_zoneShortNamesList.begin();
 
     file.close();
+}
+
+void EQAPP_ZoneShortNames_Print()
+{
+    std::cout << "Zone Short Names List:" << std::endl;
+
+    for (auto& zoneShortName : g_zoneShortNamesList)
+    {
+        std::cout << zoneShortName << std::endl;
+    }
 }
 
 #endif // EQAPP_ZONESHORTNAMES_H

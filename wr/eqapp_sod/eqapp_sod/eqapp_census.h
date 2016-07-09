@@ -12,8 +12,7 @@ void EQAPP_Census_Execute();
 
 void EQAPP_Census_On()
 {
-    std::srand(unsigned(std::time(0)));
-    std::random_shuffle(g_zoneShortNamesList.begin(), g_zoneShortNamesList.end());
+    std::shuffle(g_zoneShortNamesList.begin(), g_zoneShortNamesList.end(), g_randomEngine);
 
     g_zoneShortNamesListIterator = g_zoneShortNamesList.begin();
 

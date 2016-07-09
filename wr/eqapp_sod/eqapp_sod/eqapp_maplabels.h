@@ -63,15 +63,15 @@ void EQAPP_MapLabels_Execute()
             continue;
         }
 
-        int spawnLevel = EQ_ReadMemory<BYTE>(spawn + 0x315);
+        int spawnLevel = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_LEVEL);
 
-        if (spawnLevel < 1 || spawnLevel > 100)
+        if (spawnLevel < EQ_LEVEL_MIN || spawnLevel > EQ_LEVEL_MAX)
         {
             spawn = EQ_GetNextSpawn(spawn); // next
             continue;
         }
 
-        int spawnType = EQ_ReadMemory<BYTE>(spawn + 0x125);
+        int spawnType = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_TYPE);
 
         if (g_mapLabelsFilterIsEnabled == true && spawnType == EQ_SPAWN_TYPE_NPC)
         {

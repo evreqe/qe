@@ -31,26 +31,26 @@ void EQAPP_InventoryList_Print(const char* filterItemName)
     {
         std::string slotName = EQ_LIST_EQUIPMENT_SLOT_NAMES.at(i);
 
-        DWORD itemInfo = EQ_ReadMemory<DWORD>(charInfo2 + (0x10 + (i * 4)));
+        DWORD itemInfo = EQ_ReadMemory<DWORD>(charInfo2 + (EQ_OFFSET_CHAR_INFO_2_INVENTORY_ITEM_INFO_FIRST + (i * 4)));
         if (itemInfo == NULL)
         {
             continue;
         }
 
-        DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + 0xD0);
+        DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_COUNT);
 
-        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + 0xB8);
+        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + EQ_OFFSET_ITEM_INFO_NAME);
         if (itemName != NULL)
         {
             if (filterItemName != NULL)
             {
-                DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + 0xB8);
+                DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
                 if (itemSubInfo == NULL)
                 {
                     continue;
                 }
 
-                DWORD itemSlots = EQ_ReadMemory<BYTE>(itemSubInfo + 0x475);
+                DWORD itemSlots = EQ_ReadMemory<BYTE>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_SLOTS);
                 if (itemSlots == 0)
                 {
                     if (strstr(itemName, filterItemName) == NULL)
@@ -72,15 +72,15 @@ void EQAPP_InventoryList_Print(const char* filterItemName)
 
         for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
         {
-            DWORD containerItemInfo = EQ_ReadMemory<DWORD>(itemInfo + (0x0C + (j * 4)));
+            DWORD containerItemInfo = EQ_ReadMemory<DWORD>(itemInfo + (EQ_OFFSET_ITEM_INFO_CONTAINER_ITEM_INFO + (j * 4)));
             if (containerItemInfo == NULL)
             {
                 continue;
             }
 
-            DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + 0xD0);
+            DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + EQ_OFFSET_ITEM_INFO_COUNT);
 
-            PCHAR containerItemName = EQ_ReadMemory<PCHAR>(containerItemInfo + 0xB8);
+            PCHAR containerItemName = EQ_ReadMemory<PCHAR>(containerItemInfo + EQ_OFFSET_ITEM_INFO_NAME);
             if (containerItemName != NULL)
             {
                 if (filterItemName != NULL)

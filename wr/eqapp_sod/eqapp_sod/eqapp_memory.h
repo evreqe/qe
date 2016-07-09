@@ -12,6 +12,8 @@ typedef struct _EQAPPMEMORY
 
 bool g_memoryIsEnabled = true;
 std::vector<EQAPPMEMORY> g_memoryList;
+unsigned int g_memoryFilesMax = 255;
+unsigned int g_memoryAddressesMax = 8;
 
 void EQAPP_Memory_Load();
 void EQAPP_Memory_Unload();
@@ -33,7 +35,7 @@ void EQAPP_Memory_Load()
         return;
     }
 
-    for (size_t i = 0; i < 255; i++)
+    for (size_t i = 0; i < g_memoryFilesMax; i++)
     {
         std::stringstream ssFilename;
         ssFilename << "sFilename" << i;
@@ -94,7 +96,7 @@ void EQAPP_Memory_Set(PEQAPPMEMORY pMemory, bool bEnable)
 
     pMemory->isEnabled = bEnable;
 
-    for (size_t i = 0; i < 8; i++)
+    for (size_t i = 0; i < g_memoryAddressesMax; i++)
     {
         std::stringstream ssAddress;
         ssAddress << "Address" << i;
@@ -124,11 +126,12 @@ void EQAPP_Memory_Set(PEQAPPMEMORY pMemory, bool bEnable)
 
         DWORD baseAddress = 0;
 
-        if (sAddress.find("eqgame.exe") != std::string::npos)
+        // find eqgame.exe or EQGraphicsDX9.dll and get base address
+        if (sAddress.find(EQ_STRING_PROCESS_NAME) != std::string::npos)
         {
             baseAddress = EQ_BASE_ADDRESS;
         }
-        else if (sAddress.find("eqgraphicsdx9.dll") != std::string::npos || sAddress.find("EQGraphicsDX9.dll") != std::string::npos)
+        else if (sAddress.find(EQ_STRING_GRAPHICS_DLL_NAME) != std::string::npos || sAddress.find(EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE) != std::string::npos)
         {
             baseAddress = EQ_ReadMemory<DWORD>(EQ_GRAPHICS_DLL_POINTER_BASE_ADDRESS);
         }

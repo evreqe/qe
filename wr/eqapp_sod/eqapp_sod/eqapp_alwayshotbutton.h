@@ -2,12 +2,13 @@
 #define EQAPP_ALWAYSHOTBUTTON_H
 
 bool g_alwaysHotbuttonIsEnabled = false;
-unsigned int g_alwaysHotbuttonIndex = 0;
+unsigned int g_alwaysHotbuttonNumber = 1;
 DWORD g_alwaysHotbuttonTimer = 0;
 DWORD g_alwaysHotbuttonTimerDelay = 1000;
 DWORD g_alwaysHotbuttonTimerDelayInSeconds = 1;
 
 void EQAPP_AlwaysHotbutton_Execute();
+void EQAPP_AlwaysHotbutton_Print();
 void EQAPP_AlwaysHotbutton_Set(unsigned buttonNumber, DWORD timerDelayInSeconds);
 
 void EQAPP_AlwaysHotbutton_Execute()
@@ -22,7 +23,12 @@ void EQAPP_AlwaysHotbutton_Execute()
         return;
     }
 
-    EQ_DoHotButton(g_alwaysHotbuttonIndex);
+    EQ_DoHotButton(g_alwaysHotbuttonNumber);
+}
+
+void EQAPP_AlwaysHotbutton_Print()
+{
+    std::cout << "Always Hotbutton: " << g_alwaysHotbuttonNumber << " (" << g_alwaysHotbuttonTimerDelayInSeconds << " second(s))" << std::endl;
 }
 
 void EQAPP_AlwaysHotbutton_Set(unsigned buttonNumber, DWORD timerDelayInSeconds)
@@ -36,13 +42,13 @@ void EQAPP_AlwaysHotbutton_Set(unsigned buttonNumber, DWORD timerDelayInSeconds)
         return;
     }
 
-    g_alwaysHotbuttonIndex = buttonNumber - 1; // convert number to index
+    g_alwaysHotbuttonNumber = buttonNumber;
 
     g_alwaysHotbuttonTimerDelay = (DWORD)(timerDelayInSeconds * 1000); // convert seconds to milliseconds
 
     g_alwaysHotbuttonTimerDelayInSeconds = timerDelayInSeconds;
 
-    std::cout << "Always Hotbutton: " << buttonNumber << " (" << timerDelayInSeconds << " second(s))" << std::endl;
+    EQAPP_AlwaysHotbutton_Print();
 }
 
 #endif // EQAPP_ALWAYSHOTBUTTON_H

@@ -31,8 +31,7 @@ void EQAPP_MapLocations_WriteToFile()
     DWORD spawn = EQ_GetFirstSpawn();
     while (spawn)
     {
-        int spawnType = EQ_ReadMemory<BYTE>(spawn + 0x125);
-
+        int spawnType = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_TYPE);
         if (spawnType != EQ_SPAWN_TYPE_NPC)
         {
             spawn = EQ_GetNextSpawn(spawn); // next

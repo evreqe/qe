@@ -18,7 +18,7 @@ void EQAPP_AlwaysAttack_Execute()
         return;
     }
 
-    DWORD standingState = EQ_ReadMemory<BYTE>(playerSpawn + 0x279);
+    DWORD standingState = EQ_ReadMemory<BYTE>(playerSpawn + EQ_OFFSET_SPAWN_INFO_STANDING_STATE);
     if (standingState != EQ_STANDING_STATE_STANDING)
     {
         return;
@@ -30,7 +30,7 @@ void EQAPP_AlwaysAttack_Execute()
         return;
     }
 
-    int spawnType = EQ_ReadMemory<BYTE>(targetSpawn + 0x125);
+    int spawnType = EQ_ReadMemory<BYTE>(targetSpawn + EQ_OFFSET_SPAWN_INFO_TYPE);
     if (spawnType != EQ_SPAWN_TYPE_NPC)
     {
         return;

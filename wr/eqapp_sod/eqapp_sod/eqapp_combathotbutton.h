@@ -2,12 +2,13 @@
 #define EQAPP_COMBATHOTBUTTON_H
 
 bool g_combatHotbuttonIsEnabled = false;
-unsigned int g_combatHotbuttonIndex = 0;
+unsigned int g_combatHotbuttonNumber = 1;
 DWORD g_combatHotbuttonTimer = 0;
 DWORD g_combatHotbuttonTimerDelay = 1000;
 DWORD g_combatHotbuttonTimerDelayInSeconds = 1;
 
 void EQAPP_CombatHotbutton_Execute();
+void EQAPP_CombatHotbutton_Print();
 void EQAPP_CombatHotbutton_Set(unsigned buttonNumber, DWORD timerDelayInSeconds);
 
 void EQAPP_CombatHotbutton_Execute()
@@ -28,7 +29,7 @@ void EQAPP_CombatHotbutton_Execute()
         return;
     }
 
-    int spawnType = EQ_ReadMemory<BYTE>(targetSpawn + 0x125);
+    int spawnType = EQ_ReadMemory<BYTE>(targetSpawn + EQ_OFFSET_SPAWN_INFO_TYPE);
     if (spawnType != EQ_SPAWN_TYPE_NPC)
     {
         return;
@@ -44,7 +45,12 @@ void EQAPP_CombatHotbutton_Execute()
         return;
     }
 
-    EQ_DoHotButton(g_combatHotbuttonIndex);
+    EQ_DoHotButton(g_combatHotbuttonNumber);
+}
+
+void EQAPP_CombatHotbutton_Print()
+{
+    std::cout << "Combat Hotbutton: " << g_combatHotbuttonNumber << " (" << g_combatHotbuttonTimerDelayInSeconds << " second(s))" << std::endl;
 }
 
 void EQAPP_CombatHotbutton_Set(unsigned buttonNumber, DWORD timerDelayInSeconds)
@@ -58,13 +64,13 @@ void EQAPP_CombatHotbutton_Set(unsigned buttonNumber, DWORD timerDelayInSeconds)
         return;
     }
 
-    g_combatHotbuttonIndex = buttonNumber - 1; // convert number to index
+    g_combatHotbuttonNumber = buttonNumber;
 
     g_combatHotbuttonTimerDelay = (DWORD)(timerDelayInSeconds * 1000); // convert seconds to milliseconds
 
     g_combatHotbuttonTimerDelayInSeconds = timerDelayInSeconds;
 
-    std::cout << "Combat Hotbutton: " << buttonNumber << " (" << timerDelayInSeconds << " second(s))" << std::endl;
+    EQAPP_CombatHotbutton_Print();
 }
 
 #endif // EQAPP_COMBATHOTBUTTON_H

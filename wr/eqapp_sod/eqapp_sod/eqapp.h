@@ -21,6 +21,8 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved);
 
 std::ios g_coutFlags(NULL);
 
+std::mt19937 g_randomEngine((unsigned int)std::chrono::high_resolution_clock::now().time_since_epoch().count());
+
 int g_killSwitchKey = VK_PAUSE;
 
 bool g_debugIsEnabled          = false;

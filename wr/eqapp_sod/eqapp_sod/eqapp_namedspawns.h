@@ -105,25 +105,22 @@ void EQAPP_NamedSpawns_Execute()
     DWORD spawn = EQ_GetFirstSpawn();
     while (spawn)
     {
-        int spawnType = EQ_ReadMemory<BYTE>(spawn + 0x125);
-
+        int spawnType = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_TYPE);
         if (spawnType != EQ_SPAWN_TYPE_NPC)
         {
             spawn = EQ_GetNextSpawn(spawn); // next
             continue;
         }
 
-        int spawnIsPet = EQ_ReadMemory<DWORD>(spawn + 0x260);
-
+        int spawnIsPet = EQ_ReadMemory<DWORD>(spawn + EQ_OFFSET_SPAWN_INFO_PET_OWNER_SPAWN_INFO);
         if (spawnIsPet != 0)
         {
             spawn = EQ_GetNextSpawn(spawn); // next
             continue;
         }
 
-        int spawnLevel = EQ_ReadMemory<BYTE>(spawn + 0x315);
-
-        if (spawnLevel < 1 || spawnLevel > 100)
+        int spawnLevel = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_LEVEL);
+        if (spawnLevel < EQ_LEVEL_MIN || spawnLevel > EQ_LEVEL_MAX)
         {
             spawn = EQ_GetNextSpawn(spawn); // next
             continue;
@@ -159,7 +156,7 @@ void EQAPP_NamedSpawns_Execute()
 
 void EQAPP_NamedSpawns_Print()
 {
-    std::cout << "Named Spawns:" << std::endl;
+    std::cout << "Named Spawns List:" << std::endl;
 
     size_t index = 1;
 

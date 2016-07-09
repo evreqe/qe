@@ -7,9 +7,10 @@
 #include <string>
 #include <unordered_map>
 
-const char* EQ_STRING_WINDOW_TITLE      = "EverQuest";
-const char* EQ_STRING_PROCESS_NAME      = "eqgame.exe";
-const char* EQ_STRING_GRAPHICS_DLL_NAME = "EQGraphicsDX9.dll";
+const char* EQ_STRING_WINDOW_TITLE                = "EverQuest";
+const char* EQ_STRING_PROCESS_NAME                = "eqgame.exe";
+const char* EQ_STRING_GRAPHICS_DLL_NAME           = "EQGraphicsDX9.dll";
+const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 
 #define EQ_BASE_ADDRESS 0x00400000
 

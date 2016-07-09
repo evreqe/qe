@@ -4,6 +4,7 @@
 std::vector<std::string> g_noBeepList;
 
 void EQAPP_NoBeep_Load();
+void EQAPP_NoBeep_Print();
 
 void EQAPP_NoBeep_Load()
 {
@@ -36,6 +37,16 @@ void EQAPP_NoBeep_Load()
     }
 
     file.close();
+}
+
+void EQAPP_NoBeep_Print()
+{
+    std::cout << "No Beep List:" << std::endl;
+
+    for (auto& noBeep : g_noBeepList)
+    {
+        std::cout << noBeep << std::endl;
+    }
 }
 
 #endif // EQAPP_NOBEEP_H

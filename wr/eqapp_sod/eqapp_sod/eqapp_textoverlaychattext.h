@@ -7,6 +7,7 @@ int g_textOverlayChatTextDuration = 5000;
 
 void EQAPP_TextOverlayChatText_Load();
 void EQAPP_TextOverlayChatText_DisplayText(std::string text);
+void EQAPP_TextOverlayChatText_Print();
 
 void EQAPP_TextOverlayChatText_Load()
 {
@@ -44,6 +45,16 @@ void EQAPP_TextOverlayChatText_Load()
 void EQAPP_TextOverlayChatText_DisplayText(std::string text)
 {
     EQ_DisplayText(text.c_str(), g_textOverlayChatTextDuration);
+}
+
+void EQAPP_TextOverlayChatText_Print()
+{
+    std::cout << "Text Overlay Chat Text List:" << std::endl;
+
+    for (auto& textOverlayChatText : g_textOverlayChatTextList)
+    {
+        std::cout << textOverlayChatText << std::endl;
+    }
 }
 
 #endif // EQAPP_TEXTOVERLAYCHATTEXT_H

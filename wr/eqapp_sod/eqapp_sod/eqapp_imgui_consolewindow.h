@@ -3,6 +3,8 @@
 
 #include "eqapp_imgui.h"
 
+#include "eqapp_interpretcommand.h"
+
 struct EQAPPIMGUIConsoleWindow
 {
     char                  m_inputBuffer[256];
@@ -21,6 +23,12 @@ struct EQAPPIMGUIConsoleWindow
         m_commands.push_back("HELP");
         m_commands.push_back("HISTORY");
         m_commands.push_back("CLEAR");
+
+        // auto completion for console commands
+        for (auto& command : g_interpretCommandList)
+        {
+            m_commands.push_back(command.c_str());
+        }
     }
 
     ~EQAPPIMGUIConsoleWindow()

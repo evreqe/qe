@@ -63,16 +63,26 @@
 #define EQ_OFFSET_DOOR_INFO_X                                   0x48          // FLOAT
 #define EQ_OFFSET_DOOR_INFO_Z                                   0x4C          // FLOAT
 
+#define EQ_OFFSET_CHAR_INFO_BANK_ITEM_INFO_FIRST                0x1128        // DWORD POINTER
 #define EQ_OFFSET_CHAR_INFO_GROUP_INFO                          0xF1B8        // DWORD POINTER
 #define EQ_OFFSET_CHAR_INFO_CI2                                 0xF1D8        // DWORD POINTER
 #define EQ_OFFSET_CHAR_INFO_CHARACTER_NAME                      0xF210        // STRING [0x40]
 #define EQ_OFFSET_CHAR_INFO_ZONE_ID                             0xF2D4        // WORD
+#define EQ_OFFSET_CHAR_INFO_BANK_PLATINUM                       0xF5A4        // DWORD
+#define EQ_OFFSET_CHAR_INFO_BANK_GOLD                           0xF5A8        // DWORD
+#define EQ_OFFSET_CHAR_INFO_BANK_SILVER                         0xF5AC        // DWORD
+#define EQ_OFFSET_CHAR_INFO_BANK_COPPER                         0xF5B0        // DWORD
 
 #define EQ_OFFSET_GROUP_MEMBER_INFO_SPAWN_INFO                  0x28          // DWORD POINTER
 
 #define EQ_OFFSET_CI2_CHAR_INFO_2                               0x04          // DWORD POINTER
 
+#define EQ_OFFSET_CHAR_INFO_2_INVENTORY_ITEM_INFO_FIRST         0x10          // DWORD POINTER
 #define EQ_OFFSET_CHAR_INFO_2_SKILL_SWIMMING                    0x144C        // BYTE
+#define EQ_OFFSET_CHAR_INFO_2_INVENTORY_PLATINUM                0x1654        // DWORD
+#define EQ_OFFSET_CHAR_INFO_2_INVENTORY_GOLD                    0x1658        // DWORD
+#define EQ_OFFSET_CHAR_INFO_2_INVENTORY_SILVER                  0x165C        // DWORD
+#define EQ_OFFSET_CHAR_INFO_2_INVENTORY_COPPER                  0x1660        // DWORD
 
 #define EQ_OFFSET_CEverQuest_GAME_STATE                         0x5C4
 
@@ -82,6 +92,11 @@
 
 #define EQ_OFFSET_CAMERA_DATA_FIELD_OF_VIEW                     0x04          // FLOAT
 #define EQ_OFFSET_CAMERA_DATA_DRAW_DISTANCE                     0x14          // FLOAT
+#define EQ_OFFSET_CAMERA_DATA_HEADING                           0xB0          // FLOAT
+#define EQ_OFFSET_CAMERA_DATA_PITCH                             0xB4          // FLOAT
+#define EQ_OFFSET_CAMERA_DATA_Y                                 0xBC          // FLOAT
+#define EQ_OFFSET_CAMERA_DATA_X                                 0xC0          // FLOAT
+#define EQ_OFFSET_CAMERA_DATA_Z                                 0xC4          // FLOAT
 
 #define EQ_OFFSET_WINDOW_IS_VISIBLE                             0x124         // BYTE
 
@@ -95,7 +110,14 @@
 
 #define EQ_OFFSET_SPELL_MANAGER_SPELL_INFO_FIRST                0x68          // DWORD POINTER
 
-#define EQ_OFFSET_ITEM_INFO_NAME                                0xB8          // STRING PCHAR
+#define EQ_OFFSET_ITEM_INFO_CONTAINER_ITEM_INFO                 0x0C          // DWORD POINTER
+#define EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO                       0xB8          // DWORD POINTER
+#define EQ_OFFSET_ITEM_INFO_NAME                                0xB8          // STRING PCHAR         // name is just the first thing in the sub info
+#define EQ_OFFSET_ITEM_INFO_COUNT                               0xD0          // DWORD
+
+#define EQ_OFFSET_ITEM_SUB_INFO_ID                              0xD0          // DWORD
+#define EQ_OFFSET_ITEM_SUB_INFO_ICON                            0xDC          // DWORD
+#define EQ_OFFSET_ITEM_SUB_INFO_SLOTS                           0x475         // BYTE
 
 #define EQ_OFFSET_CXWndManager_FONT_MANAGER                     0xF8          // DWORD POINTER
 

@@ -71,13 +71,13 @@ void EQAPP_Hud_Execute()
 
     if (g_alwaysHotbuttonIsEnabled == true)
     {
-        ssDrawText << "Always Hotbutton: " << (g_alwaysHotbuttonIndex + 1) << " (" << g_alwaysHotbuttonTimerDelayInSeconds << "s)\n";
+        ssDrawText << "Always Hotbutton: " << g_alwaysHotbuttonNumber << " (" << g_alwaysHotbuttonTimerDelayInSeconds << "s)\n";
         numDrawText++;
     }
 
     if (g_combatHotbuttonIsEnabled == true)
     {
-        ssDrawText << "Combat Hotbutton: " << (g_combatHotbuttonIndex + 1) << " (" << g_combatHotbuttonTimerDelayInSeconds << "s)\n";
+        ssDrawText << "Combat Hotbutton: " << g_combatHotbuttonNumber << " (" << g_combatHotbuttonTimerDelayInSeconds << "s)\n";
         numDrawText++;
     }
 
@@ -112,7 +112,7 @@ void EQAPP_Hud_Execute()
 
         for (auto& itemName : g_autoLootList)
         {
-            ssDrawText << "AL: " << itemName << "\n";
+            ssDrawText << "AL Item: " << itemName << "\n";
             numDrawText++;
         }
     }

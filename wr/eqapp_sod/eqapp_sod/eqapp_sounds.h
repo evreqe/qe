@@ -13,6 +13,7 @@ bool g_soundsIsEnabled = true;
 std::vector<EQAPPSOUND> g_soundsList;
 
 void EQAPP_Sounds_Load();
+void EQAPP_Sounds_Print();
 
 void EQAPP_Sounds_Load()
 {
@@ -65,6 +66,16 @@ void EQAPP_Sounds_Load()
         sound.isEnabled    = isEnabled;
         
         g_soundsList.push_back(sound);
+    }
+}
+
+void EQAPP_Sounds_Print()
+{
+    std::cout << "Sounds List:" << std::endl;
+
+    for (auto& sound : g_soundsList)
+    {
+        std::cout << "#" << sound.index << " : " << std::boolalpha << sound.isEnabled << std::noboolalpha << " : " << sound.filename << " : " << sound.text << std::endl;
     }
 }
 
