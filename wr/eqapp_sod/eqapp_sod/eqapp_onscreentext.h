@@ -84,13 +84,13 @@ void EQAPP_OnScreenText_AddSpawnMessage(DWORD spawnInfo, bool bDespawn)
     char spawnName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
     memcpy(spawnName, (LPVOID)(spawnInfo + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(spawnName));
 
-    int spawnType = EQ_ReadMemory<BYTE>(spawnInfo + 0x125);
+    int spawnType = EQ_ReadMemory<BYTE>(spawnInfo + EQ_OFFSET_SPAWN_INFO_TYPE);
 
     if (spawnType == EQ_SPAWN_TYPE_PLAYER)
     {
         if (EQ_IsSpawnInGroup(spawnInfo) == false)
         {
-            if (strlen(spawnName) > 2)
+            if (strlen(spawnName) > EQ_SPAWN_NAME_LENGTH_MIN)
             {
                 std::stringstream ss;
                 ss << spawnName;

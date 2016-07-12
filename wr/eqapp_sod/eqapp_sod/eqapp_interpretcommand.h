@@ -49,9 +49,11 @@ const std::vector<std::string> g_interpretCommandList
     "//setspeed run3",
     "//setspeed (speed), //ss (speed)",
     "//locator, //loc",
+    "//locatorline, //locline",
     "//getlocator, //getloc",
     "//setlocator (y) (x) (z), //setloc (y) (x) (z)",
     "//find",
+    "//findline",
     "//getfind",
     "//setfind (spawn name)",
     "//linetotarget, //ltt",
@@ -690,6 +692,14 @@ void EQAPP_InterpretCommand(const char* command)
         return;
     }
 
+    // toggle locator line
+    if (strcmp(command, "//locatorline") == 0 || strcmp(command, "//locline") == 0)
+    {
+        EQ_ToggleBool(g_espLocatorDrawLineIsEnabled);
+        EQAPP_PrintBool("Locator Line", g_espLocatorDrawLineIsEnabled);
+        return;
+    }
+
     // get locator
     if (strcmp(command, "//getlocator") == 0 || strcmp(command, "//getloc") == 0)
     {
@@ -726,6 +736,14 @@ void EQAPP_InterpretCommand(const char* command)
     {
         EQ_ToggleBool(g_espFindIsEnabled);
         EQAPP_PrintBool("Find", g_espFindIsEnabled);
+        return;
+    }
+
+    // toggle find line
+    if (strcmp(command, "//findline") == 0)
+    {
+        EQ_ToggleBool(g_espFindDrawLineIsEnabled);
+        EQAPP_PrintBool("Find Line", g_espFindDrawLineIsEnabled);
         return;
     }
 
@@ -824,6 +842,7 @@ void EQAPP_InterpretCommand(const char* command)
         if (result == 3)
         {
             EQAPP_CombatHotbutton_Set(buttonNumber, timerDelayinSeconds);
+            EQAPP_CombatHotbutton_Print();
 
             g_combatHotbuttonIsEnabled = true;
         }
@@ -858,6 +877,7 @@ void EQAPP_InterpretCommand(const char* command)
         if (result == 3)
         {
             EQAPP_AlwaysHotbutton_Set(buttonNumber, timerDelayinSeconds);
+            EQAPP_AlwaysHotbutton_Print();
 
             g_alwaysHotbuttonIsEnabled = true;
         }
@@ -996,6 +1016,7 @@ void EQAPP_InterpretCommand(const char* command)
             EQ_String_ReplaceUnderscoresWithSpaces(name);
 
             EQAPP_TargetBeep_Set(name, timerDelayInSeconds);
+            EQAPP_TargetBeep_Print();
 
             g_targetBeepIsEnabled = true;
         }
@@ -1031,6 +1052,7 @@ void EQAPP_InterpretCommand(const char* command)
             EQ_String_ReplaceUnderscoresWithSpaces(name);
 
             EQAPP_SpawnBeep_Set(name);
+            EQAPP_SpawnBeep_Print();
 
             g_spawnBeepIsEnabled = true;
         }
@@ -1081,7 +1103,7 @@ void EQAPP_InterpretCommand(const char* command)
     // add map labels
     if (strcmp(command, "//addmaplabels") == 0 || strcmp(command, "//addml") == 0)
     {
-        EQAPP_MapLabels_Execute();
+        EQAPP_MapLabels_Add();
         std::cout << "Adding map labels..." << std::endl;
         return;
     }

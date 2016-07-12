@@ -47,8 +47,6 @@ void EQAPP_AlwaysHotbutton_Set(unsigned buttonNumber, DWORD timerDelayInSeconds)
     g_alwaysHotbuttonTimerDelay = (DWORD)(timerDelayInSeconds * 1000); // convert seconds to milliseconds
 
     g_alwaysHotbuttonTimerDelayInSeconds = timerDelayInSeconds;
-
-    EQAPP_AlwaysHotbutton_Print();
 }
 
 #endif // EQAPP_ALWAYSHOTBUTTON_H

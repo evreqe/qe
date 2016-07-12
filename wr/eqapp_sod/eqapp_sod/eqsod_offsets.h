@@ -12,6 +12,7 @@
 #define EQ_OFFSET_SPAWN_INFO_NUMBERED_NAME                      0xA4          // STRING [0x40]        "a_grass_snake01"
 #define EQ_OFFSET_SPAWN_INFO_NAME                               0xE4          // STRING [0x40]        "a grass snake"
 #define EQ_OFFSET_SPAWN_INFO_TYPE                               0x125         // BYTE
+#define EQ_OFFSET_SPAWN_INFO_BODY_TYPE_DESCRIPTION              0x128         // EQ_CEverQuest->GetBodyTypeDesc(spawnInfo + 0x128);
 #define EQ_OFFSET_SPAWN_INFO_HEIGHT                             0x13C         // FLOAT
 #define EQ_OFFSET_SPAWN_INFO_IS_LFG                             0x1F1         // BYTE                 looking for group
 #define EQ_OFFSET_SPAWN_INFO_IS_TRADER                          0x228         // DWORD

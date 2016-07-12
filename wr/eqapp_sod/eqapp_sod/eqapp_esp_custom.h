@@ -20,7 +20,7 @@ void EQAPP_ESP_Custom_Draw();
 
 void EQAPP_ESP_Custom_Load()
 {
-    std::cout << "Loading custom ESP..." << std::endl;
+    std::cout << "Loading Custom ESP..." << std::endl;
 
     g_espCustomList.clear();
 

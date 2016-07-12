@@ -109,7 +109,7 @@ void EQAPP_ESP_Spawns_Draw()
                 textColor = 0xFF00FF00; // green
             }
 
-            if (strlen(spawn.name) < 2)
+            if (strlen(spawn.name) < EQ_SPAWN_NAME_LENGTH_MIN)
             {
                 textColor = 0xFFC0C0C0; // gray
             }
@@ -220,7 +220,7 @@ void EQAPP_ESP_Spawns_Draw()
 
             if (EQ_IsKeyControlPressed() == true)
             {
-                const char* spawnBodyTypeDescription = EQ_CEverQuest->GetBodyTypeDesc(spawn.spawnInfo + 0x128);
+                const char* spawnBodyTypeDescription = EQ_CEverQuest->GetBodyTypeDesc(spawn.spawnInfo + EQ_OFFSET_SPAWN_INFO_BODY_TYPE_DESCRIPTION);
 
                 ssDrawText << "[" << spawnBodyTypeDescription << "]\n";
                 g_espNumDrawText++;
@@ -258,7 +258,7 @@ void EQAPP_ESP_Spawns_Draw()
 
         EQ_DrawText(ssDrawText.str().c_str(), screenX, screenY, textColor, fontSize);
 
-        if (g_espFindIsEnabled == true && spawn.isFindSpawn == true)
+        if (g_espFindIsEnabled == true && g_espFindDrawLineIsEnabled == true && spawn.isFindSpawn == true)
         {
             DWORD windowWidth  = EQ_GetWindowWidth();
             DWORD windowHeight = EQ_GetWindowHeight();
@@ -408,6 +408,11 @@ void EQAPP_ESP_ZoneObjects_Draw()
         if (pointer2 != NULL)
         {
             DWORD zoneObject = EQ_ReadMemory<DWORD>(pointer2 + 0x5C);
+            if (zoneObject == NULL)
+            {
+                zoneObject = EQ_ReadMemory<DWORD>(pointer2 + 0x60);
+            }
+
             while (zoneObject)
             {
                 DWORD zoneObject0x0C = EQ_ReadMemory<DWORD>(zoneObject + 0x0C);
@@ -463,6 +468,8 @@ void EQAPP_ESP_ZoneObjects_Draw()
                         }
                     }
                 }
+
+                //std::cout << "Zone Object Name: " << zoneObjectName << std::endl;
 
                 std::stringstream ssDrawText;
                 ssDrawText << "+ " << zoneObjectName << " (" << (int)zoneObjectDistance << ")\n";
@@ -564,6 +571,14 @@ void EQAPP_ESP_Locator_Draw()
     if (result == true)
     {
         float distance = EQ_CalculateDistance3d(playerX, playerY, playerZ, g_espLocatorX, g_espLocatorY, g_espLocatorZ);
+
+        if (g_espLocatorDrawLineIsEnabled == true)
+        {
+            DWORD windowWidth  = EQ_GetWindowWidth();
+            DWORD windowHeight = EQ_GetWindowHeight();
+
+            EQ_DrawLine((float)(windowWidth * 0.5f), (float)windowHeight, 0.0f, (float)screenX, (float)screenY, 0.0f, g_espLocatorColor);
+        }
 
         std::stringstream ss;
         ss << "+ Locator (" << (int)distance << ")";

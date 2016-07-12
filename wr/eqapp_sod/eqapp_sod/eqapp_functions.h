@@ -364,7 +364,7 @@ void EQAPP_SpawnInformation_Print(DWORD spawnInfo)
 
     // body type description
 
-    const char* spawnBodyTypeDescription = EQ_CEverQuest->GetBodyTypeDesc(spawnInfo + 0x128); // this function requires an offset!
+    std::string spawnBodyTypeDescription = EQ_GetSpawnBodyTypeDescription(spawnInfo);
 
     std::cout << "BANE:  " << spawnBodyTypeDescription << std::endl;
 }

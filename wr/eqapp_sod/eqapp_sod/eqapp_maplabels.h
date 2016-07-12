@@ -14,6 +14,7 @@ DWORD g_mapLabelsHeight = 12;
 
 void EQAPP_MapLabels_Toggle();
 void EQAPP_MapLabels_Remove();
+void EQAPP_MapLabels_Add();
 void EQAPP_MapLabels_Execute();
 void EQAPP_MapLabels_Print();
 void EQAPP_MapLabels_Filter_Print();
@@ -34,18 +35,8 @@ void EQAPP_MapLabels_Remove()
     EQ_MapWindow_RemoveLabelByData(g_mapLabelsData);
 }
 
-void EQAPP_MapLabels_Execute()
+void EQAPP_MapLabels_Add()
 {
-    if (g_mapLabelsIsEnabled == false)
-    {
-        return;
-    }
-
-    if (EQ_HasTimePassed(g_mapLabelsTimer, g_mapLabelsTimerDelay) == false)
-    {
-        return;
-    }
-
     EQAPP_MapLabels_Remove();
 
     DWORD playerSpawn = EQ_GetPlayerSpawn();
@@ -138,6 +129,21 @@ void EQAPP_MapLabels_Execute()
     }
 
     EQ_UpdateMap();
+}
+
+void EQAPP_MapLabels_Execute()
+{
+    if (g_mapLabelsIsEnabled == false)
+    {
+        return;
+    }
+
+    if (EQ_HasTimePassed(g_mapLabelsTimer, g_mapLabelsTimerDelay) == false)
+    {
+        return;
+    }
+
+    EQAPP_MapLabels_Add();
 }
 
 void EQAPP_MapLabels_Print()

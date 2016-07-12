@@ -62,6 +62,11 @@ void EQAPP_AutoLoot_Reset()
 
 void EQAPP_AutoLoot_Add(const char* itemName)
 {
+    if (itemName == NULL || strlen(itemName) == 0)
+    {
+        return;
+    }
+
     g_autoLootList.push_back(itemName);
 
     std::cout << "Auto Loot item added: " << itemName << std::endl;
@@ -69,6 +74,11 @@ void EQAPP_AutoLoot_Add(const char* itemName)
 
 void EQAPP_AutoLoot_Remove(const char* itemName)
 {
+    if (itemName == NULL || strlen(itemName) == 0)
+    {
+        return;
+    }
+
     for (auto autoLootListIterator = g_autoLootList.begin(); autoLootListIterator != g_autoLootList.end(); autoLootListIterator++)
     {
         if (strcmp(autoLootListIterator->c_str(), itemName) == 0)

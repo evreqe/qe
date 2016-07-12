@@ -2,8 +2,8 @@
 #define EQAPP_HUD_H
 
 bool g_hudIsEnabled = true;
-int g_hudX = 5;
-int g_hudY = 28;
+unsigned int g_hudX = 5;
+unsigned int g_hudY = 28;
 float g_hudWidth  = 127.0f;
 float g_hudHeight = 0.0f;
 DWORD g_hudTextColor = 0xFFFFFFFF;
@@ -29,7 +29,7 @@ void EQAPP_Hud_Execute()
 
     std::stringstream ssDrawText;
 
-    ssDrawText << g_applicationName << " - " << std::dec << (int)EQ_GetAverageFps() << " FPS\n";
+    ssDrawText << "FPS: " << std::dec << (int)EQ_GetAverageFps() << "\n";
     numDrawText++;
 
     DWORD numPlayersInZone = EQ_GetNumPlayersInZone();

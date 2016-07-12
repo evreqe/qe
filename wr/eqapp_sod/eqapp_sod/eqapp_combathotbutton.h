@@ -69,8 +69,6 @@ void EQAPP_CombatHotbutton_Set(unsigned buttonNumber, DWORD timerDelayInSeconds)
     g_combatHotbuttonTimerDelay = (DWORD)(timerDelayInSeconds * 1000); // convert seconds to milliseconds
 
     g_combatHotbuttonTimerDelayInSeconds = timerDelayInSeconds;
-
-    EQAPP_CombatHotbutton_Print();
 }
 
 #endif // EQAPP_COMBATHOTBUTTON_H

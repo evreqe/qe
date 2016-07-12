@@ -32,7 +32,7 @@ void EQAPP_TargetBeep_Execute()
     char spawnName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
     memcpy(spawnName, (LPVOID)(targetSpawn + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(spawnName));
 
-    if (strlen(spawnName) < 2)
+    if (strlen(spawnName) < EQ_SPAWN_NAME_LENGTH_MIN)
     {
         return;
     }
@@ -66,8 +66,6 @@ void EQAPP_TargetBeep_Set(std::string spawnName, DWORD timerDelayInSeconds)
     g_targetBeepTimerDelay = (DWORD)(timerDelayInSeconds * 1000); // convert seconds to milliseconds
 
     g_targetBeepTimerDelayInSeconds = timerDelayInSeconds;
-
-    EQAPP_TargetBeep_Print();
 }
 
 #endif // EQAPP_TARGETBEEP_H

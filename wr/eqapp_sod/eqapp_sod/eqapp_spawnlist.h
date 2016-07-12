@@ -84,7 +84,7 @@ void EQAPP_SpawnList_Print(const char* filterSpawnName)
 
         std::cout << spawnName << " ";
 
-        if (strlen(spawnLastName) != 0)
+        if (strlen(spawnLastName) > 0)
         {
             if (spawnType == EQ_SPAWN_TYPE_NPC || spawnType == EQ_SPAWN_TYPE_NPC_CORPSE)
             {

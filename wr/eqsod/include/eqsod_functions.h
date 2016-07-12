@@ -835,6 +835,11 @@ FLOAT EQ_GetSpawnZ(DWORD spawnInfo)
     return EQ_ReadMemory<FLOAT>(spawnInfo + EQ_OFFSET_SPAWN_INFO_Z);
 }
 
+std::string EQ_GetSpawnBodyTypeDescription(DWORD spawnInfo)
+{
+    return EQ_CEverQuest->GetBodyTypeDesc(spawnInfo + EQ_OFFSET_SPAWN_INFO_BODY_TYPE_DESCRIPTION);
+}
+
 DWORD EQ_GetFirstGroundSpawn()
 {
     return EQ_ReadMemory<DWORD>(EQ_POINTER_GROUND_SPAWN_INFO_FIRST);

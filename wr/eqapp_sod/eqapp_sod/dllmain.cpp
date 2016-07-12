@@ -10,6 +10,7 @@
 #include <vector>
 #include <chrono>
 #include <random>
+#include <functional>
 
 #include <cstdio>
 #include <cstdlib>
@@ -325,7 +326,7 @@ int __fastcall EQAPP_DETOUR_CDisplay__CreatePlayerActor(void* pThis, void* not_u
             EQAPP_OnScreenText_AddSpawnMessage(a1, false);
         }
 
-        if (EQ_IsInGame() == true)
+        if (g_spawnBeepIsEnabled == true && EQ_IsInGame() == true)
         {
             EQAPP_SpawnBeep_Execute(a1);
         }
@@ -439,6 +440,10 @@ int __fastcall EQAPP_DETOUR_CEverQuest__EnterZone(void* pThis, void* not_used, s
     }
 
     int result = EQAPP_REAL_CEverQuest__EnterZone(pThis, a1);
+
+    std::cout << "Entering zone..." << std::endl;
+
+    EQAPP_MapLabels_Remove();
 
     EQAPP_FreeCamera_Set(false);
 
@@ -748,7 +753,11 @@ DWORD WINAPI EQAPP_ThreadConsole(LPVOID param)
         return 0;
     }
 
-    g_consoleWindow = glfwCreateWindow(g_consoleWindowWidth, g_consoleWindowHeight, g_consoleWindowTitle, NULL, NULL);
+    const GLFWvidmode* videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    g_videoModeWidth  = videoMode->width;
+    g_videoModeHeight = videoMode->height;
+
+    g_consoleWindow = glfwCreateWindow(g_videoModeWidth, g_videoModeHeight, g_consoleWindowTitle, NULL, NULL);
     if (!g_consoleWindow)
     {
         glfwTerminate();
@@ -769,9 +778,9 @@ DWORD WINAPI EQAPP_ThreadConsole(LPVOID param)
     // disable close button
     EnableMenuItem(GetSystemMenu(g_consoleWindowHwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
-    const GLFWvidmode* videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    g_videoModeWidth  = videoMode->width;
-    g_videoModeHeight = videoMode->height;
+    ShowWindow(g_consoleWindowHwnd, SW_MAXIMIZE);
+    ShowWindow(g_consoleWindowHwnd, SW_SHOW);
+    UpdateWindow(g_consoleWindowHwnd);
 
     EQAPP_Console_Load();
 

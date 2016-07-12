@@ -9,7 +9,7 @@ void EQAPP_ZoneShortNames_Print();
 
 void EQAPP_ZoneShortNames_Load()
 {
-    std::cout << "Loading short zone names..." << std::endl;
+    std::cout << "Loading Zone Short Names..." << std::endl;
 
     g_zoneShortNamesList.clear();
 
