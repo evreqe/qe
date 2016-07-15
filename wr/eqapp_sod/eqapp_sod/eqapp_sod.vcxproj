@@ -126,6 +126,7 @@
     <ClInclude Include="eqapp_namedspawns.h" />
     <ClInclude Include="eqapp_nobeep.h" />
     <ClInclude Include="eqapp_onscreentext.h" />
+    <ClInclude Include="eqapp_playeralert.h" />
     <ClInclude Include="eqapp_sounds.h" />
     <ClInclude Include="eqapp_spawnbeep.h" />
     <ClInclude Include="eqapp_spawncastspell.h" />

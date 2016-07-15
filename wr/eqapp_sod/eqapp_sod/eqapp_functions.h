@@ -269,7 +269,7 @@ void EQAPP_LootDebugInformation_Print()
         return;
     }
 
-    DWORD lootWindowIsVisible = EQ_ReadMemory<BYTE>(lootWindow + 0x124);
+    DWORD lootWindowIsVisible = EQ_ReadMemory<BYTE>(lootWindow + EQ_OFFSET_WINDOW_IS_VISIBLE);
     if (lootWindowIsVisible == 0)
     {
         std::cout << "Loot Window is NOT open." << std::endl;
@@ -278,17 +278,17 @@ void EQAPP_LootDebugInformation_Print()
 
     for (size_t i = 0; i < EQ_NUM_LOOT_WINDOW_SLOTS; i++)
     {
-        DWORD itemInfo = EQ_ReadMemory<DWORD>(lootWindow + (0x228 + (i * 4)));
+        DWORD itemInfo = EQ_ReadMemory<DWORD>(lootWindow + (EQ_OFFSET_CLootWnd_ITEM_INFO_FIRST + (i * 4)));
         if (itemInfo == NULL)
         {
-            std::cout << "#" << i << ": itemInfo == NULL" << std::endl;
+            std::cout << "#" << i << ": item info is NULL" << std::endl;
             continue;
         }
 
-        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + 0xB8);
+        PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + EQ_OFFSET_ITEM_INFO_NAME);
         if (itemName == NULL)
         {
-            std::cout << "#" << i << ": itemName == NULL" << std::endl;
+            std::cout << "#" << i << ": item name is NULL" << std::endl;
             continue;
         }
 
@@ -313,7 +313,7 @@ void EQAPP_SpawnInformation_Print(DWORD spawnInfo)
 
     std::cout << "NAME:  " << spawnNumberedName;
 
-    int spawnType = EQ_ReadMemory<BYTE>(spawnInfo + 0x125);
+    int spawnType = EQ_ReadMemory<BYTE>(spawnInfo + EQ_OFFSET_SPAWN_INFO_TYPE);
     if (spawnType != EQ_SPAWN_TYPE_PLAYER)
     {
         char spawnName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
@@ -326,13 +326,13 @@ void EQAPP_SpawnInformation_Print(DWORD spawnInfo)
 
     // level
 
-    int spawnLevel = EQ_ReadMemory<BYTE>(spawnInfo + 0x315);
+    int spawnLevel = EQ_ReadMemory<BYTE>(spawnInfo + EQ_OFFSET_SPAWN_INFO_LEVEL);
 
     std::cout << "LEVEL: " << spawnLevel << std::endl;
 
     // guild
 
-    int spawnGuildId = EQ_ReadMemory<DWORD>(spawnInfo + 0x30C);
+    int spawnGuildId = EQ_ReadMemory<DWORD>(spawnInfo + EQ_OFFSET_SPAWN_INFO_GUILD_ID);
 
     const char* spawnGuildName = EQ_EQ_Guilds.GetGuildNameById(spawnGuildId);
 
@@ -340,7 +340,7 @@ void EQAPP_SpawnInformation_Print(DWORD spawnInfo)
 
     // race
 
-    int spawnRace = EQ_ReadMemory<DWORD>(spawnInfo + 0xE64);
+    int spawnRace = EQ_ReadMemory<DWORD>(spawnInfo + EQ_OFFSET_SPAWN_INFO_RACE);
 
     const char* spawnRaceDescription = EQ_CEverQuest->GetRaceDesc(spawnRace);
 
@@ -348,7 +348,7 @@ void EQAPP_SpawnInformation_Print(DWORD spawnInfo)
 
     // class
 
-    int spawnClass = EQ_ReadMemory<BYTE>(spawnInfo + 0xE68);
+    int spawnClass = EQ_ReadMemory<BYTE>(spawnInfo + EQ_OFFSET_SPAWN_INFO_CLASS);
 
     const char* spawnClassDescription = EQ_CEverQuest->GetClassDesc(spawnClass);
 
@@ -356,7 +356,7 @@ void EQAPP_SpawnInformation_Print(DWORD spawnInfo)
 
     // deity
 
-    int spawnDeity = EQ_ReadMemory<DWORD>(spawnInfo + 0xD4D);
+    int spawnDeity = EQ_ReadMemory<BYTE>(spawnInfo + EQ_OFFSET_SPAWN_INFO_DEITY);
 
     const char* spawnDeityDescription = EQ_CEverQuest->GetDeityDesc(spawnDeity);
 
@@ -377,10 +377,10 @@ void EQAPP_BankCurrency_Print()
         return;
     }
 
-    DWORD bankPlatinum = EQ_ReadMemory<DWORD>(charInfo + 0xF5A4);
-    DWORD bankGold     = EQ_ReadMemory<DWORD>(charInfo + 0xF5A8);
-    DWORD bankSilver   = EQ_ReadMemory<DWORD>(charInfo + 0xF5AC);
-    DWORD bankCopper   = EQ_ReadMemory<DWORD>(charInfo + 0xF5B0);
+    DWORD bankPlatinum = EQ_ReadMemory<DWORD>(charInfo + EQ_OFFSET_CHAR_INFO_BANK_PLATINUM);
+    DWORD bankGold     = EQ_ReadMemory<DWORD>(charInfo + EQ_OFFSET_CHAR_INFO_BANK_GOLD);
+    DWORD bankSilver   = EQ_ReadMemory<DWORD>(charInfo + EQ_OFFSET_CHAR_INFO_BANK_SILVER);
+    DWORD bankCopper   = EQ_ReadMemory<DWORD>(charInfo + EQ_OFFSET_CHAR_INFO_BANK_COPPER);
 
     std::cout << "You have "
               << bankPlatinum << "p "
@@ -398,7 +398,7 @@ void EQAPP_CastRayToTarget_Print()
         DWORD targetSpawn = EQ_GetTargetSpawn();
         if (targetSpawn == NULL)
         {
-            EQAPP_PrintErrorMessage(__FUNCTION__, "target not found");
+            EQAPP_PrintErrorMessage(__FUNCTION__, "target is NULL");
             return;
         }
 
@@ -430,7 +430,7 @@ void EQAPP_MeleeRangeToTarget_Print()
         DWORD targetSpawn = EQ_GetTargetSpawn();
         if (targetSpawn == NULL)
         {
-            EQAPP_PrintErrorMessage(__FUNCTION__, "target not found");
+            EQAPP_PrintErrorMessage(__FUNCTION__, "target is NULL");
             return;
         }
 

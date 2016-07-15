@@ -24,6 +24,7 @@
 #define EQ_OFFSET_SPAWN_INFO_LEVEL                              0x315         // BYTE
 #define EQ_OFFSET_SPAWN_INFO_SPELL_CASTING_TIMER                0x448         // DWORD
 #define EQ_OFFSET_SPAWN_INFO_IS_GM                              0x4DA         // BYTE                 gamemaster
+#define EQ_OFFSET_SPAWN_INFO_DEITY                              0xD4D         // BYTE
 #define EQ_OFFSET_SPAWN_INFO_FOLLOW_SPAWN_INFO                  0xDF4         // DWORD POINTER
 #define EQ_OFFSET_SPAWN_INFO_RACE                               0xE64         // DWORD
 #define EQ_OFFSET_SPAWN_INFO_CLASS                              0xE68         // BYTE

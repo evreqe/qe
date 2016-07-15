@@ -72,6 +72,7 @@
 #include "eqapp_onscreentext.h"
 #include "eqapp_autoloot.h"
 #include "eqapp_maplabels.h"
+#include "eqapp_playeralert.h"
 #include "eqapp_drawdistance.h"
 #include "eqapp_combathotbutton.h"
 #include "eqapp_alwayshotbutton.h"
@@ -201,13 +202,36 @@ int __cdecl EQAPP_DETOUR_ExecuteCmd(DWORD a1, BOOL a2, PVOID a3)
         if (a1 != NULL && a2 != NULL && a3 != NULL && commandName.size() != 0)
         {
             std::stringstream ss;
-            ss << "ExecuteCmd: " << a1 << ", " << a2 << ", " << a3 << " (" << commandName << ")";
+            ss << "ExecuteCmd(): " << a1 << ", " << a2 << ", " << a3 << " (" << commandName << ")";
 
             EQAPP_PrintDebugMessage(__FUNCTION__, ss.str());
         }
     }
 
     return EQAPP_REAL_ExecuteCmd(a1, a2, a3);
+}
+
+int __cdecl EQAPP_DETOUR_SetTarget(DWORD a1, const char* a2)
+{
+    // a1 = playerSpawn + 0x00 DWORD POINTER
+    // a2 = spawn name text (/target 'text')
+
+    if (g_bExit == 1)
+    {
+        return EQAPP_REAL_SetTarget(a1, a2);
+    }
+
+    int result = EQAPP_REAL_SetTarget(a1, a2);
+
+    //std::cout << "[debug] SetTarget():" << std::endl;
+    //std::cout << "[debug] a1: " << a1 << std::endl;
+    //std::cout << "[debug] a2: " << a2 << std::endl;
+
+    std::string targetName = a2;
+
+    EQ_SetTargetByName(targetName.c_str());
+
+    return result;
 }
 
 int __fastcall EQAPP_DETOUR_CEverQuest__SetGameState(void* pThis, void* not_used, int a1)
@@ -713,12 +737,14 @@ int __cdecl EQAPP_DETOUR_DrawNetStatus(int a1, unsigned short a2, unsigned short
 
     EQAPP_FreeCamera_Keys();
 
+    EQAPP_PlayerAlert_Execute();
+    EQAPP_TargetBeep_Execute();
+
     EQAPP_HideCorpseLooted_Execute();
     EQAPP_AlwaysAttack_Execute();
     EQAPP_MaxSwimmingSkill_Execute();
     EQAPP_AutoLoot_Execute();
     EQAPP_SpawnCastSpell_Execute();
-    EQAPP_TargetBeep_Execute();
     EQAPP_CombatHotbutton_Execute();
     EQAPP_AlwaysHotbutton_Execute();
     EQAPP_ChangeHeight_Execute();

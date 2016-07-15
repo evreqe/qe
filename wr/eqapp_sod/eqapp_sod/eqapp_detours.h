@@ -4,6 +4,7 @@
 EQ_FUNCTION_TYPE_Exit EQAPP_REAL_Exit = NULL;
 EQ_FUNCTION_TYPE_DrawNetStatus EQAPP_REAL_DrawNetStatus = NULL;
 EQ_FUNCTION_TYPE_ExecuteCmd EQAPP_REAL_ExecuteCmd = NULL;
+EQ_FUNCTION_TYPE_SetTarget EQAPP_REAL_SetTarget = NULL;
 
 EQ_FUNCTION_TYPE_CDisplay__CreatePlayerActor EQAPP_REAL_CDisplay__CreatePlayerActor = NULL;
 EQ_FUNCTION_TYPE_CDisplay__DeleteActor EQAPP_REAL_CDisplay__DeleteActor = NULL;
@@ -35,6 +36,7 @@ void EQAPP_Detours_Remove();
 int __cdecl EQAPP_DETOUR_Exit();
 int __cdecl EQAPP_DETOUR_DrawNetStatus(int a1, unsigned short a2, unsigned short a3, unsigned short a4, unsigned short a5, int a6, unsigned short a7, unsigned long a8, long a9, unsigned long a10);
 int __cdecl EQAPP_DETOUR_ExecuteCmd(DWORD a1, BOOL a2, PVOID a3);
+int __cdecl EQAPP_DETOUR_SetTarget(DWORD a1, const char* a2);
 
 int __fastcall EQAPP_DETOUR_CDisplay__CreatePlayerActor(void* pThis, void* not_used, int a1, int a2, int a3, int a4, int a5);
 int __fastcall EQAPP_DETOUR_CDisplay__DeleteActor(void* pThis, void* not_used, DWORD a1);
@@ -63,6 +65,7 @@ void EQAPP_Detours_Add()
     EQAPP_REAL_Exit = (EQ_FUNCTION_TYPE_Exit)DetourFunction((PBYTE)EQ_FUNCTION_Exit, (PBYTE)EQAPP_DETOUR_Exit);
     EQAPP_REAL_DrawNetStatus = (EQ_FUNCTION_TYPE_DrawNetStatus)DetourFunction((PBYTE)EQ_FUNCTION_DrawNetStatus, (PBYTE)EQAPP_DETOUR_DrawNetStatus);
     EQAPP_REAL_ExecuteCmd = (EQ_FUNCTION_TYPE_ExecuteCmd)DetourFunction((PBYTE)EQ_FUNCTION_ExecuteCmd, (PBYTE)EQAPP_DETOUR_ExecuteCmd);
+    EQAPP_REAL_SetTarget = (EQ_FUNCTION_TYPE_SetTarget)DetourFunction((PBYTE)EQ_FUNCTION_SetTarget, (PBYTE)EQAPP_DETOUR_SetTarget);
 
     EQAPP_REAL_CDisplay__CreatePlayerActor = (EQ_FUNCTION_TYPE_CDisplay__CreatePlayerActor)DetourFunction((PBYTE)EQ_FUNCTION_CDisplay__CreatePlayerActor, (PBYTE)EQAPP_DETOUR_CDisplay__CreatePlayerActor);
     EQAPP_REAL_CDisplay__DeleteActor = (EQ_FUNCTION_TYPE_CDisplay__DeleteActor)DetourFunction((PBYTE)EQ_FUNCTION_CDisplay__DeleteActor, (PBYTE)EQAPP_DETOUR_CDisplay__DeleteActor);
@@ -92,6 +95,7 @@ void EQAPP_Detours_Remove()
     DetourRemove((PBYTE)EQAPP_REAL_Exit, (PBYTE)EQAPP_DETOUR_Exit);
     DetourRemove((PBYTE)EQAPP_REAL_DrawNetStatus, (PBYTE)EQAPP_DETOUR_DrawNetStatus);
     DetourRemove((PBYTE)EQAPP_REAL_ExecuteCmd, (PBYTE)EQAPP_DETOUR_ExecuteCmd);
+    DetourRemove((PBYTE)EQAPP_REAL_SetTarget, (PBYTE)EQAPP_DETOUR_SetTarget);
 
     DetourRemove((PBYTE)EQAPP_REAL_CDisplay__CreatePlayerActor, (PBYTE)EQAPP_DETOUR_CDisplay__CreatePlayerActor);
     DetourRemove((PBYTE)EQAPP_REAL_CDisplay__DeleteActor, (PBYTE)EQAPP_DETOUR_CDisplay__DeleteActor);

@@ -561,6 +561,11 @@ typedef int (__cdecl* EQ_FUNCTION_TYPE_ExecuteCmd)(DWORD command, BOOL hold, PVO
 EQ_FUNCTION_AT_ADDRESS(void EQ_ExecuteCmd(DWORD command, BOOL hold, PVOID unknown), EQ_FUNCTION_ExecuteCmd);
 #endif
 
+#ifdef EQ_FUNCTION_SetTarget
+typedef int (__cdecl* EQ_FUNCTION_TYPE_SetTarget)(DWORD a1, const char* spawnName);
+EQ_FUNCTION_AT_ADDRESS(int __cdecl EQ_SetTarget(DWORD a1, const char* spawnName), EQ_FUNCTION_SetTarget);
+#endif
+
 /* functions */
 
 void EQ_ToggleBool(bool& b)
@@ -1420,7 +1425,7 @@ DWORD EQ_GetNumPlayersInZone()
                 char spawnNumberedName[EQ_SIZE_SPAWN_INFO_NUMBERED_NAME] = {0};
                 memcpy(spawnNumberedName, (LPVOID)(spawn + EQ_OFFSET_SPAWN_INFO_NUMBERED_NAME), sizeof(spawnNumberedName));
 
-                if (strlen(spawnNumberedName) > EQ_SPAWN_NAME_LENGTH_MIN)
+                if (strlen(spawnNumberedName) > EQ_SPAWN_NAME_LENGTH_MIN - 1)
                 {
                     numPlayers++;
                 }
@@ -1451,42 +1456,39 @@ bool EQ_DoesSpawnExist(DWORD spawnInfo)
     return false;
 }
 
-DWORD EQ_GetSpawnByName(const char* name)
+DWORD EQ_GetSpawnByName(const char* name, bool bUseInternalName = false, bool bUsePartialMatch = false)
 {
     DWORD spawn = EQ_GetFirstSpawn();
     while (spawn)
     {
-        char spawnName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
-        memcpy(spawnName, (LPVOID)(spawn + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(spawnName));
-
-        if (strcmp(spawnName, name) == 0)
+        DWORD offset = EQ_OFFSET_SPAWN_INFO_NAME;
+        if (bUseInternalName == true)
         {
-            return spawn;
+            offset = EQ_OFFSET_SPAWN_INFO_NUMBERED_NAME;
+        }
+
+        char spawnName[0x40] = {0};
+        memcpy(spawnName, (LPVOID)(spawn + offset), sizeof(spawnName));
+
+        if (bUsePartialMatch == true)
+        {
+            if (strstr(spawnName, name) != NULL)
+            {
+                return spawn;
+            }
+        }
+        else
+        {
+            if (strcmp(spawnName, name) == 0)
+            {
+                return spawn;
+            }
         }
 
         spawn = EQ_GetNextSpawn(spawn); // next
     }
 
-    return false;
-}
-
-DWORD EQ_GetSpawnByInternalName(const char* name)
-{
-    DWORD spawn = EQ_GetFirstSpawn();
-    while (spawn)
-    {
-        char spawnNumberedName[EQ_SIZE_SPAWN_INFO_NUMBERED_NAME] = {0};
-        memcpy(spawnNumberedName, (LPVOID)(spawn + EQ_OFFSET_SPAWN_INFO_NUMBERED_NAME), sizeof(spawnNumberedName));
-
-        if (strcmp(spawnNumberedName, name) == 0)
-        {
-            return spawn;
-        }
-
-        spawn = EQ_GetNextSpawn(spawn); // next
-    }
-
-    return false;
+    return NULL;
 }
 
 struct _EQMAPLABEL* EQ_MapWindow_AddLabel(EQMAPLABEL* mapLabel)
@@ -1644,10 +1646,10 @@ DWORD EQ_GetFontHeight(int fontSize)
 
     if (fontSize == 2)
     {
-        return 13;
+        return 14;
     }
 
-    return 13;
+    return 14;
 }
 
 FLOAT EQ_GetAverageFps()
@@ -1978,6 +1980,104 @@ void EQ_LoadGraphicsDllFunctions()
 
     DWORD addressDrawQuad = baseAddress + EQ_GRAPHICS_DLL_OFFSET_DrawQuad;
     EQGraphicsDLL__DrawQuad = (EQ_FUNCTION_TYPE_EQGraphicsDLL__DrawQuad)addressDrawQuad;
+}
+
+void EQ_SetTarget(DWORD spawnInfo)
+{
+    EQ_WriteMemory<DWORD>(EQ_POINTER_SPAWN_INFO_TARGET, spawnInfo);
+}
+
+void EQ_SetTargetByName(const char* name)
+{
+    if (name == NULL)
+    {
+        return;
+    }
+
+    std::multimap<float, DWORD> distanceList;
+
+    DWORD playerSpawn = EQ_GetPlayerSpawn();
+
+    FLOAT playerY = EQ_GetSpawnY(playerSpawn);
+    FLOAT playerX = EQ_GetSpawnX(playerSpawn);
+    FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
+
+    DWORD spawn = EQ_GetFirstSpawn();
+    while (spawn)
+    {
+        char spawnName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
+        memcpy(spawnName, (LPVOID)(spawn + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(spawnName));
+
+        if (strlen(spawnName) < EQ_SPAWN_NAME_LENGTH_MIN)
+        {
+            spawn = EQ_GetNextSpawn(spawn); // next
+            continue;
+        }
+
+/*
+        int spawnType = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_TYPE);
+
+        if (spawnType == EQ_SPAWN_TYPE_PLAYER_CORPSE || spawnType == EQ_SPAWN_TYPE_NPC_CORPSE)
+        {
+            if (strstr(name, "corpse") == NULL)
+            {
+                spawn = EQ_GetNextSpawn(spawn); // next
+                continue;
+            }
+        }
+*/
+
+        FLOAT spawnY = EQ_GetSpawnY(spawn);
+        FLOAT spawnX = EQ_GetSpawnX(spawn);
+        FLOAT spawnZ = EQ_GetSpawnZ(spawn);
+
+        float spawnDistance = EQ_CalculateDistance3d(playerX, playerY, playerZ, spawnX, spawnY, spawnZ);
+
+        distanceList.insert(std::make_pair(spawnDistance, spawn));
+
+        spawn = EQ_GetNextSpawn(spawn); // next
+    }
+
+/*
+    for (auto& distancePair : distanceList)
+    {
+        DWORD spawn = distancePair.second;
+
+        char spawnName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
+        memcpy(spawnName, (LPVOID)(spawn + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(spawnName));
+
+        std::cout << "Distance List: " << spawnName << " : " << distancePair.first << std::endl;
+    }
+*/
+
+    for (auto& distancePair : distanceList)
+    {
+        DWORD spawn = distancePair.second;
+        if (spawn == NULL)
+        {
+            continue;
+        }
+
+        char spawnName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
+        memcpy(spawnName, (LPVOID)(spawn + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(spawnName));
+
+        if (strlen(spawnName) < EQ_SPAWN_NAME_LENGTH_MIN)
+        {
+            continue;
+        }
+
+        if (strcmp(spawnName, name) == 0)
+        {
+            EQ_SetTarget(spawn);
+            return;
+        }
+
+        if (strstr(spawnName, name) != NULL)
+        {
+            EQ_SetTarget(spawn);
+            return;
+        }
+    }
 }
 
 #endif // EQSOD_FUNCTIONS_H

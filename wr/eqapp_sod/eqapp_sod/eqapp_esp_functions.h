@@ -10,6 +10,7 @@ void EQAPP_ESP_Execute();
 void EQAPP_ESP_Spawns_Draw();
 void EQAPP_ESP_GroundSpawns_Draw();
 void EQAPP_ESP_Doors_Draw();
+void EQAPP_ESP_ZoneObjects_Debug();
 void EQAPP_ESP_ZoneObjects_Draw();
 void EQAPP_ESP_Waypoints_Draw();
 void EQAPP_ESP_Locator_Draw();
@@ -37,6 +38,7 @@ void EQAPP_ESP_Execute()
     // draw order is least important to most important
     EQAPP_ESP_Custom_Draw();
     EQAPP_ESP_Waypoints_Draw();
+    EQAPP_ESP_ZoneObjects_Draw();
     EQAPP_ESP_Doors_Draw();
     EQAPP_ESP_GroundSpawns_Draw();
     EQAPP_ESP_Locator_Draw();
@@ -62,6 +64,11 @@ void EQAPP_ESP_Spawns_Draw()
         {
             continue;
         }
+
+        // force coordinates to update fast
+        spawn.y = EQ_GetSpawnY(spawn.spawnInfo);
+        spawn.x = EQ_GetSpawnX(spawn.spawnInfo);
+        spawn.z = EQ_GetSpawnZ(spawn.spawnInfo);
 
         int fontSize = 3;
 
@@ -386,6 +393,98 @@ void EQAPP_ESP_Doors_Draw()
     }
 }
 
+void EQAPP_ESP_ZoneObjects_Debug()
+{
+    std::cout << "ESP Zone Objects Debug:" << std::endl;
+
+    DWORD playerSpawn = EQ_GetPlayerSpawn();
+
+    FLOAT playerY = EQ_GetSpawnY(playerSpawn);
+    FLOAT playerX = EQ_GetSpawnX(playerSpawn);
+    FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
+
+    DWORD pointer1 = EQ_ReadMemory<DWORD>(0x00B112C0);
+    if (pointer1 != NULL)
+    {
+        DWORD pointer2 = EQ_ReadMemory<DWORD>(pointer1 + 0x94);
+        if (pointer2 != NULL)
+        {
+            DWORD zoneObject = EQ_ReadMemory<DWORD>(pointer2 + 0x5C);
+
+            while (zoneObject)
+            {
+                DWORD zoneObject0x0C = EQ_ReadMemory<DWORD>(zoneObject + 0x0C);
+
+                if (zoneObject0x0C == 2)
+                {
+                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
+                    continue;
+                }
+
+                DWORD zoneObject0x2C = EQ_ReadMemory<BYTE>(zoneObject + 0x2C);
+                DWORD zoneObject0x2D = EQ_ReadMemory<BYTE>(zoneObject + 0x2D);
+
+                // skip player and npc models
+                //if (EQ_IsKeyControlPressed() == false && zoneObject0x2C == 1 && zoneObject0x2D == 0)
+                //{
+                    //zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
+                    //continue;
+                //}
+
+                FLOAT zoneObjectY = EQ_ReadMemory<FLOAT>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_Y);
+                FLOAT zoneObjectX = EQ_ReadMemory<FLOAT>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_X);
+                FLOAT zoneObjectZ = EQ_ReadMemory<FLOAT>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_Z);
+
+                if (zoneObjectY == 0 && zoneObjectX == 0 && zoneObjectZ == 0)
+                {
+                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
+                    continue;
+                }
+
+                float zoneObjectDistance = EQ_CalculateDistance3d(playerX, playerY, playerZ, zoneObjectX, zoneObjectY, zoneObjectZ);
+                if (zoneObjectDistance > g_espZoneObjectDistance)
+                {
+                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
+                    continue;
+                }
+
+                std::string zoneObjectName = "ZONEOBJECT";
+
+                DWORD zoneObject0x14 = EQ_ReadMemory<DWORD>(zoneObject + 0x14);
+                if (zoneObject0x14 != NULL)
+                {
+                    DWORD zoneObject0x14x18 = EQ_ReadMemory<DWORD>(zoneObject0x14 + 0x18);
+                    if (zoneObject0x14x18 != NULL)
+                    {
+                        PCHAR zoneObjectNamePointer = EQ_ReadMemory<PCHAR>(zoneObject0x14x18 + 0x08);
+                        if (zoneObjectNamePointer != NULL)
+                        {
+                            zoneObjectName = std::string(zoneObjectNamePointer);
+                        }
+                    }
+                }
+
+                std::cout << "Zone Object Name: " << zoneObjectName << std::endl;
+
+                std::cout << "Zone Object Distance: " << zoneObjectDistance << std::endl;
+
+                std::cout << "Zone Object Y: " << zoneObjectY << std::endl;
+                std::cout << "Zone Object X: " << zoneObjectX << std::endl;
+                std::cout << "Zone Object Z: " << zoneObjectZ << std::endl;
+
+                std::cout << "Zone Object 0x0C: " << zoneObject0x0C << std::endl;
+
+                std::cout << "Zone Object 0x2C: " << zoneObject0x2C << std::endl;
+                std::cout << "Zone Object 0x2D: " << zoneObject0x2D << std::endl;
+
+                std::cout << "--------------------------------------------------" << std::endl;
+
+                zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
+            }
+        }
+    }
+}
+
 void EQAPP_ESP_ZoneObjects_Draw()
 {
     // TODO: fix magic numbers for addresses and offsets
@@ -408,10 +507,6 @@ void EQAPP_ESP_ZoneObjects_Draw()
         if (pointer2 != NULL)
         {
             DWORD zoneObject = EQ_ReadMemory<DWORD>(pointer2 + 0x5C);
-            if (zoneObject == NULL)
-            {
-                zoneObject = EQ_ReadMemory<DWORD>(pointer2 + 0x60);
-            }
 
             while (zoneObject)
             {
@@ -468,8 +563,6 @@ void EQAPP_ESP_ZoneObjects_Draw()
                         }
                     }
                 }
-
-                //std::cout << "Zone Object Name: " << zoneObjectName << std::endl;
 
                 std::stringstream ssDrawText;
                 ssDrawText << "+ " << zoneObjectName << " (" << (int)zoneObjectDistance << ")\n";

@@ -125,6 +125,7 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 #define EQ_FUNCTION_get_melee_range             0x004AAA20 // __get_melee_range
 #define EQ_FUNCTION_get_bearing                 0x004B7BF0
 #define EQ_FUNCTION_Screenshot                  0x00469CC0
+#define EQ_FUNCTION_SetTarget                   0x004B2F90
 
 #define EQ_FUNCTION_EQ_Guilds__GetGuildNameById    0x00421930 // GetPlayerGuildName
 
@@ -353,7 +354,7 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 
 #define EQ_SKILL_MAX 250
 
-#define EQ_SPAWN_NAME_LENGTH_MIN 2
+#define EQ_SPAWN_NAME_LENGTH_MIN 4
 
 const std::unordered_map<std::string, std::string> EQ_KEYVALUE_ACTOR_DEFINITIONS
 {

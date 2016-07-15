@@ -32,6 +32,7 @@ const std::vector<std::string> g_interpretCommandList
     "//espdoor, //espd",
     "//espskeleton, //espsk",
     "//espzoneobject, //espzo",
+    "//espzoneobjectdebug, //espzodebug",
     "//espcustom, //espc",
     "//espwaypoint, //espwp",
     "//setespspawndistance (distance), //setesps (distance), //setesp (distance)",
@@ -77,6 +78,9 @@ const std::vector<std::string> g_interpretCommandList
     "//spawnbeep, //sbeep",
     "//getspawnbeep, //getsbeep",
     "//setspawnbeep (name), //setsbeep (name), //ssb (name)",
+    "//playeralert, //pa",
+    "//getplayeralert, //getpa",
+    "//setplayeralert (number), //setpa (number)",
     "//changeheight",
     "//setheight (height), //sh (height)",
     "//maplabels",
@@ -454,6 +458,13 @@ void EQAPP_InterpretCommand(const char* command)
     {
         EQ_ToggleBool(g_espZoneObjectIsEnabled);
         EQAPP_PrintBool("ESP Zone Object", g_espZoneObjectIsEnabled);
+        return;
+    }
+
+    // debug esp zone object
+    if (strcmp(command, "//espzoneobjectdebug") == 0 || strcmp(command, "//espzodebug") == 0)
+    {
+        EQAPP_ESP_ZoneObjects_Debug();
         return;
     }
 
@@ -1055,6 +1066,41 @@ void EQAPP_InterpretCommand(const char* command)
             EQAPP_SpawnBeep_Print();
 
             g_spawnBeepIsEnabled = true;
+        }
+
+        return;
+    }
+
+    // toggle player alert
+    if (strcmp(command, "//playeralert") == 0 || strcmp(command, "//pa") == 0)
+    {
+        EQ_ToggleBool(g_playerAlertIsEnabled);
+        EQAPP_PrintBool("Player Alert", g_playerAlertIsEnabled);
+        return;
+    }
+
+    // get player alert
+    if (strcmp(command, "//getplayeralert") == 0 || strcmp(command, "//getpa") == 0)
+    {
+        EQAPP_PlayerAlert_Print();
+        return;
+    }
+
+    // set player alert
+    if (strncmp(command, "//setplayeralert ", 17) == 0 || strncmp(command, "//setpa ", 8) == 0)
+    {
+        char commandEx[128];
+
+        unsigned int minimumNumPlayersInZone = 0;
+        unsigned int timerDelayInSeconds = 1;
+
+        int result = sscanf_s(command, "%s %d %d", commandEx, sizeof(commandEx), &minimumNumPlayersInZone, &timerDelayInSeconds);
+        if (result == 3)
+        {
+            EQAPP_PlayerAlert_Set(minimumNumPlayersInZone, timerDelayInSeconds);
+            EQAPP_PlayerAlert_Print();
+
+            g_playerAlertIsEnabled = true;
         }
 
         return;

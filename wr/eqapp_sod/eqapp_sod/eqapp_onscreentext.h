@@ -90,7 +90,7 @@ void EQAPP_OnScreenText_AddSpawnMessage(DWORD spawnInfo, bool bDespawn)
     {
         if (EQ_IsSpawnInGroup(spawnInfo) == false)
         {
-            if (strlen(spawnName) > EQ_SPAWN_NAME_LENGTH_MIN)
+            if (strlen(spawnName) > EQ_SPAWN_NAME_LENGTH_MIN - 1)
             {
                 std::stringstream ss;
                 ss << spawnName;

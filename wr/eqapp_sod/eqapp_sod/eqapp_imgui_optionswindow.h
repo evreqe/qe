@@ -41,6 +41,24 @@ struct EQAPPIMGUIOptionsWindow
             ImGui::PopID();
         }
 
+        if (ImGui::CollapsingHeader("Speed"))
+        {
+            ImGui::PushID("ID Speed Hack");
+
+            ImGui::Checkbox("Enabled", &g_speedHackIsEnabled);
+            ImGui::SameLine(200);
+            ImGui::Text("Lets you run faster");
+            ImGui::Separator();
+            ImGui::InputFloat("Movement Speed Modifier", &g_speedHackModifier, 0.0f, 0.0f, 4);
+
+            if (ImGui::Button("Spirit of Wolf")) g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_SPIRIT_OF_WOLF; ImGui::SameLine();
+            if (ImGui::Button("AA Run Speed 1")) g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN1; ImGui::SameLine();
+            if (ImGui::Button("AA Run Speed 2")) g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN2; ImGui::SameLine();
+            if (ImGui::Button("AA Run Speed 3")) g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN3;
+
+            ImGui::PopID();
+        }
+
         if (ImGui::CollapsingHeader("ESP"))
         {
             ImGui::PushID("ID ESP");
@@ -117,7 +135,10 @@ struct EQAPPIMGUIOptionsWindow
                 g_espFindSpawnName = g_espFindInputText;
             }
 
-            ImGui::Text(g_espFindSpawnName.c_str());
+            if (g_espFindSpawnName.size() != 0)
+            {
+                ImGui::Text(g_espFindSpawnName.c_str());
+            }
 
             ImGui::PopID();
         }
@@ -168,7 +189,6 @@ struct EQAPPIMGUIOptionsWindow
             ImGui::Checkbox("Combat Hotbutton", &g_combatHotbuttonIsEnabled);
             ImGui::SameLine(200);
             ImGui::Text("Press a hotbutton while in combat at the specified interval");
-            std::stringstream ssCombatHotbutton;
 
             ImGui::Text("Number:"); ImGui::SameLine(200);
             if (ImGui::Button(" 1 ")) g_combatHotbuttonNumber = 1; ImGui::SameLine();
@@ -194,6 +214,7 @@ struct EQAPPIMGUIOptionsWindow
             if (ImGui::Button(" 9s ")) EQAPP_CombatHotbutton_Set(g_combatHotbuttonNumber, 9); ImGui::SameLine();
             if (ImGui::Button(" 10s ")) EQAPP_CombatHotbutton_Set(g_combatHotbuttonNumber, 10);
 
+            std::stringstream ssCombatHotbutton;
             ssCombatHotbutton << "#" << g_combatHotbuttonNumber << " (" << g_combatHotbuttonTimerDelayInSeconds << " second(s))";
 
             ImGui::Text(ssCombatHotbutton.str().c_str());
@@ -208,7 +229,14 @@ struct EQAPPIMGUIOptionsWindow
             ImGui::Checkbox("Enabled", &g_memoryIsEnabled);
             ImGui::SameLine(200);
             ImGui::Text("Cheats or hacks that modify the game memory");
+
             ImGui::Separator();
+
+            if (ImGui::Button("Reload"))
+            {
+                EQAPP_Memory_Unload();
+                EQAPP_Memory_Load();
+            }
 
             ImGui::PopID();
 
@@ -262,10 +290,12 @@ struct EQAPPIMGUIOptionsWindow
 
             ImGui::Text("Item Name:");
 
-            ImGui::SameLine();
+            ImGui::SameLine(200);
 
+            ImGui::PushItemWidth(400);
             static char g_autoLootInputText[256];
             ImGui::InputText("##Auto Loot Input Text", g_autoLootInputText, IM_ARRAYSIZE(g_autoLootInputText));
+            ImGui::PopItemWidth();
 
             ImGui::SameLine();
 
@@ -273,6 +303,13 @@ struct EQAPPIMGUIOptionsWindow
             {
                 EQAPP_AutoLoot_Add(g_autoLootInputText);
             }
+
+            if (ImGui::Button("Clear Items"))
+            {
+                g_autoLootList.clear();
+            }
+            ImGui::SameLine();
+            ImGui::Text("(click item names to remove)");
 
             ImGui::PopID();
 
@@ -293,7 +330,7 @@ struct EQAPPIMGUIOptionsWindow
                 }
             }
 
-            ImGui::BeginChild("ID Auto Loot Item List", ImVec2(600.0f, autoLootItemListHeight));
+            ImGui::BeginChild("ID Auto Loot Item List", ImVec2(600.0f, autoLootItemListHeight), true);
 
             for (auto& itemName : g_autoLootList)
             {
@@ -337,6 +374,11 @@ struct EQAPPIMGUIOptionsWindow
 
             ImGui::Separator();
 
+            if (ImGui::Button("Reload"))
+            {
+                EQAPP_NamedSpawns_Load();
+            }
+
             for (auto& namedSpawn : g_namedSpawnsList)
             {
                 ImGui::Text(namedSpawn.c_str());
@@ -371,6 +413,11 @@ struct EQAPPIMGUIOptionsWindow
 
             ImGui::Separator();
 
+            if (ImGui::Button("Reload"))
+            {
+                EQAPP_TextOverlayChatText_Load();
+            }
+
             for (auto& textOverlayChatText : g_textOverlayChatTextList)
             {
                 ImGui::Text(textOverlayChatText.c_str());
@@ -396,7 +443,10 @@ struct EQAPPIMGUIOptionsWindow
                 g_spawnBeepName = g_spawnBeepInputText;
             }
 
-            ImGui::Text(g_spawnBeepName.c_str());
+            if (g_spawnBeepName.size() != 0)
+            {
+                ImGui::Text(g_spawnBeepName.c_str());
+            }
 
             ImGui::PopID();
 
@@ -429,7 +479,42 @@ struct EQAPPIMGUIOptionsWindow
             if (ImGui::Button(" 9s ")) EQAPP_TargetBeep_Set(g_targetBeepName, 9); ImGui::SameLine();
             if (ImGui::Button(" 10s ")) EQAPP_TargetBeep_Set(g_targetBeepName, 10);
 
-            ImGui::Text(g_targetBeepName.c_str());
+            if (g_targetBeepName.size() != 0)
+            {
+                std::stringstream ssTargetBeepText;
+                ssTargetBeepText << g_targetBeepName.c_str() << " (" << g_targetBeepTimerDelayInSeconds << "s)";
+
+                ImGui::Text(ssTargetBeepText.str().c_str());
+            }
+
+            ImGui::PopID();
+
+            ImGui::Separator();
+
+            ImGui::PushID("ID Player Alert");
+
+            ImGui::Checkbox("Player Alert", &g_playerAlertIsEnabled);
+            ImGui::SameLine(200);
+            ImGui::Text("Plays a beep sound when the number of players in the zone exceeds the limit");
+
+            ImGui::InputInt("Minimum number of players in zone", (int*)&g_playerAlertMinimumNumPlayersInZone, 1, 10);
+
+            ImGui::Text("Delay:"); ImGui::SameLine(200);
+            if (ImGui::Button(" 1s ")) EQAPP_PlayerAlert_Set(g_playerAlertMinimumNumPlayersInZone, 1); ImGui::SameLine();
+            if (ImGui::Button(" 2s ")) EQAPP_PlayerAlert_Set(g_playerAlertMinimumNumPlayersInZone, 2); ImGui::SameLine();
+            if (ImGui::Button(" 3s ")) EQAPP_PlayerAlert_Set(g_playerAlertMinimumNumPlayersInZone, 3); ImGui::SameLine();
+            if (ImGui::Button(" 4s ")) EQAPP_PlayerAlert_Set(g_playerAlertMinimumNumPlayersInZone, 4); ImGui::SameLine();
+            if (ImGui::Button(" 5s ")) EQAPP_PlayerAlert_Set(g_playerAlertMinimumNumPlayersInZone, 5); ImGui::SameLine();
+            if (ImGui::Button(" 6s ")) EQAPP_PlayerAlert_Set(g_playerAlertMinimumNumPlayersInZone, 6); ImGui::SameLine();
+            if (ImGui::Button(" 7s ")) EQAPP_PlayerAlert_Set(g_playerAlertMinimumNumPlayersInZone, 7); ImGui::SameLine();
+            if (ImGui::Button(" 8s ")) EQAPP_PlayerAlert_Set(g_playerAlertMinimumNumPlayersInZone, 8); ImGui::SameLine();
+            if (ImGui::Button(" 9s ")) EQAPP_PlayerAlert_Set(g_playerAlertMinimumNumPlayersInZone, 9); ImGui::SameLine();
+            if (ImGui::Button(" 10s ")) EQAPP_PlayerAlert_Set(g_playerAlertMinimumNumPlayersInZone, 10);
+
+            std::stringstream ssPlayerAlertText;
+            ssPlayerAlertText << g_playerAlertMinimumNumPlayersInZone << " (" << g_playerAlertTimerDelayInSeconds << "s)";
+
+            ImGui::Text(ssPlayerAlertText.str().c_str());
 
             ImGui::PopID();
         }
