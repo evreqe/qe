@@ -39,9 +39,9 @@ void EQAPP_Hud_Execute()
         numDrawText++;
     }
 
-    if (g_speedHackIsEnabled == true)
+    if (g_movementSpeedHackIsEnabled == true)
     {
-        ssDrawText << "Speed: " << g_speedHackModifier << "\n";
+        ssDrawText << "Movement Speed: " << g_movementSpeedHackModifier << "\n";
         numDrawText++;
     }
 

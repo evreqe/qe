@@ -8,6 +8,8 @@ const std::vector<std::string> g_interpretCommandList
     "//debug",
     "//test",
     "//hud",
+    "//executecmddebug, //ecd",
+    "//executecmd",
     "//lootdebug, //ld",
     "//loot (item name)",
     "//autoloot, //al",
@@ -49,6 +51,9 @@ const std::vector<std::string> g_interpretCommandList
     "//setspeed run2",
     "//setspeed run3",
     "//setspeed (speed), //ss (speed)",
+    "//swimspeed",
+    "//setswimspeed (speed), //sss (speed)",
+    "//setrace (race id), //sr (race id)",
     "//locator, //loc",
     "//locatorline, //locline",
     "//getlocator, //getloc",
@@ -172,25 +177,27 @@ void EQAPP_InterpretCommand(const char* command)
     {
         std::cout << "test" << std::endl;
 
-        DWORD playerSpawn = EQ_GetPlayerSpawn();
-        if (playerSpawn == NULL)
-        {
-            return;
-        }
+        //DWORD playerSpawn = EQ_GetPlayerSpawn();
+        //if (playerSpawn == NULL)
+        //{
+            //return;
+        //}
 
-        FLOAT playerY = EQ_GetSpawnY(playerSpawn);
-        FLOAT playerX = EQ_GetSpawnX(playerSpawn);
-        FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
+        //FLOAT playerY = EQ_GetSpawnY(playerSpawn);
+        //FLOAT playerX = EQ_GetSpawnX(playerSpawn);
+        //FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
 
-        unsigned int waypointIndex = EQAPP_Waypoint_GetIndexNearestToLocation(playerY, playerX, playerZ);
+        //unsigned int waypointIndex = EQAPP_Waypoint_GetIndexNearestToLocation(playerY, playerX, playerZ);
 
-        std::cout << "nearest waypoint index: " << waypointIndex << std::endl;
+        //std::cout << "nearest waypoint index: " << waypointIndex << std::endl;
 
-        PEQAPPWAYPOINT waypoint = EQAPP_Waypoint_GetByIndex(waypointIndex);
-        if (waypoint != NULL)
-        {
-            EQ_TurnPlayerTowardsLocation(waypoint->y, waypoint->x);
-        }
+        //PEQAPPWAYPOINT waypoint = EQAPP_Waypoint_GetByIndex(waypointIndex);
+        //if (waypoint != NULL)
+        //{
+            //EQ_TurnPlayerTowardsLocation(waypoint->y, waypoint->x);
+        //}
+
+        // --
 
         //DWORD mapViewMap = EQ_GetMapViewMap();
         //if (mapViewMap == NULL)
@@ -200,6 +207,16 @@ void EQAPP_InterpretCommand(const char* command)
 
         //((MapViewMap*)mapViewMap)->AddLabel(-playerX, -playerY, playerZ, 0xFFFF0000, 2, "TESTING123");
 
+        //--
+
+        DWORD playerSpawn = EQ_GetPlayerSpawn();
+        if (playerSpawn == NULL)
+        {
+            return;
+        }
+
+        EQ_SetSpawnForm(playerSpawn, EQ_RACE_IKSAR, EQ_GENDER_MALE);
+
         return;
     }
 
@@ -208,6 +225,42 @@ void EQAPP_InterpretCommand(const char* command)
     {
         EQ_ToggleBool(g_hudIsEnabled);
         EQAPP_PrintBool("HUD", g_hudIsEnabled);
+        return;
+    }
+
+    // print execute command debug information
+    if (strcmp(command, "//executecmddebug") == 0 || strcmp(command, "//ecd") == 0)
+    {
+        EQAPP_ExecuteCmdDebugInformation_Print();
+        return;
+    }
+
+    // execute command
+    if (strncmp(command, "//executecmd ", 13) == 0)
+    {
+        char commandEx[128];
+
+        unsigned int commandIndex = 0;
+
+        int result = sscanf_s(command, "%s %d", commandEx, sizeof(commandEx), &commandIndex);
+        if (result == 2)
+        {
+            if (commandIndex < 0 || commandIndex > EQ_EXECUTECMD_MAX)
+            {
+                std::cout << "No command at specified index: " << commandIndex << std::endl;
+                return;
+            }
+
+            std::string commandName = EQ_GetExecuteCmdName(commandIndex);
+
+            if (commandName.size() > 0)
+            {
+                EQ_ExecuteCmd(commandIndex, 0, 0);
+
+                std::cout << "ExecuteCmd: " << commandName << " (" << commandIndex << ")" << std::endl;
+            }
+        }
+
         return;
     }
 
@@ -234,6 +287,8 @@ void EQAPP_InterpretCommand(const char* command)
 
             std::cout << "Loot Item: " << itemName << " | Result: " << std::boolalpha << lootResult << std::noboolalpha << std::endl;
         }
+
+        return;
     }
 
     // toggle auto loot
@@ -273,6 +328,8 @@ void EQAPP_InterpretCommand(const char* command)
 
             g_autoLootIsEnabled = true;
         }
+
+        return;
     }
 
     // remove from auto loot list
@@ -289,6 +346,8 @@ void EQAPP_InterpretCommand(const char* command)
 
             EQAPP_AutoLoot_Remove(itemName);
         }
+
+        return;
     }
 
     // print cast ray to target
@@ -637,43 +696,43 @@ void EQAPP_InterpretCommand(const char* command)
         return;
     }
 
-    // toggle speed
+    // toggle movement speed
     if (strcmp(command, "//speed") == 0)
     {
-        EQ_ToggleBool(g_speedHackIsEnabled);
-        EQAPP_PrintBool("Speed Hack", g_speedHackIsEnabled);
+        EQ_ToggleBool(g_movementSpeedHackIsEnabled);
+        EQAPP_PrintBool("Movement Speed Hack", g_movementSpeedHackIsEnabled);
         return;
     }
 
-    // set speed sow
+    // set movement speed sow
     if (strcmp(command, "//setspeed sow") == 0)
     {
-        g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_SPIRIT_OF_WOLF;
-        std::cout << "Speed Modifier: Spirit of Wolf" << std::endl;
+        g_movementSpeedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_SPIRIT_OF_WOLF;
+        std::cout << "Movement Speed Modifier: Spirit of Wolf" << std::endl;
         return;
     }
 
-    // set speed run1
+    // set movement speed run1
     if (strcmp(command, "//setspeed run1") == 0)
     {
-        g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN1;
-        std::cout << "Speed Modifier: AA Run 1" << std::endl;
+        g_movementSpeedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN1;
+        std::cout << "Movement Speed Modifier: AA Run 1" << std::endl;
         return;
     }
 
     // set speed run2
     if (strcmp(command, "//setspeed run2") == 0)
     {
-        g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN2;
-        std::cout << "Speed Modifier: AA Run 2" << std::endl;
+        g_movementSpeedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN2;
+        std::cout << "Movement Speed Modifier: AA Run 2" << std::endl;
         return;
     }
 
     // set speed run3
     if (strcmp(command, "//setspeed run3") == 0)
     {
-        g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN3;
-        std::cout << "Speed Modifier: AA Run 3" << std::endl;
+        g_movementSpeedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN3;
+        std::cout << "Movement Speed Modifier: AA Run 3" << std::endl;
         return;
     }
 
@@ -687,9 +746,59 @@ void EQAPP_InterpretCommand(const char* command)
         int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &modifier);
         if (result == 2)
         {
-            g_speedHackModifier = modifier;
+            g_movementSpeedHackModifier = modifier;
 
-            std::cout << "Speed Modifier: " << g_speedHackModifier << std::endl;
+            std::cout << "Movement Speed Modifier: " << g_movementSpeedHackModifier << std::endl;
+        }
+
+        return;
+    }
+
+    // toggle swim speed
+    if (strcmp(command, "//swimspeed") == 0)
+    {
+        EQAPP_SwimSpeed_Toggle();
+        return;
+    }
+
+    // set swim speed
+    if (strncmp(command, "//setswimspeed ", 15) == 0 || strncmp(command, "//sss ", 6) == 0)
+    {
+        char commandEx[128];
+
+        float modifier = 0.0f;
+
+        int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &modifier);
+        if (result == 2)
+        {
+            g_swimSpeedHackModifier = modifier;
+
+            std::cout << "Swim Speed Modifier: " << g_swimSpeedHackModifier << std::endl;
+        }
+
+        return;
+    }
+
+    // set race
+    if (strncmp(command, "//setrace ", 10) == 0 || strncmp(command, "//sr ", 5) == 0)
+    {
+        char commandEx[128];
+
+        unsigned int raceId = 0;
+
+        int result = sscanf_s(command, "%s %d", commandEx, sizeof(commandEx), &raceId);
+        if (result == 2)
+        {
+            DWORD playerSpawn = EQ_GetPlayerSpawn();
+            if (playerSpawn == NULL)
+            {
+                std::cout << "player is NULL" << std::endl;
+                return;
+            }
+
+            int spawnGender = EQ_ReadMemory<BYTE>(playerSpawn + EQ_OFFSET_SPAWN_INFO_GENDER);
+
+            EQ_SetSpawnForm(playerSpawn, raceId, spawnGender);
         }
 
         return;

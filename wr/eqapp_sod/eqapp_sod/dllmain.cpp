@@ -59,6 +59,7 @@
 #include "eqapp_hidecorpselooted.h"
 #include "eqapp_maxswimmingskill.h"
 #include "eqapp_changeheight.h"
+#include "eqapp_swimspeed.h"
 #include "eqapp_linetotarget.h"
 #include "eqapp_namedspawns.h"
 #include "eqapp_census.h"
@@ -80,6 +81,7 @@
 #include "eqapp_spawnlist.h"
 #include "eqapp_banklist.h"
 #include "eqapp_inventorylist.h"
+#include "eqapp_replaceraces.h"
 #include "eqapp_esp.h"                 // needs to be included last
 #include "eqapp_esp_functions.h"       // needs to be included last
 #include "eqapp_hud.h"                 // needs to be included last
@@ -122,6 +124,8 @@ void EQAPP_Unload()
     EQAPP_Memory_Unload();
 
     EQAPP_FreeCamera_Set(false);
+
+    EQAPP_SwimSpeed_Off();
 
     EQ_SetWindowTitle(EQ_STRING_WINDOW_TITLE);
 
@@ -176,10 +180,26 @@ void EQAPP_SetWindowTitles()
 int __cdecl EQAPP_DETOUR_ExecuteCmd(DWORD a1, BOOL a2, PVOID a3)
 {
     // a1 = command index
+    // a2 = key is held down boolean
+    // a3 = unknown
 
     if (g_bExit == 1)
     {
         return EQAPP_REAL_ExecuteCmd(a1, a2, a3);
+    }
+
+    if (g_debugIsEnabled == true)
+    {
+        unsigned int commandIndex = a1;
+        std::string commandName = EQ_GetExecuteCmdName(commandIndex);
+
+        if (commandName.size() > 0)
+        {
+            std::stringstream ss;
+            ss << "ExecuteCmd(): " << commandName << " (" << commandIndex << ")";
+
+            EQAPP_PrintDebugMessage(__FUNCTION__, ss.str());
+        }
     }
 
     if (g_freeCameraIsEnabled == true)
@@ -187,25 +207,28 @@ int __cdecl EQAPP_DETOUR_ExecuteCmd(DWORD a1, BOOL a2, PVOID a3)
         // prevent movement and changing the camera view
         if
         (
-            (a1 >= EQ_CMD_JUMP && a1 <= EQ_CMD_STRAFE_RIGHT)                                      ||
-            (a1 >= EQ_CMD_SET_CAMERA_VIEW_OVERHEAD && a1 <= EQ_CMD_SET_CAMERA_VIEW_USER_DEFINED2) ||
-            a1 == EQ_CMD_TOGGLE_CAMERA_VIEW
+            (a1 >= EQ_EXECUTECMD_JUMP && a1 <= EQ_EXECUTECMD_STRAFE_RIGHT)                                      ||
+            (a1 >= EQ_EXECUTECMD_OVERHEAD_CAMERA && a1 <= EQ_EXECUTECMD_USER2_CAMERA) ||
+            a1 == EQ_EXECUTECMD_TOGGLECAM
         )
         {
             return EQAPP_REAL_ExecuteCmd(NULL, 0, 0);
         }
     }
 
-    if (g_debugIsEnabled == true)
+    // open all windows is a toggle, no need for a separate close all windows key
+    if (a1 == EQ_EXECUTECMD_OPEN_INV_BAGS && a2 == 1)
     {
-        std::string commandName = EQ_GetExecuteCmdName(a1);
-        if (a1 != NULL && a2 != NULL && a3 != NULL && commandName.size() != 0)
+        if (EQ_IsContainerWindowOpen() == true)
         {
-            std::stringstream ss;
-            ss << "ExecuteCmd(): " << a1 << ", " << a2 << ", " << a3 << " (" << commandName << ")";
+            EQ_CloseAllContainers();
 
-            EQAPP_PrintDebugMessage(__FUNCTION__, ss.str());
+            return EQAPP_REAL_ExecuteCmd(NULL, 0, 0);
         }
+    }
+    else if (a1 == EQ_EXECUTECMD_OPEN_INV_BAGS && a2 == 0)
+    {
+        return EQAPP_REAL_ExecuteCmd(NULL, 0, 0);
     }
 
     return EQAPP_REAL_ExecuteCmd(a1, a2, a3);
@@ -221,11 +244,14 @@ int __cdecl EQAPP_DETOUR_SetTarget(DWORD a1, const char* a2)
         return EQAPP_REAL_SetTarget(a1, a2);
     }
 
-    int result = EQAPP_REAL_SetTarget(a1, a2);
+    int result = EQAPP_REAL_SetTarget(NULL, a2);
 
-    //std::cout << "[debug] SetTarget():" << std::endl;
-    //std::cout << "[debug] a1: " << a1 << std::endl;
-    //std::cout << "[debug] a2: " << a2 << std::endl;
+    if (g_debugIsEnabled == true && a2 != NULL)
+    {
+        std::cout << "[debug] SetTarget():" << std::endl;
+        std::cout << "[debug] a1: " << a1 << std::endl;
+        std::cout << "[debug] a2: " << a2 << std::endl;
+    }
 
     std::string targetName = a2;
 
@@ -255,17 +281,9 @@ int __fastcall EQAPP_DETOUR_CEverQuest__StartCasting(void* pThis, void* not_used
         return EQAPP_REAL_CEverQuest__StartCasting(pThis, a1);
     }
 
-    //EQAPP_Log("---------- CEverQuest::StartCasting ----------", 0);
-    //EQAPP_Log("a1: ", a1);
-
     DWORD spawnId = EQ_ReadMemory<WORD>(a1);
-    //EQAPP_Log("(WORD)(a1) Spawn ID: ", spawnId);
-
     DWORD spellId = EQ_ReadMemory<WORD>(a1 + 2);
-    //EQAPP_Log("(WORD)(a1 + 2) Spell ID: ", spellId);
-
     DWORD spellCastTime = EQ_ReadMemory<DWORD>(a1 + 4);
-    //EQAPP_Log("(DWORD)(a1 + 4) Spell Cast Time: ", spellCastTime);
 
     DWORD playerSpawn = EQ_GetPlayerSpawn();
 
@@ -275,12 +293,8 @@ int __fastcall EQAPP_DETOUR_CEverQuest__StartCasting(void* pThis, void* not_used
     {
         char spawnName[EQ_SIZE_SPAWN_INFO_NAME] = {0};
         memcpy(spawnName, (LPVOID)(spawnInfo + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(spawnName));
-        //EQAPP_Log("Spawn Name:", 0);
-        //EQAPP_Log(spawnName, 0);
 
         std::string spellName = EQ_GetSpellNameById(spellId);
-        //EQAPP_Log("Spell Name:", 0);
-        //EQAPP_Log(spellName, 0);
 
         if (spawnName != NULL && spellName.size() != 0)
         {
@@ -535,15 +549,15 @@ int __fastcall EQAPP_DETOUR_EQ_Character__eqspa_movement_rate(void* pThis, void*
 
     int result = EQAPP_REAL_EQ_Character__eqspa_movement_rate(pThis, a1);
 
-    if (g_speedHackIsEnabled == true)
+    if (g_movementSpeedHackIsEnabled == true)
     {
         DWORD playerSpawn = EQ_GetPlayerSpawn();
         if (playerSpawn != NULL)
         {
             FLOAT speedModifier = EQ_ReadMemory<FLOAT>(playerSpawn + EQ_OFFSET_SPAWN_INFO_SPEED_MODIFIER);
-            if (speedModifier < g_speedHackModifier)
+            if (speedModifier < g_movementSpeedHackModifier)
             {
-                EQ_WriteMemory<FLOAT>(playerSpawn + EQ_OFFSET_SPAWN_INFO_SPEED_MODIFIER, g_speedHackModifier);
+                EQ_WriteMemory<FLOAT>(playerSpawn + EQ_OFFSET_SPAWN_INFO_SPEED_MODIFIER, g_movementSpeedHackModifier);
             }
         }
     }
@@ -585,30 +599,50 @@ int __fastcall EQAPP_DETOUR_EQPlayer__ChangePosition(void* pThis, void* not_used
     return EQAPP_REAL_EQPlayer__ChangePosition(pThis, a1);
 }
 
-/*
-int __fastcall EQAPP_DETOUR_EQPlayer__do_change_form(void* pThis, void* not_used, int a1)
+int __fastcall EQAPP_DETOUR_EQPlayer__do_change_form(void* pThis, void* not_used, PEQCHANGEFORM a1)
 {
-    // a1 = change form structure
-
     if (g_bExit == 1)
     {
         return EQAPP_REAL_EQPlayer__do_change_form(pThis, a1);
     }
 
-    //std::cout << "EQPlayer::do_change_form():" << std::endl;
-    //std::cout << "a1: " << std::hex << a1 << std::dec << std::endl;
+    if (g_debugIsEnabled == true)
+    {
+        std::cout << "EQPlayer::do_change_form():" << std::endl;
+        std::cout << "a1: " << std::hex << a1 << std::dec << std::endl;
 
-    //std::cout << "a: " << ((EQCHANGEFORM*)a1)->a << std::endl;
-    //std::cout << "b: " << ((EQCHANGEFORM*)a1)->b << std::endl;
-    //std::cout << "c: " << ((EQCHANGEFORM*)a1)->c << std::endl;
-    //std::cout << "d: " << ((EQCHANGEFORM*)a1)->d << std::endl;
-    //std::cout << "e: " << ((EQCHANGEFORM*)a1)->e << std::endl;
-    //std::cout << "f: " << ((EQCHANGEFORM*)a1)->f << std::endl;
-    //std::cout << "g: " << ((EQCHANGEFORM*)a1)->g << std::endl;
+        unsigned const char* bytes = (unsigned const char*)a1;
+
+        std::cout << "Bytes:" << std::endl;
+        for (size_t i = 0; i < 128; i++)
+        {
+            std::cout << "#" << i << ": " << std::hex << std::uppercase << (int)bytes[i] << std::dec << " " << std::endl;
+        }
+    }
+
+    if (g_replaceRacesIsEnabled == true)
+    {
+        if (a1->RaceId == EQ_RACE_INVISIBLE_MAN)
+        {
+            a1->RaceId = EQ_RACE_HUMAN;
+        }
+        else if (a1->RaceId == EQ_RACE_SKELETON)
+        {
+            a1->RaceId = EQ_RACE_SKELETON2;
+        }
+
+        DWORD playerSpawn = EQ_GetPlayerSpawn();
+        if (playerSpawn != NULL && (DWORD)pThis == playerSpawn)
+        {
+            if (a1->RaceId == EQ_RACE_CHOKADAI)
+            {
+                a1->RaceId = EQ_RACE_HUMAN;
+            }
+        }
+    }
 
     return EQAPP_REAL_EQPlayer__do_change_form(pThis, a1);
 }
-*/
 
 int __fastcall EQAPP_DETOUR_EQPlayer__SetRace(void* pThis, void* not_used, int a1)
 {
@@ -748,6 +782,7 @@ int __cdecl EQAPP_DETOUR_DrawNetStatus(int a1, unsigned short a2, unsigned short
     EQAPP_CombatHotbutton_Execute();
     EQAPP_AlwaysHotbutton_Execute();
     EQAPP_ChangeHeight_Execute();
+    EQAPP_SwimSpeed_Execute();
     EQAPP_DrawDistance_Execute();
     EQAPP_Census_Execute();
 

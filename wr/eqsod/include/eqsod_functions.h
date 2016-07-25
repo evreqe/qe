@@ -250,7 +250,7 @@ class EQPlayer
 public:
     void EQPlayer::ChangeHeight(float height);
     void EQPlayer::ChangePosition(BYTE standingState);
-    void EQPlayer::do_change_form(int changeForm);
+    void EQPlayer::do_change_form(PEQCHANGEFORM changeForm);
     void EQPlayer::FacePlayer(DWORD spawnInfo);
     void EQPlayer::SetRace(int raceId);
     int EQPlayer::UpdateAppearance(int a1, int a2, int a3);
@@ -451,8 +451,8 @@ EQ_FUNCTION_AT_ADDRESS(void EQPlayer::ChangePosition(BYTE standingState), EQ_FUN
 #endif
 
 #ifdef EQ_FUNCTION_EQPlayer__do_change_form
-typedef int (__thiscall* EQ_FUNCTION_TYPE_EQPlayer__do_change_form)(void* pThis, int changeForm);
-EQ_FUNCTION_AT_ADDRESS(void EQPlayer::do_change_form(int changeForm), EQ_FUNCTION_EQPlayer__do_change_form);
+typedef int (__thiscall* EQ_FUNCTION_TYPE_EQPlayer__do_change_form)(void* pThis, PEQCHANGEFORM changeForm);
+EQ_FUNCTION_AT_ADDRESS(void EQPlayer::do_change_form(PEQCHANGEFORM changeForm), EQ_FUNCTION_EQPlayer__do_change_form);
 #endif
 
 #ifdef EQ_FUNCTION_EQPlayer__FacePlayer
@@ -564,6 +564,14 @@ EQ_FUNCTION_AT_ADDRESS(void EQ_ExecuteCmd(DWORD command, BOOL hold, PVOID unknow
 #ifdef EQ_FUNCTION_SetTarget
 typedef int (__cdecl* EQ_FUNCTION_TYPE_SetTarget)(DWORD a1, const char* spawnName);
 EQ_FUNCTION_AT_ADDRESS(int __cdecl EQ_SetTarget(DWORD a1, const char* spawnName), EQ_FUNCTION_SetTarget);
+#endif
+
+#ifdef EQ_FUNCTION_OpenAllContainers
+EQ_FUNCTION_AT_ADDRESS(void EQ_OpenAllContainers(), EQ_FUNCTION_OpenAllContainers);
+#endif
+
+#ifdef EQ_FUNCTION_CloseAllContainers
+EQ_FUNCTION_AT_ADDRESS(void EQ_CloseAllContainers(), EQ_FUNCTION_CloseAllContainers);
 #endif
 
 /* functions */
@@ -924,6 +932,54 @@ DWORD EQ_GetZoneId()
     WORD zoneId = EQ_ReadMemory<WORD>(charInfo + EQ_OFFSET_CHAR_INFO_ZONE_ID);
 
     return zoneId;
+}
+
+bool EQ_IsRacePlayable(DWORD raceId)
+{
+    if
+    (
+        raceId >= EQ_RACE_HUMAN && raceId <= EQ_RACE_GNOME ||
+        raceId == EQ_RACE_IKSAR                            ||
+        raceId == EQ_RACE_VAH_SHIR                         ||
+        raceId == EQ_RACE_FROGLOK                          ||
+        raceId == EQ_RACE_DRAKKIN
+    )
+    {
+        return true;
+    }
+
+    return false;
+}
+
+void EQ_SetSpawnForm(DWORD spawnInfo, DWORD raceId, BYTE gender)
+{
+    if (spawnInfo == NULL)
+    {
+        return;
+    }
+
+    DWORD spawnId = EQ_ReadMemory<WORD>(spawnInfo + EQ_OFFSET_SPAWN_INFO_ID);
+
+    BYTE unknown73 = 0xFF;
+    BYTE unknown76 = 0xFF;
+
+    if (EQ_IsRacePlayable(raceId) == false)
+    {
+        gender = EQ_GENDER_NEUTRAL;
+
+        unknown73 = 0x00;
+        unknown76 = 0x00;
+    }
+
+    static EQCHANGEFORM changeForm = {};
+    changeForm.SpawnId      = spawnId;
+    changeForm.RaceId       = raceId;
+    changeForm.Gender       = gender;
+    changeForm.Unknown73    = unknown73;
+    changeForm.Unknown76    = unknown76;
+    changeForm.Unknown80    = 0x06;
+
+    ((EQPlayer*)spawnInfo)->do_change_form(&changeForm);
 }
 
 void EQ_WriteToChat(const char* text)
@@ -1813,23 +1869,16 @@ bool EQ_IsWindowVisible(DWORD windowPointer)
     return true;
 }
 
-std::string EQ_GetExecuteCmdName(unsigned int command)
+std::string EQ_GetExecuteCmdName(unsigned int commandIndex)
 {
-    if (command == 0)
+    if (commandIndex > (EQ_NUM_EXECUTECMD - 1))
     {
         return "Unknown Command";
     }
 
-    DWORD commandNameAddress = EQ_ReadMemory<DWORD>(EQ_EXECUTECMD_LIST + (command * 4));
-    if (commandNameAddress == NULL)
-    {
-        return "Unknown Command";
-    }
+    PCHAR commandName = EQ_ReadMemory<PCHAR>(EQ_EXECUTECMD_LIST + (commandIndex * 4));
 
-    char commandName[EQ_SIZE_EXECUTECMD_NAME] = {0};
-    memcpy(commandName, (LPVOID)(commandNameAddress), sizeof(commandName));
-
-    if (commandName == NULL)
+    if (commandName == NULL || strlen(commandName) == 0)
     {
         return "Unknown Command";
     }
@@ -2014,19 +2063,6 @@ void EQ_SetTargetByName(const char* name)
             continue;
         }
 
-/*
-        int spawnType = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_TYPE);
-
-        if (spawnType == EQ_SPAWN_TYPE_PLAYER_CORPSE || spawnType == EQ_SPAWN_TYPE_NPC_CORPSE)
-        {
-            if (strstr(name, "corpse") == NULL)
-            {
-                spawn = EQ_GetNextSpawn(spawn); // next
-                continue;
-            }
-        }
-*/
-
         FLOAT spawnY = EQ_GetSpawnY(spawn);
         FLOAT spawnX = EQ_GetSpawnX(spawn);
         FLOAT spawnZ = EQ_GetSpawnZ(spawn);
@@ -2066,6 +2102,70 @@ void EQ_SetTargetByName(const char* name)
             continue;
         }
 
+        int spawnType = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_TYPE);
+
+        if (spawnType == EQ_SPAWN_TYPE_PLAYER_CORPSE || spawnType == EQ_SPAWN_TYPE_NPC_CORPSE)
+        {
+            const char* corpseText = " corpse";
+            size_t corpseTextLength = strlen(corpseText);
+
+            if (strlen(name) > corpseTextLength && strstr(name, corpseText) != NULL)
+            {
+                std::string str = name;
+                std::string tokenName = str.substr(0, str.size() - corpseTextLength);
+                std::string tokenType = str.substr(str.size() - corpseTextLength, corpseTextLength);
+
+                if (tokenType == corpseText)
+                {
+                    if (strcmp(spawnName, tokenName.c_str()) == 0)
+                    {
+                        EQ_SetTarget(spawn);
+                        return;
+                    }
+
+                    if (strstr(spawnName, tokenName.c_str()) != NULL)
+                    {
+                        EQ_SetTarget(spawn);
+                        return;
+                    }
+                }
+            }
+
+            continue;
+        }
+
+        int spawnPetOwnerSpawnId = EQ_ReadMemory<DWORD>(spawn + EQ_OFFSET_SPAWN_INFO_PET_OWNER_SPAWN_ID);
+
+        if (spawnPetOwnerSpawnId != 0)
+        {
+            const char* petText = " pet";
+            size_t petTextLength = strlen(petText);
+
+            if (strlen(name) > petTextLength && strstr(name, petText) != NULL)
+            {
+                std::string str = name;
+                std::string tokenName = str.substr(0, str.size() - petTextLength);
+                std::string tokenType = str.substr(str.size() - petTextLength, petTextLength);
+
+                if (tokenType == petText)
+                {
+                    if (strcmp(spawnName, tokenName.c_str()) == 0)
+                    {
+                        EQ_SetTarget(spawn);
+                        return;
+                    }
+
+                    if (strstr(spawnName, tokenName.c_str()) != NULL)
+                    {
+                        EQ_SetTarget(spawn);
+                        return;
+                    }
+                }
+            }
+
+            continue;
+        }
+
         if (strcmp(spawnName, name) == 0)
         {
             EQ_SetTarget(spawn);
@@ -2078,6 +2178,31 @@ void EQ_SetTargetByName(const char* name)
             return;
         }
     }
+}
+
+bool EQ_IsContainerWindowOpen()
+{
+    DWORD containerManager = EQ_ReadMemory<DWORD>(EQ_POINTER_CONTAINER_MANAGER);
+    if (containerManager == NULL)
+    {
+        return false;
+    }
+
+    for (size_t i = 0; i < EQ_NUM_CONTAINERS; i++)
+    {
+        DWORD containerWindowPointer = containerManager + EQ_OFFSET_CONTAINER_MANAGER_CONTAINER_WINDOW_INFO_FIRST + (i * 4);
+        if (containerWindowPointer == NULL)
+        {
+            continue;
+        }
+
+        if (EQ_IsWindowVisible(containerWindowPointer) == true)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 #endif // EQSOD_FUNCTIONS_H

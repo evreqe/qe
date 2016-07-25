@@ -92,7 +92,7 @@ void EQAPP_ESP_SpawnList_Update()
         espSpawn.isHoldingPrimary   = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_IS_HOLDING_PRIMARY);
         espSpawn.isHoldingSecondary = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_IS_HOLDING_SECONDARY);
 
-        espSpawn.isPet    = EQ_ReadMemory<DWORD>(spawn + EQ_OFFSET_SPAWN_INFO_PET_OWNER_SPAWN_INFO);
+        espSpawn.isPet    = EQ_ReadMemory<DWORD>(spawn + EQ_OFFSET_SPAWN_INFO_PET_OWNER_SPAWN_ID);
         espSpawn.isLfg    = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_IS_LFG);
         espSpawn.isPvp    = EQ_ReadMemory<BYTE>(spawn + EQ_OFFSET_SPAWN_INFO_IS_PVP);
         espSpawn.isTrader = EQ_ReadMemory<DWORD>(spawn + EQ_OFFSET_SPAWN_INFO_IS_TRADER);

@@ -14,9 +14,10 @@
 #define EQ_OFFSET_SPAWN_INFO_TYPE                               0x125         // BYTE
 #define EQ_OFFSET_SPAWN_INFO_BODY_TYPE_DESCRIPTION              0x128         // EQ_CEverQuest->GetBodyTypeDesc(spawnInfo + 0x128);
 #define EQ_OFFSET_SPAWN_INFO_HEIGHT                             0x13C         // FLOAT
+#define EQ_OFFSET_SPAWN_INFO_ID                                 0x148         // DWORD
 #define EQ_OFFSET_SPAWN_INFO_IS_LFG                             0x1F1         // BYTE                 looking for group
 #define EQ_OFFSET_SPAWN_INFO_IS_TRADER                          0x228         // DWORD
-#define EQ_OFFSET_SPAWN_INFO_PET_OWNER_SPAWN_INFO               0x260         // DWORD POINTER
+#define EQ_OFFSET_SPAWN_INFO_PET_OWNER_SPAWN_ID                 0x260         // DWORD
 #define EQ_OFFSET_SPAWN_INFO_STANDING_STATE                     0x279         // BYTE
 #define EQ_OFFSET_SPAWN_INFO_IS_AFK                             0x284         // DWORD
 #define EQ_OFFSET_SPAWN_INFO_IS_PVP                             0x2BC         // BYTE                 player kill flag, red name above head
@@ -28,6 +29,7 @@
 #define EQ_OFFSET_SPAWN_INFO_FOLLOW_SPAWN_INFO                  0xDF4         // DWORD POINTER
 #define EQ_OFFSET_SPAWN_INFO_RACE                               0xE64         // DWORD
 #define EQ_OFFSET_SPAWN_INFO_CLASS                              0xE68         // BYTE
+#define EQ_OFFSET_SPAWN_INFO_GENDER                             0xE69         // BYTE
 #define EQ_OFFSET_SPAWN_INFO_ACTOR_INFO                         0xF84         // DWORD POINTER
 #define EQ_OFFSET_SPAWN_INFO_ANIMATION                          0x1004        // DWORD
 #define EQ_OFFSET_SPAWN_INFO_IS_HOLDING_PRIMARY                 0x10E0        // BYTE
@@ -101,6 +103,8 @@
 #define EQ_OFFSET_CAMERA_DATA_Z                                 0xC4          // FLOAT
 
 #define EQ_OFFSET_WINDOW_IS_VISIBLE                             0x124         // BYTE
+
+#define EQ_OFFSET_CONTAINER_MANAGER_CONTAINER_WINDOW_INFO_FIRST 0x04          // DWORD POINTER
 
 #define EQ_OFFSET_CMapViewWnd_MAP                               0x28C         // DWORD POINTER
 #define EQ_OFFSET_CMapViewWnd_MAP_LABEL_INFO_FIRST              0x2D0         // DWORD POINTER

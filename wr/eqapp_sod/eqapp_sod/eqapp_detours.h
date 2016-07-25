@@ -24,7 +24,7 @@ EQ_FUNCTION_TYPE_CMapViewWnd__DrawMap EQAPP_REAL_CMapViewWnd__DrawMap = NULL;
 EQ_FUNCTION_TYPE_EQ_Character__eqspa_movement_rate EQAPP_REAL_EQ_Character__eqspa_movement_rate = NULL;
 
 EQ_FUNCTION_TYPE_EQPlayer__ChangePosition EQAPP_REAL_EQPlayer__ChangePosition = NULL;
-//EQ_FUNCTION_TYPE_EQPlayer__do_change_form EQAPP_REAL_EQPlayer__do_change_form = NULL;
+EQ_FUNCTION_TYPE_EQPlayer__do_change_form EQAPP_REAL_EQPlayer__do_change_form = NULL;
 EQ_FUNCTION_TYPE_EQPlayer__SetRace EQAPP_REAL_EQPlayer__SetRace = NULL;
 
 EQ_FUNCTION_TYPE_MapViewMap__Save EQAPP_REAL_MapViewMap__Save = NULL;
@@ -54,7 +54,7 @@ int __fastcall EQAPP_DETOUR_CMapViewWnd__DrawMap(void* pThis, void* not_used, in
 int __fastcall EQAPP_DETOUR_EQ_Character__eqspa_movement_rate(void* pThis, void* not_used, int a1);
 
 int __fastcall EQAPP_DETOUR_EQPlayer__ChangePosition(void* pThis, void* not_used, BYTE a1);
-//int __fastcall EQAPP_DETOUR_EQPlayer__do_change_form(void* pThis, void* not_used, int a1);
+int __fastcall EQAPP_DETOUR_EQPlayer__do_change_form(void* pThis, void* not_used, PEQCHANGEFORM a1);
 int __fastcall EQAPP_DETOUR_EQPlayer__SetRace(void* pThis, void* not_used, int a1);
 
 int __fastcall EQAPP_DETOUR_MapViewMap__Save(void* pThis, void* not_used, char* a1);
@@ -83,7 +83,7 @@ void EQAPP_Detours_Add()
     EQAPP_REAL_EQ_Character__eqspa_movement_rate = (EQ_FUNCTION_TYPE_EQ_Character__eqspa_movement_rate)DetourFunction((PBYTE)EQ_FUNCTION_EQ_Character__eqspa_movement_rate, (PBYTE)EQAPP_DETOUR_EQ_Character__eqspa_movement_rate);
 
     EQAPP_REAL_EQPlayer__ChangePosition = (EQ_FUNCTION_TYPE_EQPlayer__ChangePosition)DetourFunction((PBYTE)EQ_FUNCTION_EQPlayer__ChangePosition, (PBYTE)EQAPP_DETOUR_EQPlayer__ChangePosition);
-    //EQAPP_REAL_EQPlayer__do_change_form = (EQ_FUNCTION_TYPE_EQPlayer__do_change_form)DetourFunction((PBYTE)EQ_FUNCTION_EQPlayer__do_change_form, (PBYTE)EQAPP_DETOUR_EQPlayer__do_change_form);
+    EQAPP_REAL_EQPlayer__do_change_form = (EQ_FUNCTION_TYPE_EQPlayer__do_change_form)DetourFunction((PBYTE)EQ_FUNCTION_EQPlayer__do_change_form, (PBYTE)EQAPP_DETOUR_EQPlayer__do_change_form);
     EQAPP_REAL_EQPlayer__SetRace = (EQ_FUNCTION_TYPE_EQPlayer__SetRace)DetourFunction((PBYTE)EQ_FUNCTION_EQPlayer__SetRace, (PBYTE)EQAPP_DETOUR_EQPlayer__SetRace);
 
     EQAPP_REAL_MapViewMap__Save = (EQ_FUNCTION_TYPE_MapViewMap__Save)DetourFunction((PBYTE)EQ_FUNCTION_MapViewMap__Save, (PBYTE)EQAPP_DETOUR_MapViewMap__Save);
@@ -113,7 +113,7 @@ void EQAPP_Detours_Remove()
     DetourRemove((PBYTE)EQAPP_REAL_EQ_Character__eqspa_movement_rate, (PBYTE)EQAPP_DETOUR_EQ_Character__eqspa_movement_rate);
 
     DetourRemove((PBYTE)EQAPP_REAL_EQPlayer__ChangePosition, (PBYTE)EQAPP_DETOUR_EQPlayer__ChangePosition);
-    //DetourRemove((PBYTE)EQAPP_REAL_EQPlayer__do_change_form, (PBYTE)EQAPP_DETOUR_EQPlayer__do_change_form);
+    DetourRemove((PBYTE)EQAPP_REAL_EQPlayer__do_change_form, (PBYTE)EQAPP_DETOUR_EQPlayer__do_change_form);
     DetourRemove((PBYTE)EQAPP_REAL_EQPlayer__SetRace, (PBYTE)EQAPP_DETOUR_EQPlayer__SetRace);
 
     DetourRemove((PBYTE)EQAPP_REAL_MapViewMap__Save, (PBYTE)EQAPP_DETOUR_MapViewMap__Save);

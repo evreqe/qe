@@ -27,7 +27,6 @@ int g_killSwitchKey = VK_PAUSE;
 
 bool g_debugIsEnabled          = false;
 bool g_neverFrozenIsEnabled    = true;
-bool g_replaceRacesIsEnabled   = true;
 bool g_autoScreenshotIsEnabled = false;
 
 unsigned int g_videoModeWidth  = 1920;
@@ -40,8 +39,8 @@ const char* g_consoleWindowTitle = "EQAPP Console";
 unsigned int g_consoleWindowWidth  = 1440;
 unsigned int g_consoleWindowHeight = 900;
 
-bool g_speedHackIsEnabled = true;
-float g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_SPIRIT_OF_WOLF;
+bool g_movementSpeedHackIsEnabled = true;
+float g_movementSpeedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_SPIRIT_OF_WOLF;
 
 // TODO
 bool g_waypointBotIsEnabled = false;

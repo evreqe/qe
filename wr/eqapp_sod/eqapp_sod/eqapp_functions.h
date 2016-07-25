@@ -29,6 +29,7 @@ std::string EQAPP_INI_ReadString(const char* filename, const char* section, cons
 bool EQAPP_IsAnImportantWindowOpen();
 
 void EQAPP_LootDebugInformation_Print();
+void EQAPP_ExecuteCmdDebugInformation_Print();
 void EQAPP_SpawnInformation_Print(DWORD spawnInfo);
 void EQAPP_BankCurrency_Print();
 void EQAPP_CastRayToTarget_Print();
@@ -38,6 +39,7 @@ void EQAPP_ZoneInformation_Print();
 void EQAPP_OpenZoneMapFile();
 void EQAPP_PlaySound(const char* filename);
 void EQAPP_Beep();
+void EQAPP_DeleteFileContents(const char* filename);
 
 //****************************************************************************************************//
 
@@ -296,6 +298,35 @@ void EQAPP_LootDebugInformation_Print()
     }
 }
 
+void EQAPP_ExecuteCmdDebugInformation_Print()
+{
+    std::cout << "ExecuteCmd Debug Information:" << std::endl;
+
+    EQAPP_DeleteFileContents("eqapp/executecmddebug.txt");
+
+    std::fstream file;
+    file.open("eqapp/executecmddebug.txt", std::ios::out | std::ios::app);
+
+    for (size_t i = 0; i < EQ_NUM_EXECUTECMD; i++)
+    {
+        std::string commandName = EQ_GetExecuteCmdName(i);
+
+        if (commandName.size() == 0)
+        {
+            break;
+        }
+
+        std::stringstream ss;
+        ss << "#: " << i << " (" << commandName << ")";
+
+        std::cout << ss.str() << std::endl;
+
+        file << "#define EQ_EXECUTECMD_" << commandName << " " << i << std::endl;
+    }
+
+    file.close();
+}
+
 void EQAPP_SpawnInformation_Print(DWORD spawnInfo)
 {
     if (spawnInfo == NULL)
@@ -496,6 +527,13 @@ void EQAPP_PlaySound(const char* filename)
 void EQAPP_Beep()
 {
     MessageBeep(0);
+}
+
+void EQAPP_DeleteFileContents(const char* filename)
+{
+    std::fstream file;
+    file.open(filename, std::ios::out | std::ios::trunc);
+    file.close();
 }
 
 #endif // EQAPP_FUNCTIONS_H

@@ -6,7 +6,7 @@ bool g_mapLabelsFilterIsEnabled = false;
 DWORD g_mapLabelsTimer = 0;
 DWORD g_mapLabelsTimerDelay = 10000;
 std::string g_mapLabelsFilterName;
-DWORD g_mapLabelsData = 255;
+DWORD g_mapLabelsData = 254;
 DWORD g_mapLabelsSize = 2;
 DWORD g_mapLabelsLayer = 3;
 DWORD g_mapLabelsWidth = 20;
@@ -157,10 +157,10 @@ void EQAPP_MapLabels_Print()
         return;
     }
 
-    struct _EQMAPLABEL* mapLabel = EQ_ReadMemory<struct _EQMAPLABEL*>(mapViewWnd + 0x2D0);
+    struct _EQMAPLABEL* mapLabel = EQ_ReadMemory<struct _EQMAPLABEL*>(mapViewWnd + EQ_OFFSET_CMapViewWnd_MAP_LABEL_INFO_FIRST);
     if (mapLabel == NULL)
     {
-        EQAPP_PrintErrorMessage(__FUNCTION__, "first map label not found");
+        EQAPP_PrintErrorMessage(__FUNCTION__, "first map label is NULL");
         return;
     }
 

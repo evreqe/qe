@@ -86,6 +86,7 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 
 #define EQ_POINTER_SPELL_MANAGER              0x00AD3A90 // pinstSpellManager
 #define EQ_POINTER_SWITCH_MANAGER             0x00A40704 // pinstSwitchManager (doors)
+#define EQ_POINTER_CONTAINER_MANAGER          0x00990CD8 // psintCContainerMgr (bags)
 
 #define EQ_POINTER_CHAR_INFO                  0x00A425E4 // pinstCharData
 
@@ -126,6 +127,8 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 #define EQ_FUNCTION_get_bearing                 0x004B7BF0
 #define EQ_FUNCTION_Screenshot                  0x00469CC0
 #define EQ_FUNCTION_SetTarget                   0x004B2F90
+#define EQ_FUNCTION_OpenAllContainers           0x005CF1A0
+#define EQ_FUNCTION_CloseAllContainers          0x005CF200
 
 #define EQ_FUNCTION_EQ_Guilds__GetGuildNameById    0x00421930 // GetPlayerGuildName
 
@@ -186,7 +189,9 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 #define EQ_FUNCTION_EQPlayerManager__GetSpawnByID      0x5287B0
 #define EQ_FUNCTION_EQPlayerManager__GetSpawnByName    0x528990
 
-#define EQ_FUNCTION_EQSwitch__ChangeState       0x004D0430
+#define EQ_FUNCTION_EQSwitch__ChangeState    0x004D0430
+
+#define EQ_SWIM_SPEED_MULTIPLIER    0x0085AFC0 // FLOAT
 
 #define EQ_CAMERA_VIEW 0x00990CF0 // DWORD
 
@@ -197,9 +202,7 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 #define EQ_CAMERA_VIEW_THIRD_PERSON4         4
 #define EQ_CAMERA_VIEW_THIRD_PERSON_CHASE    5
 
-#define EQ_CAMERA_PITCH_DEFAULT -8.5
-
-#define EQ_DRAW_DISTANCE_MAX 0x00A607E4 // default is 1000.0f
+#define EQ_DRAW_DISTANCE_MAX 0x00A607E4 // FLOAT
 
 #define EQ_SPAWN_TYPE_PLAYER        0
 #define EQ_SPAWN_TYPE_NPC           1
@@ -249,12 +252,6 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 #define EQ_STANDING_STATE_FEIGNED  0x73 // feign death
 #define EQ_STANDING_STATE_DEAD     0x78
 
-// EQ_Character::eqspa_movement_rate
-#define EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN1        0.08f
-#define EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN2        0.14f
-#define EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN3        0.21f
-#define EQ_MOVEMENT_SPEED_MODIFIER_SPIRIT_OF_WOLF 0.30f
-
 #define EQ_ANIMATION_WALKING          17
 #define EQ_ANIMATION_RUNNING          18
 #define EQ_ANIMATION_JUMPING          19
@@ -266,6 +263,10 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 
 #define EQ_ITEM_TYPE_CONTAINER          0x7900
 #define EQ_ITEM_TYPE_CONTAINER_PLAIN    0x7953
+
+#define EQ_GENDER_MALE       0x00
+#define EQ_GENDER_FEMALE     0x01
+#define EQ_GENDER_NEUTRAL    0x02
 
 #define EQ_RACE_UNKNOWN          0
 #define EQ_RACE_HUMAN            1
@@ -288,7 +289,7 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 #define EQ_RACE_CHOKADAI         356
 #define EQ_RACE_SKELETON2        367
 #define EQ_RACE_SKELETON3        484
-#define EQ_RACE_DRAKKIN          522 // confirm?
+#define EQ_RACE_DRAKKIN          522
 
 #define EQ_CLASS_UNKNOWN                  0
 #define EQ_CLASS_WARRIOR                  1
@@ -308,23 +309,277 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 #define EQ_CLASS_BEASTLORD                15
 #define EQ_CLASS_BANKER                   16
 
-#define EQ_CMD_JUMP                             1
-#define EQ_CMD_MOVE_FORWARD                     2
-#define EQ_CMD_MOVE_BACKWARD                    3
-#define EQ_CMD_TURN_RIGHT                       4
-#define EQ_CMD_TURN_LEFT                        5
-#define EQ_CMD_STRAFE_LEFT                      6
-#define EQ_CMD_STRAFE_RIGHT                     7
-#define EQ_CMD_DUCK                             12
-#define EQ_CMD_LOOK_UP                          17
-#define EQ_CMD_LOOK_DOWN                        18
-#define EQ_CMD_CENTER_VIEW                      19
-#define EQ_CMD_TOGGLE_CAMERA_VIEW               22
-#define EQ_CMD_SET_CAMERA_VIEW_OVERHEAD         197
-#define EQ_CMD_SET_CAMERA_VIEW_CHASE            198
-#define EQ_CMD_SET_CAMERA_VIEW_USER_DEFINED1    199
-#define EQ_CMD_SET_CAMERA_VIEW_USER_DEFINED2    200
-#define EQ_CMD_EXIT_GAME                        274
+#define EQ_EXECUTECMD_AUTORUN                            0
+#define EQ_EXECUTECMD_JUMP                               1
+#define EQ_EXECUTECMD_FORWARD                            2
+#define EQ_EXECUTECMD_BACK                               3
+#define EQ_EXECUTECMD_RIGHT                              4
+#define EQ_EXECUTECMD_LEFT                               5
+#define EQ_EXECUTECMD_STRAFE_LEFT                        6
+#define EQ_EXECUTECMD_STRAFE_RIGHT                       7
+#define EQ_EXECUTECMD_MOUSELOOK                          8
+#define EQ_EXECUTECMD_MOUSELOOK_ENGAGE                   9
+#define EQ_EXECUTECMD_AUTOPRIM                           10
+#define EQ_EXECUTECMD_CONSIDER                           11
+#define EQ_EXECUTECMD_DUCK                               12
+#define EQ_EXECUTECMD_HAIL                               13
+#define EQ_EXECUTECMD_INVENTORY                          14
+#define EQ_EXECUTECMD_TELL                               15
+#define EQ_EXECUTECMD_USE                                16
+#define EQ_EXECUTECMD_PITCHUP                            17
+#define EQ_EXECUTECMD_PITCHDOWN                          18
+#define EQ_EXECUTECMD_CENTERVIEW                         19
+#define EQ_EXECUTECMD_ZOOMIN                             20
+#define EQ_EXECUTECMD_ZOOMOUT                            21
+#define EQ_EXECUTECMD_TOGGLECAM                          22
+#define EQ_EXECUTECMD_FULLSCREEN                         23
+#define EQ_EXECUTECMD_TARGETME                           24
+#define EQ_EXECUTECMD_PARTY1                             25
+#define EQ_EXECUTECMD_PARTY2                             26
+#define EQ_EXECUTECMD_PARTY3                             27
+#define EQ_EXECUTECMD_PARTY4                             28
+#define EQ_EXECUTECMD_PARTY5                             29
+#define EQ_EXECUTECMD_TARGETPC                           30
+#define EQ_EXECUTECMD_CYCLEPCTARGETS                     31
+#define EQ_EXECUTECMD_TARGETNPC                          32
+#define EQ_EXECUTECMD_CYCLENPCTARGETS                    33
+#define EQ_EXECUTECMD_TARGETCORPSE                       34
+#define EQ_EXECUTECMD_CYCLECORPSETARGETS                 35
+#define EQ_EXECUTECMD_NETSTAT                            36
+#define EQ_EXECUTECMD_HOT1_1                             37
+#define EQ_EXECUTECMD_HOT1_2                             38
+#define EQ_EXECUTECMD_HOT1_3                             39
+#define EQ_EXECUTECMD_HOT1_4                             40
+#define EQ_EXECUTECMD_HOT1_5                             41
+#define EQ_EXECUTECMD_HOT1_6                             42
+#define EQ_EXECUTECMD_HOT1_7                             43
+#define EQ_EXECUTECMD_HOT1_8                             44
+#define EQ_EXECUTECMD_HOT1_9                             45
+#define EQ_EXECUTECMD_HOT1_10                            46
+#define EQ_EXECUTECMD_HOT2_1                             47
+#define EQ_EXECUTECMD_HOT2_2                             48
+#define EQ_EXECUTECMD_HOT2_3                             49
+#define EQ_EXECUTECMD_HOT2_4                             50
+#define EQ_EXECUTECMD_HOT2_5                             51
+#define EQ_EXECUTECMD_HOT2_6                             52
+#define EQ_EXECUTECMD_HOT2_7                             53
+#define EQ_EXECUTECMD_HOT2_8                             54
+#define EQ_EXECUTECMD_HOT2_9                             55
+#define EQ_EXECUTECMD_HOT2_10                            56
+#define EQ_EXECUTECMD_HOT3_1                             57
+#define EQ_EXECUTECMD_HOT3_2                             58
+#define EQ_EXECUTECMD_HOT3_3                             59
+#define EQ_EXECUTECMD_HOT3_4                             60
+#define EQ_EXECUTECMD_HOT3_5                             61
+#define EQ_EXECUTECMD_HOT3_6                             62
+#define EQ_EXECUTECMD_HOT3_7                             63
+#define EQ_EXECUTECMD_HOT3_8                             64
+#define EQ_EXECUTECMD_HOT3_9                             65
+#define EQ_EXECUTECMD_HOT3_10                            66
+#define EQ_EXECUTECMD_HOT4_1                             67
+#define EQ_EXECUTECMD_HOT4_2                             68
+#define EQ_EXECUTECMD_HOT4_3                             69
+#define EQ_EXECUTECMD_HOT4_4                             70
+#define EQ_EXECUTECMD_HOT4_5                             71
+#define EQ_EXECUTECMD_HOT4_6                             72
+#define EQ_EXECUTECMD_HOT4_7                             73
+#define EQ_EXECUTECMD_HOT4_8                             74
+#define EQ_EXECUTECMD_HOT4_9                             75
+#define EQ_EXECUTECMD_HOT4_10                            76
+#define EQ_EXECUTECMD_HOTPAGE1_1                         77
+#define EQ_EXECUTECMD_HOTPAGE1_2                         78
+#define EQ_EXECUTECMD_HOTPAGE1_3                         79
+#define EQ_EXECUTECMD_HOTPAGE1_4                         80
+#define EQ_EXECUTECMD_HOTPAGE1_5                         81
+#define EQ_EXECUTECMD_HOTPAGE1_6                         82
+#define EQ_EXECUTECMD_HOTPAGE1_7                         83
+#define EQ_EXECUTECMD_HOTPAGE1_8                         84
+#define EQ_EXECUTECMD_HOTPAGE1_9                         85
+#define EQ_EXECUTECMD_HOTPAGE1_10                        86
+#define EQ_EXECUTECMD_HOTPAGE2_1                         87
+#define EQ_EXECUTECMD_HOTPAGE2_2                         88
+#define EQ_EXECUTECMD_HOTPAGE2_3                         89
+#define EQ_EXECUTECMD_HOTPAGE2_4                         90
+#define EQ_EXECUTECMD_HOTPAGE2_5                         91
+#define EQ_EXECUTECMD_HOTPAGE2_6                         92
+#define EQ_EXECUTECMD_HOTPAGE2_7                         93
+#define EQ_EXECUTECMD_HOTPAGE2_8                         94
+#define EQ_EXECUTECMD_HOTPAGE2_9                         95
+#define EQ_EXECUTECMD_HOTPAGE2_10                        96
+#define EQ_EXECUTECMD_HOTPAGE3_1                         97
+#define EQ_EXECUTECMD_HOTPAGE3_2                         98
+#define EQ_EXECUTECMD_HOTPAGE3_3                         99
+#define EQ_EXECUTECMD_HOTPAGE3_4                         100
+#define EQ_EXECUTECMD_HOTPAGE3_5                         101
+#define EQ_EXECUTECMD_HOTPAGE3_6                         102
+#define EQ_EXECUTECMD_HOTPAGE3_7                         103
+#define EQ_EXECUTECMD_HOTPAGE3_8                         104
+#define EQ_EXECUTECMD_HOTPAGE3_9                         105
+#define EQ_EXECUTECMD_HOTPAGE3_10                        106
+#define EQ_EXECUTECMD_HOTPAGE4_1                         107
+#define EQ_EXECUTECMD_HOTPAGE4_2                         108
+#define EQ_EXECUTECMD_HOTPAGE4_3                         109
+#define EQ_EXECUTECMD_HOTPAGE4_4                         110
+#define EQ_EXECUTECMD_HOTPAGE4_5                         111
+#define EQ_EXECUTECMD_HOTPAGE4_6                         112
+#define EQ_EXECUTECMD_HOTPAGE4_7                         113
+#define EQ_EXECUTECMD_HOTPAGE4_8                         114
+#define EQ_EXECUTECMD_HOTPAGE4_9                         115
+#define EQ_EXECUTECMD_HOTPAGE4_10                        116
+#define EQ_EXECUTECMD_CAST1                              117
+#define EQ_EXECUTECMD_CAST2                              118
+#define EQ_EXECUTECMD_CAST3                              119
+#define EQ_EXECUTECMD_CAST4                              120
+#define EQ_EXECUTECMD_CAST5                              121
+#define EQ_EXECUTECMD_CAST6                              122
+#define EQ_EXECUTECMD_CAST7                              123
+#define EQ_EXECUTECMD_CAST8                              124
+#define EQ_EXECUTECMD_CAST9                              125
+#define EQ_EXECUTECMD_CAST10                             126
+#define EQ_EXECUTECMD_REPLY                              127
+#define EQ_EXECUTECMD_CYCLEREPLY                         128
+#define EQ_EXECUTECMD_CYCLEREPLY_BACK                    129
+#define EQ_EXECUTECMD_BACKDROP                           130
+#define EQ_EXECUTECMD_TOGGLETARGET                       131
+#define EQ_EXECUTECMD_SPELLBOOK                          132
+#define EQ_EXECUTECMD_ABILITIES                          133
+#define EQ_EXECUTECMD_COMBAT                             134
+#define EQ_EXECUTECMD_SOCIALS                            135
+#define EQ_EXECUTECMD_MAIN                               136
+#define EQ_EXECUTECMD_WHO                                137
+#define EQ_EXECUTECMD_INVITE_FOLLOW                      138
+#define EQ_EXECUTECMD_DISBAND                            139
+#define EQ_EXECUTECMD_CAMP                               140
+#define EQ_EXECUTECMD_SIT_STAND                          141
+#define EQ_EXECUTECMD_RUN_WALK                           142
+#define EQ_EXECUTECMD_CLIP_IN                            143
+#define EQ_EXECUTECMD_CLIP_OUT                           144
+#define EQ_EXECUTECMD_VOICE_ON                           145
+#define EQ_EXECUTECMD_SCREENCAP                          146
+#define EQ_EXECUTECMD_HISTORY_UP                         147
+#define EQ_EXECUTECMD_HISTORY_DOWN                       148
+#define EQ_EXECUTECMD_PAGEUP                             149
+#define EQ_EXECUTECMD_PAGEDOWN                           150
+#define EQ_EXECUTECMD_CMDMODE_SAY                        151
+#define EQ_EXECUTECMD_CMDMODE_EMOTE                      152
+#define EQ_EXECUTECMD_LOCK_WINDOWS                       153
+#define EQ_EXECUTECMD_TOGGLE_PLAYERWIN                   154
+#define EQ_EXECUTECMD_TOGGLE_PARTYWIN                    155
+#define EQ_EXECUTECMD_TOGGLE_TARGETWIN                   156
+#define EQ_EXECUTECMD_TOGGLE_SPELLSWIN                   157
+#define EQ_EXECUTECMD_TOGGLE_BUFFWIN                     158
+#define EQ_EXECUTECMD_TOGGLE_HOTBOX1WIN                  159
+#define EQ_EXECUTECMD_TOGGLE_HOTBOX2WIN                  160
+#define EQ_EXECUTECMD_TOGGLE_HOTBOX3WIN                  161
+#define EQ_EXECUTECMD_TOGGLE_HOTBOX4WIN                  162
+#define EQ_EXECUTECMD_TOGGLE_CHATWIN                     163
+#define EQ_EXECUTECMD_TOGGLE_MAILWIN                     164
+#define EQ_EXECUTECMD_TOGGLE_MAILCOMPWIN                 165
+#define EQ_EXECUTECMD_TOGGLE_MAINMENUWIN                 166
+#define EQ_EXECUTECMD_TOGGLE_ALTADVWIN                   167
+#define EQ_EXECUTECMD_TOGGLE_BAZAARWIN                   168
+#define EQ_EXECUTECMD_RTARGET                            169
+#define EQ_EXECUTECMD_TOGGLE_FRIENDSWIN                  170
+#define EQ_EXECUTECMD_TOGGLE_PETINFOWIN                  171
+#define EQ_EXECUTECMD_TOGGLE_OPTIONSWIN                  172
+#define EQ_EXECUTECMD_TOGGLE_HELPWIN                     173
+#define EQ_EXECUTECMD_TOGGLE_SELECTORWIN                 174
+#define EQ_EXECUTECMD_TOGGLE_VIDEOMODEWIN                175
+#define EQ_EXECUTECMD_TOGGLE_BAZAARSEARCHWIN             176
+#define EQ_EXECUTECMD_TOGGLE_COMPASSWIN                  177
+#define EQ_EXECUTECMD_TOGGLE_RAIDWIN                     178
+#define EQ_EXECUTECMD_TOGGLE_MUSICPLAYERWIN              179
+#define EQ_EXECUTECMD_FORWARD_CAM                        180
+#define EQ_EXECUTECMD_BACK_CAM                           181
+#define EQ_EXECUTECMD_RIGHT_CAM                          182
+#define EQ_EXECUTECMD_LEFT_CAM                           183
+#define EQ_EXECUTECMD_PITCHUP_CAM                        184
+#define EQ_EXECUTECMD_PITCHDOWN_CAM                      185
+#define EQ_EXECUTECMD_TOGGLE_JOURNAL                     186
+#define EQ_EXECUTECMD_TOGGLE_SDBUFFWIN                   187
+#define EQ_EXECUTECMD_RELEASE_MOUSE_CURSOR               188
+#define EQ_EXECUTECMD_TOGGLE_STORYWIN                    189
+#define EQ_EXECUTECMD_TOGGLE_MAPWIN                      190
+#define EQ_EXECUTECMD_TOGGLE_GUILDMGMTWIN                191
+#define EQ_EXECUTECMD_TOGGLE_FELLOWSHIPWIN               192
+#define EQ_EXECUTECMD_TOGGLE_LFGWIN                      193
+#define EQ_EXECUTECMD_TOGGLETWOTARGETS                   194
+#define EQ_EXECUTECMD_TOGGLE_CONTEXTMENUS                195
+#define EQ_EXECUTECMD_FIRST_PERSON_CAMERA                196
+#define EQ_EXECUTECMD_OVERHEAD_CAMERA                    197
+#define EQ_EXECUTECMD_CHASE_CAMERA                       198
+#define EQ_EXECUTECMD_USER1_CAMERA                       199
+#define EQ_EXECUTECMD_USER2_CAMERA                       200
+#define EQ_EXECUTECMD_TETHER_CAMERA                      201
+#define EQ_EXECUTECMD_TOGGLE_ADVREQUESTWIN               202
+#define EQ_EXECUTECMD_CLOSE_TOP_WINDOW                   203
+#define EQ_EXECUTECMD_CLEAR_TARGET                       204
+#define EQ_EXECUTECMD_CMD_TOGGLE_FIND_WINDOW             205
+#define EQ_EXECUTECMD_TOGGLE_LEADERSHIPWIN               206
+#define EQ_EXECUTECMD_TOGGLE_TRIBUTEBENEFITWIN           207
+#define EQ_EXECUTECMD_CMD_OPENING_ATTACK1                208
+#define EQ_EXECUTECMD_CMD_OPENING_ATTACK2                209
+#define EQ_EXECUTECMD_CMD_OPENING_ATTACK3                210
+#define EQ_EXECUTECMD_CMD_OPENING_ATTACK4                211
+#define EQ_EXECUTECMD_CMD_OPENING_ATTACK5                212
+#define EQ_EXECUTECMD_CMD_OPENING_ATTACK6                213
+#define EQ_EXECUTECMD_CMD_OPENING_ATTACK7                214
+#define EQ_EXECUTECMD_CMD_OPENING_ATTACK8                215
+#define EQ_EXECUTECMD_CMD_TOGGLE_COMBAT_ABILITY_WIN      216
+#define EQ_EXECUTECMD_CMD_TOGGLE_DYNAMIC_ZONE_WIN        217
+#define EQ_EXECUTECMD_CMD_TOGGLE_PVP_LEADERBOARD         218
+#define EQ_EXECUTECMD_CMD_TOGGLETASKWIN                  219
+#define EQ_EXECUTECMD_CMD_TOGGLE_TICKET_WND              220
+#define EQ_EXECUTECMD_CMD_STOP_CAST                      221
+#define EQ_EXECUTECMD_CMD_TOGGLEVOICEWIN                 222
+#define EQ_EXECUTECMD_CMD_TOGGLE_TITLE_WND               223
+#define EQ_EXECUTECMD_POTION_SLOT_1                      224
+#define EQ_EXECUTECMD_POTION_SLOT_2                      225
+#define EQ_EXECUTECMD_POTION_SLOT_3                      226
+#define EQ_EXECUTECMD_POTION_SLOT_4                      227
+#define EQ_EXECUTECMD_TOGGLE_POTION_BELT                 228
+#define EQ_EXECUTECMD_TOGGLE_BANDOLIER                   229
+#define EQ_EXECUTECMD_OPEN_INV_BAGS                      230
+#define EQ_EXECUTECMD_CLOSE_INV_BAGS                     231
+#define EQ_EXECUTECMD_TOGGLE_SKILLS_WND                  232
+#define EQ_EXECUTECMD_OPEN_ETN_HELP                      233
+#define EQ_EXECUTECMD_CMD_TOGGLE_BLOCKEDBUFFWIN          234
+#define EQ_EXECUTECMD_CMD_TOGGLE_AUDIO_TRIGGER_WINDOW    235
+#define EQ_EXECUTECMD_CMD_CLIPBOARD_PASTE                236
+#define EQ_EXECUTECMD_CMD_UPDATE_EQPLAYERS               237
+#define EQ_EXECUTECMD_CMD_OPEN_EQPLAYERS                 238
+#define EQ_EXECUTECMD_CMD_TOGGLE_AURAWND                 239
+#define EQ_EXECUTECMD_CMD_TOGGLE_BLOCKEDPETBUFFWIN       240
+#define EQ_EXECUTECMD_CMD_TOGGLE_REWARD_SELECTION_WIN    241
+#define EQ_EXECUTECMD_CMD_TOGGLE_CLAIM_WIN               242
+#define EQ_EXECUTECMD_CMD_TOGGLE_VOICE_BAR               243
+#define EQ_EXECUTECMD_CMD_TOGGLE_AS_LIST                 244
+#define EQ_EXECUTECMD_CMD_PUSH_TO_TALK                   245
+#define EQ_EXECUTECMD_CMD_PUSH_TO_TALK_SAY               246
+#define EQ_EXECUTECMD_CMD_PUSH_TO_TALK_GROUP             247
+#define EQ_EXECUTECMD_CMD_PUSH_TO_TALK_RAID              248
+#define EQ_EXECUTECMD_CMD_PUSH_TO_TALK_GUILD             249
+#define EQ_EXECUTECMD_CMD_MERCENARIES                    250
+#define EQ_EXECUTECMD_CMD_MARKETPLACE                    251
+#define EQ_EXECUTECMD_TOGGLE_FPS                         252
+#define EQ_EXECUTECMD_TOGGLE_AVATAR                      253
+#define EQ_EXECUTECMD_TOGGLE_PETITION                    254
+#define EQ_EXECUTECMD_TOGGLE_MEMINFO                     255
+#define EQ_EXECUTECMD_FLY_UP                             256
+#define EQ_EXECUTECMD_FLY_DOWN                           257
+#define EQ_EXECUTECMD_ADD_ROUTE                          258
+#define EQ_EXECUTECMD_LAY_PPOINT                         259
+#define EQ_EXECUTECMD_LAY_LINK                           260
+#define EQ_EXECUTECMD_CONFIRM_YES                        261
+#define EQ_EXECUTECMD_CONFIRM_NO                         262
+#define EQ_EXECUTECMD_TARGET_PREV_NPC                    263
+#define EQ_EXECUTECMD_TARGET_NEXT_NPC                    264
+#define EQ_EXECUTECMD_ROTATE_STATS                       265
+#define EQ_EXECUTECMD_TOGGLE_NPC_TUNE                    266
+#define EQ_EXECUTECMD_TOGGLEQAMARKER                     267
+// commands with no string name
+#define EQ_EXECUTECMD_CMD_EXITGAME                       274
+// #define EQ_EXECUTECMD_                                289
 
 #define EQ_NUM_INVENTORY_SLOTS      31      // 23 equipment slots, 8 bag slots
 #define EQ_NUM_BANK_SLOTS           26      // 24 bag slots, 2 shared bag slots
@@ -335,16 +590,10 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 #define EQ_NUM_SPELLS               5001
 #define EQ_NUM_BONES                64      // number of bones for model info skeleton
 #define EQ_NUM_GROUP_MEMBERS        6
+#define EQ_NUM_EXECUTECMD           268
+#define EQ_NUM_CONTAINERS           34
 
-const float EQ_PI = 3.14159265358979f;
-
-const float EQ_HEADING_MAX        = 512.0f;
-const float EQ_HEADING_MAX_HALVED = 256.0f;
-
-const float EQ_FIELD_OF_VIEW_DEFAULT = 45.0f;
-
-const float EQ_DRAW_DISTANCE_DEFAULT = 400.0f;
-const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
+#define EQ_EXECUTECMD_MAX 290 // 290 total, 268 with names
 
 #define EQ_HOTBUTTON_NUMBER_MIN 1
 #define EQ_HOTBUTTON_NUMBER_MAX 10
@@ -352,9 +601,31 @@ const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
 #define EQ_LEVEL_MIN 1
 #define EQ_LEVEL_MAX 100
 
+#define EQ_SKILL_SWIMMING 50
+
 #define EQ_SKILL_MAX 250
 
 #define EQ_SPAWN_NAME_LENGTH_MIN 4
+
+const float EQ_PI = 3.14159265358979f;
+
+const float EQ_CAMERA_PITCH_DEFAULT = -8.5f;
+
+const float EQ_HEADING_MAX        = 512.0f;
+const float EQ_HEADING_MAX_HALVED = 256.0f;
+
+const float EQ_FIELD_OF_VIEW_DEFAULT = 45.0f;
+
+const float EQ_DRAW_DISTANCE_DEFAULT = 1000.0f;
+const float EQ_DRAW_DISTANCE_MINIMUM = 100.0f;
+
+// EQ_Character::eqspa_movement_rate
+const float EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN1           = 0.08f;
+const float EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN2           = 0.14f;
+const float EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN3           = 0.21f;
+const float EQ_MOVEMENT_SPEED_MODIFIER_SPIRIT_OF_WOLF    = 0.30f;
+
+const float EQ_SWIM_SPEED_MODIFIER_DEFAULT = 2.150000095f;
 
 const std::unordered_map<std::string, std::string> EQ_KEYVALUE_ACTOR_DEFINITIONS
 {
@@ -647,7 +918,7 @@ typedef struct _EQMAPLABEL
 /*0x28*/    DWORD Height = 12;
 /*0x2C*/    DWORD Unknown0x2C; // BYTE X;
 /*0x30*/    DWORD Unknown0x30; // BYTE Y;
-            DWORD Data = 255; // custom data for identifying labels by value
+            DWORD Data = 254; // custom data for identifying labels by value
 } EQMAPLABEL, *PEQMAPLABEL;
 
 typedef struct _EQMAPLINE
@@ -662,18 +933,33 @@ typedef struct _EQMAPLINE
 
 typedef struct _EQCHANGEFORM
 {
-    BYTE a;
-    BYTE b;
-    BYTE c;
-    BYTE d;
-    BYTE e;
-    BYTE f;
-    BYTE g;
+    DWORD SpawnId;
+    BYTE Unknown2[63];
+    DWORD RaceId          = EQ_RACE_HUMAN;
+    BYTE Gender           = EQ_GENDER_MALE;
+    BYTE Unknown73;    // = 0xFF for playable races, 0x00 for unplayable races like skeletons
+    BYTE Unknown74[2];
+    BYTE Unknown76;    // = 0xFF for playable races, 0x00 for unplayable races like skeletons
+    BYTE Unknown77[3];
+    BYTE Unknown80        = 0x06;
+
+    // bytes[00] = Spawn ID    // DWORD
+    // bytes[68] = Race ID     // DWORD
+    // bytes[72] = Gender      // BYTE
+    // bytes[73] = 0xFF        // BYTE = 0xFF for playable races, 0x00 for unplayable races like skeletons
+    // bytes[76] = 0xFF        // BYTE = 0xFF for playable races, 0x00 for unplayable races like skeletons
+    // bytes[80] = 0x06        // BYTE
+
 } EQCHANGEFORM, *PEQCHANGEFORM;
 
 typedef struct _EQSPAWNINFO
 {
 /* 0x00 */    DWORD Unknown0x00;
 } EQSPAWNINFO, *PEQSPAWNINFO;
+
+typedef struct _EQITEMINFO
+{
+/* 0x00 */    DWORD Unknown0x00;
+} EQITEMINFO, *PEQITEMINFO;
 
 #endif // EQSOD_H

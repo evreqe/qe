@@ -112,8 +112,8 @@ void EQAPP_NamedSpawns_Execute()
             continue;
         }
 
-        int spawnIsPet = EQ_ReadMemory<DWORD>(spawn + EQ_OFFSET_SPAWN_INFO_PET_OWNER_SPAWN_INFO);
-        if (spawnIsPet != 0)
+        int spawnPetOwnerSpawnId = EQ_ReadMemory<DWORD>(spawn + EQ_OFFSET_SPAWN_INFO_PET_OWNER_SPAWN_ID);
+        if (spawnPetOwnerSpawnId != 0)
         {
             spawn = EQ_GetNextSpawn(spawn); // next
             continue;

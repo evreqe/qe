@@ -43,18 +43,35 @@ struct EQAPPIMGUIOptionsWindow
 
         if (ImGui::CollapsingHeader("Speed"))
         {
-            ImGui::PushID("ID Speed Hack");
+            ImGui::PushID("ID Movement Speed Hack");
 
-            ImGui::Checkbox("Enabled", &g_speedHackIsEnabled);
+            ImGui::Checkbox("Movement Speed", &g_movementSpeedHackIsEnabled);
             ImGui::SameLine(200);
             ImGui::Text("Lets you run faster");
-            ImGui::Separator();
-            ImGui::InputFloat("Movement Speed Modifier", &g_speedHackModifier, 0.0f, 0.0f, 4);
+            ImGui::InputFloat("Modifier", &g_movementSpeedHackModifier, 0.0f, 0.0f, 4);
 
-            if (ImGui::Button("Spirit of Wolf")) g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_SPIRIT_OF_WOLF; ImGui::SameLine();
-            if (ImGui::Button("AA Run Speed 1")) g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN1; ImGui::SameLine();
-            if (ImGui::Button("AA Run Speed 2")) g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN2; ImGui::SameLine();
-            if (ImGui::Button("AA Run Speed 3")) g_speedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN3;
+            if (ImGui::Button("Spirit of Wolf")) g_movementSpeedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_SPIRIT_OF_WOLF; ImGui::SameLine();
+            if (ImGui::Button("AA Run Speed 1")) g_movementSpeedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN1; ImGui::SameLine();
+            if (ImGui::Button("AA Run Speed 2")) g_movementSpeedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN2; ImGui::SameLine();
+            if (ImGui::Button("AA Run Speed 3")) g_movementSpeedHackModifier = EQ_MOVEMENT_SPEED_MODIFIER_AA_RUN3;
+
+            ImGui::PopID();
+
+            ImGui::Separator();
+
+            ImGui::PushID("ID Swim Speed Hack");
+
+            ImGui::Checkbox("Swim Speed", &g_swimSpeedHackIsEnabled);
+            ImGui::SameLine(200);
+            ImGui::Text("Lets you swim faster");
+            ImGui::InputFloat("Modifier", &g_swimSpeedHackModifier, 0.0f, 0.0f, 0);
+
+            if (ImGui::Button(" 0 ")) g_swimSpeedHackModifier = 0.0f; ImGui::SameLine();
+            if (ImGui::Button(" 2 ")) g_swimSpeedHackModifier = 2.0f; ImGui::SameLine();
+            if (ImGui::Button(" 4 ")) g_swimSpeedHackModifier = 4.0f; ImGui::SameLine();
+            if (ImGui::Button(" 6 ")) g_swimSpeedHackModifier = 6.0f; ImGui::SameLine();
+            if (ImGui::Button(" 8 ")) g_swimSpeedHackModifier = 8.0f; ImGui::SameLine();
+            if (ImGui::Button(" 10 ")) g_swimSpeedHackModifier = 10.0f;
 
             ImGui::PopID();
         }
@@ -575,6 +592,12 @@ struct EQAPPIMGUIOptionsWindow
             ImGui::Checkbox("Max Swimming Skill", &g_maxSwimmingSkillIsEnabled);
             ImGui::SameLine(200);
             ImGui::Text("Lets you swim faster");
+            ImGui::PopID();
+
+            ImGui::PushID("ID Replace Races");
+            ImGui::Checkbox("Replace Races", &g_replaceRacesIsEnabled);
+            ImGui::SameLine(200);
+            ImGui::Text("Replaces invisible men with humans and skeletons with better models");
             ImGui::PopID();
 
             ImGui::Separator();

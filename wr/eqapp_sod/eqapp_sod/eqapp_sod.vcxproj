@@ -91,6 +91,8 @@
     <ClInclude Include="..\..\eqsod\include\eqsod.h" />
     <ClInclude Include="..\..\eqsod\include\eqsod_functions.h" />
     <ClInclude Include="..\..\eqsod\include\eqsod_lua.h" />
+    <ClInclude Include="..\..\eqsod\include\eqsod_offsets.h" />
+    <ClInclude Include="..\..\eqsod\include\eqsod_sizes.h" />
     <ClInclude Include="eqapp.h" />
     <ClInclude Include="eqapp_alwaysattack.h" />
     <ClInclude Include="eqapp_alwayshotbutton.h" />
@@ -127,15 +129,15 @@
     <ClInclude Include="eqapp_nobeep.h" />
     <ClInclude Include="eqapp_onscreentext.h" />
     <ClInclude Include="eqapp_playeralert.h" />
+    <ClInclude Include="eqapp_replaceraces.h" />
     <ClInclude Include="eqapp_sounds.h" />
     <ClInclude Include="eqapp_spawnbeep.h" />
     <ClInclude Include="eqapp_spawncastspell.h" />
     <ClInclude Include="eqapp_spawnlist.h" />
+    <ClInclude Include="eqapp_swimspeed.h" />
     <ClInclude Include="eqapp_targetbeep.h" />
     <ClInclude Include="eqapp_textoverlaychattext.h" />
     <ClInclude Include="eqapp_zoneshortnames.h" />
-    <ClInclude Include="eqsod_offsets.h" />
-    <ClInclude Include="eqsod_sizes.h" />
     <ClInclude Include="imgui_impl_glfw.h" />
     <ClInclude Include="eqapp_waypoint.h" />
   </ItemGroup>

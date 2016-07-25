@@ -159,13 +159,19 @@
     <ClInclude Include="eqapp_esp_custom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="eqsod_offsets.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="eqsod_sizes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="eqapp_playeralert.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="eqapp_swimspeed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\eqsod\include\eqsod_offsets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\eqsod\include\eqsod_sizes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="eqapp_replaceraces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
