@@ -110,9 +110,9 @@ struct EQAPPIMGUIOptionsWindow
             ImGui::SameLine(200);
             ImGui::InputFloat("##ESP Waypoint Distance", &g_espWaypointDistance, 1.0f, 100.0f, 0);
 
-            ImGui::Checkbox("Zone Objects", &g_espZoneObjectIsEnabled);
+            ImGui::Checkbox("Zone Actors", &g_espZoneActorIsEnabled);
             ImGui::SameLine(200);
-            ImGui::InputFloat("##ESP Zone Object Distance", &g_espZoneObjectDistance, 1.0f, 100.0f, 0);
+            ImGui::InputFloat("##ESP Zone Actor Distance", &g_espZoneActorDistance, 1.0f, 100.0f, 0);
 
             ImGui::Checkbox("Custom", &g_espCustomIsEnabled);
             ImGui::SameLine(200);
@@ -598,6 +598,12 @@ struct EQAPPIMGUIOptionsWindow
             ImGui::Checkbox("Replace Races", &g_replaceRacesIsEnabled);
             ImGui::SameLine(200);
             ImGui::Text("Replaces invisible men with humans and skeletons with better models");
+            ImGui::PopID();
+
+            ImGui::PushID("ID Auto Join Group");
+            ImGui::Checkbox("Auto Join Group", &g_autoGroupIsEnabled);
+            ImGui::SameLine(200);
+            ImGui::Text("Automatically join groups when you are invited");
             ImGui::PopID();
 
             ImGui::Separator();

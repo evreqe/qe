@@ -574,6 +574,14 @@ EQ_FUNCTION_AT_ADDRESS(void EQ_OpenAllContainers(), EQ_FUNCTION_OpenAllContainer
 EQ_FUNCTION_AT_ADDRESS(void EQ_CloseAllContainers(), EQ_FUNCTION_CloseAllContainers);
 #endif
 
+#ifdef EQ_FUNCTION_AcceptGroupInvite
+EQ_FUNCTION_AT_ADDRESS(void EQ_AcceptGroupInvite(), EQ_FUNCTION_AcceptGroupInvite);
+#endif
+
+#ifdef EQ_FUNCTION_UpdateLight
+EQ_FUNCTION_AT_ADDRESS(void EQ_UpdateLight(DWORD charInfo), EQ_FUNCTION_UpdateLight);
+#endif
+
 /* functions */
 
 void EQ_ToggleBool(bool& b)

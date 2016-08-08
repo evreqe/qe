@@ -101,7 +101,7 @@ void EQAPP_Hud_Execute()
 
     if (g_espFindIsEnabled == true && g_espFindSpawnName.size() != 0)
     {
-        ssDrawText << "Find: " << g_espFindSpawnName << "\n";
+        ssDrawText << "Find: " << g_espFindSpawnName << " (" << g_espFindCount << ")\n";
         numDrawText++;
     }
 

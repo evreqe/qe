@@ -96,6 +96,7 @@
     <ClInclude Include="eqapp.h" />
     <ClInclude Include="eqapp_alwaysattack.h" />
     <ClInclude Include="eqapp_alwayshotbutton.h" />
+    <ClInclude Include="eqapp_autogroup.h" />
     <ClInclude Include="eqapp_autoloot.h" />
     <ClInclude Include="eqapp_banklist.h" />
     <ClInclude Include="eqapp_census.h" />
@@ -137,6 +138,7 @@
     <ClInclude Include="eqapp_swimspeed.h" />
     <ClInclude Include="eqapp_targetbeep.h" />
     <ClInclude Include="eqapp_textoverlaychattext.h" />
+    <ClInclude Include="eqapp_zoneactors.h" />
     <ClInclude Include="eqapp_zoneshortnames.h" />
     <ClInclude Include="imgui_impl_glfw.h" />
     <ClInclude Include="eqapp_waypoint.h" />

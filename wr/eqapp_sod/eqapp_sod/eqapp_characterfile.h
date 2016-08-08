@@ -70,6 +70,8 @@ void EQAPP_CharacterFile_WriteTxt()
             continue;
         }
 
+        DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
+
         DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_COUNT);
 
         PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + EQ_OFFSET_ITEM_INFO_NAME);
@@ -82,7 +84,21 @@ void EQAPP_CharacterFile_WriteTxt()
                 file << itemCount << " x ";
             }
 
-            file << itemName << std::endl;
+            file << itemName;
+
+            int itemIsLore = EQ_ReadMemory<DWORD>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_LORE);
+            if (itemIsLore != 0)
+            {
+                file << " [LORE ITEM]";
+            }
+
+            int itemIsNotNoDrop = EQ_ReadMemory<BYTE>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_NOT_NO_DROP);
+            if (itemIsNotNoDrop == 0)
+            {
+                file << " [NO DROP]";
+            }
+
+            file << std::endl;
         }
 
         for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
@@ -93,6 +109,8 @@ void EQAPP_CharacterFile_WriteTxt()
                 //file << std::setfill('0') << std::setw(2) << i + 1 << "-" << std::setfill('0') << std::setw(2) << j + 1 << ": EMPTY" << std::endl;
                 continue;
             }
+
+            DWORD containerItemSubInfo = EQ_ReadMemory<DWORD>(containerItemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
 
             DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + EQ_OFFSET_ITEM_INFO_COUNT);
 
@@ -106,7 +124,21 @@ void EQAPP_CharacterFile_WriteTxt()
                     file << containerItemCount << " x ";
                 }
 
-                file << containerItemName << std::endl;
+                file << containerItemName;
+
+                int itemIsLore = EQ_ReadMemory<DWORD>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_LORE);
+                if (itemIsLore != 0)
+                {
+                    file << " [LORE ITEM]";
+                }
+
+                int itemIsNotNoDrop = EQ_ReadMemory<BYTE>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_NOT_NO_DROP);
+                if (itemIsNotNoDrop == 0)
+                {
+                    file << " [NO DROP]";
+                }
+
+                file << std::endl;
             }
         }
     }
@@ -138,6 +170,8 @@ void EQAPP_CharacterFile_WriteTxt()
             continue;
         }
 
+        DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
+
         DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_COUNT);
 
         PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + EQ_OFFSET_ITEM_INFO_NAME);
@@ -150,7 +184,21 @@ void EQAPP_CharacterFile_WriteTxt()
                 file << itemCount << " x ";
             }
 
-            file << itemName << std::endl;
+            file << itemName;
+
+            int itemIsLore = EQ_ReadMemory<DWORD>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_LORE);
+            if (itemIsLore != 0)
+            {
+                file << " [LORE ITEM]";
+            }
+
+            int itemIsNotNoDrop = EQ_ReadMemory<BYTE>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_NOT_NO_DROP);
+            if (itemIsNotNoDrop == 0)
+            {
+                file << " [NO DROP]";
+            }
+
+            file << std::endl;
         }
 
         for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
@@ -161,6 +209,8 @@ void EQAPP_CharacterFile_WriteTxt()
                 //file << std::setfill('0') << std::setw(2) << i + 1 << "-" << std::setfill('0') << std::setw(2) << j + 1 << ": EMPTY" << std::endl;
                 continue;
             }
+
+            DWORD containerItemSubInfo = EQ_ReadMemory<DWORD>(containerItemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
 
             DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + EQ_OFFSET_ITEM_INFO_COUNT);
 
@@ -174,7 +224,21 @@ void EQAPP_CharacterFile_WriteTxt()
                     file << containerItemCount << " x ";
                 }
 
-                file << containerItemName << std::endl;
+                file << containerItemName;
+
+                int itemIsLore = EQ_ReadMemory<DWORD>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_LORE);
+                if (itemIsLore != 0)
+                {
+                    file << " [LORE ITEM]";
+                }
+
+                int itemIsNotNoDrop = EQ_ReadMemory<BYTE>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_NOT_NO_DROP);
+                if (itemIsNotNoDrop == 0)
+                {
+                    file << " [NO DROP]";
+                }
+
+                file << std::endl;
             }
         }
     }
@@ -238,22 +302,25 @@ void EQAPP_CharacterFile_WriteJson()
             continue;
         }
 
+        DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
+
         PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + EQ_OFFSET_ITEM_INFO_NAME);
         if (itemName != NULL)
         {
             DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_COUNT);
 
-            DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
-
-            DWORD itemId   = EQ_ReadMemory<DWORD>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_ID);
+            DWORD itemId = EQ_ReadMemory<DWORD>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_ID);
             DWORD itemIcon = EQ_ReadMemory<DWORD>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_ICON);
 
-            j_bank_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", i + 1, "name", itemName, "count", itemCount, "id", itemId, "icon", itemIcon);
+            int itemIsLore = EQ_ReadMemory<DWORD>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_LORE);
+            int itemIsNotNoDrop = EQ_ReadMemory<BYTE>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_NOT_NO_DROP);
+
+            j_bank_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i, s: i, s: i}", "slot", i + 1, "name", itemName, "count", itemCount, "id", itemId, "icon", itemIcon, "lore", (itemIsLore != 0), "nodrop", (itemIsNotNoDrop == 0));
             json_array_append_new(j_bank_items_root, j_bank_item_node);
         }
 
         json_t* j_bank_item_node_container_items_root = json_array();
-        json_object_set_new(j_bank_item_node, "containerItems", j_bank_item_node_container_items_root);
+        json_object_set_new(j_bank_item_node, "container_items", j_bank_item_node_container_items_root);
 
         for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
         {
@@ -267,17 +334,20 @@ void EQAPP_CharacterFile_WriteJson()
                 continue;
             }
 
+            DWORD containerItemSubInfo = EQ_ReadMemory<DWORD>(containerItemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
+
             PCHAR containerItemName = EQ_ReadMemory<PCHAR>(containerItemInfo + EQ_OFFSET_ITEM_INFO_NAME);
             if (containerItemName != NULL)
             {
                 DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + EQ_OFFSET_ITEM_INFO_COUNT);
 
-                DWORD containerItemSubInfo = EQ_ReadMemory<DWORD>(containerItemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
-
-                DWORD containerItemId   = EQ_ReadMemory<DWORD>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_ID);
+                DWORD containerItemId = EQ_ReadMemory<DWORD>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_ID);
                 DWORD containerItemIcon = EQ_ReadMemory<DWORD>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_ICON);
 
-                j_bank_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", j + 1, "name", containerItemName, "count", containerItemCount, "id", containerItemId, "icon", containerItemIcon);
+                int containerItemIsLore = EQ_ReadMemory<DWORD>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_LORE);
+                int containerItemIsNotNoDrop = EQ_ReadMemory<BYTE>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_NOT_NO_DROP);
+
+                j_bank_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i, s: i, s: i}", "slot", j + 1, "name", containerItemName, "count", containerItemCount, "id", containerItemId, "icon", containerItemIcon, "lore", (containerItemIsLore != 0), "nodrop", (containerItemIsNotNoDrop == 0));
                 json_array_append_new(j_bank_item_node_container_items_root, j_bank_container_item_node);
             }
         }
@@ -306,27 +376,30 @@ void EQAPP_CharacterFile_WriteJson()
         DWORD itemInfo = EQ_ReadMemory<DWORD>(charInfo2 + (EQ_OFFSET_CHAR_INFO_2_INVENTORY_ITEM_INFO_FIRST + (i * 4)));
         if (itemInfo == NULL)
         {
-            j_inventory_item_node = json_pack("{s: i, s: s, s: s, s: i, s: i, s: i}", "slot", i + 1, "slotName", slotName.c_str(), "name", "(empty)", "count", -1, "id", -1, "icon", -1);
+            j_inventory_item_node = json_pack("{s: i, s: s, s: s, s: i, s: i, s: i}", "slot", i + 1, "slot_name", slotName.c_str(), "name", "(empty)", "count", -1, "id", -1, "icon", -1);
             json_array_append_new(j_inventory_items_root, j_inventory_item_node);
             continue;
         }
+
+        DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
 
         PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + EQ_OFFSET_ITEM_INFO_NAME);
         if (itemName != NULL)
         {
             DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_COUNT);
 
-            DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
-
-            DWORD itemId   = EQ_ReadMemory<DWORD>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_ID);
+            DWORD itemId = EQ_ReadMemory<DWORD>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_ID);
             DWORD itemIcon = EQ_ReadMemory<DWORD>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_ICON);
 
-            j_inventory_item_node = json_pack("{s: i, s: s, s: s, s: i, s: i, s: i}", "slot", i + 1, "slotName", slotName.c_str(), "name", itemName, "count", itemCount, "id", itemId, "icon", itemIcon);
+            int itemIsLore = EQ_ReadMemory<DWORD>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_LORE);
+            int itemIsNotNoDrop = EQ_ReadMemory<BYTE>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_NOT_NO_DROP);
+
+            j_inventory_item_node = json_pack("{s: i, s: s, s: s, s: i, s: i, s: i, s: i, s: i}", "slot", i + 1, "slot_name", slotName.c_str(), "name", itemName, "count", itemCount, "id", itemId, "icon", itemIcon, "lore", (itemIsLore != 0), "nodrop", (itemIsNotNoDrop == 0));
             json_array_append_new(j_inventory_items_root, j_inventory_item_node);
         }
 
         json_t* j_inventory_item_node_container_items_root = json_array();
-        json_object_set_new(j_inventory_item_node, "containerItems", j_inventory_item_node_container_items_root);
+        json_object_set_new(j_inventory_item_node, "container_items", j_inventory_item_node_container_items_root);
 
         for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
         {
@@ -340,17 +413,20 @@ void EQAPP_CharacterFile_WriteJson()
                 continue;
             }
 
+            DWORD containerItemSubInfo = EQ_ReadMemory<DWORD>(containerItemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
+
             PCHAR containerItemName = EQ_ReadMemory<PCHAR>(containerItemInfo + EQ_OFFSET_ITEM_INFO_NAME);
             if (containerItemName != NULL)
             {
                 DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + EQ_OFFSET_ITEM_INFO_COUNT);
 
-                DWORD containerItemSubInfo = EQ_ReadMemory<DWORD>(containerItemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
-
-                DWORD containerItemId   = EQ_ReadMemory<DWORD>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_ID);
+                DWORD containerItemId = EQ_ReadMemory<DWORD>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_ID);
                 DWORD containerItemIcon = EQ_ReadMemory<DWORD>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_ICON);
 
-                j_inventory_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i}", "slot", j + 1, "name", containerItemName, "count", containerItemCount, "id", containerItemId, "icon", containerItemIcon);
+                int containerItemIsLore = EQ_ReadMemory<DWORD>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_LORE);
+                int containerItemIsNotNoDrop = EQ_ReadMemory<BYTE>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_NOT_NO_DROP);
+
+                j_inventory_container_item_node = json_pack("{s: i, s: s, s: i, s: i, s: i, s: i, s: i}", "slot", j + 1, "name", containerItemName, "count", containerItemCount, "id", containerItemId, "icon", containerItemIcon, "lore", (containerItemIsLore != 0), "nodrop", (containerItemIsNotNoDrop == 0));
                 json_array_append_new(j_inventory_item_node_container_items_root, j_inventory_container_item_node);
             }
         }

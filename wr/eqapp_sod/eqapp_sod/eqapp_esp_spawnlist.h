@@ -46,6 +46,8 @@ void EQAPP_ESP_SpawnList_Update()
 
     unsigned int numNpcCorpse = 0;
 
+    g_espFindCount = 0;
+
     DWORD targetSpawn = EQ_GetTargetSpawn();
     DWORD playerSpawn = EQ_GetPlayerSpawn();
 
@@ -110,6 +112,8 @@ void EQAPP_ESP_SpawnList_Update()
             {
                 espSpawn.showAtAnyDistance = true;
                 espSpawn.isFindSpawn = true;
+
+                g_espFindCount++;
             }
         }
 

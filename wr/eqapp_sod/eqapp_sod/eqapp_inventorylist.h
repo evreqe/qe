@@ -37,6 +37,8 @@ void EQAPP_InventoryList_Print(const char* filterItemName)
             continue;
         }
 
+        DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
+
         DWORD itemCount = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_COUNT);
 
         PCHAR itemName = EQ_ReadMemory<PCHAR>(itemInfo + EQ_OFFSET_ITEM_INFO_NAME);
@@ -44,12 +46,6 @@ void EQAPP_InventoryList_Print(const char* filterItemName)
         {
             if (filterItemName != NULL)
             {
-                DWORD itemSubInfo = EQ_ReadMemory<DWORD>(itemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
-                if (itemSubInfo == NULL)
-                {
-                    continue;
-                }
-
                 DWORD itemSlots = EQ_ReadMemory<BYTE>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_SLOTS);
                 if (itemSlots == 0)
                 {
@@ -67,7 +63,21 @@ void EQAPP_InventoryList_Print(const char* filterItemName)
                 std::cout << itemCount << " x ";
             }
 
-            std::cout << itemName << std::endl;
+            std::cout << itemName;
+
+            int itemIsLore = EQ_ReadMemory<DWORD>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_LORE);
+            if (itemIsLore != 0)
+            {
+                std::cout << " [LORE ITEM]";
+            }
+
+            int itemIsNotNoDrop = EQ_ReadMemory<BYTE>(itemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_NOT_NO_DROP);
+            if (itemIsNotNoDrop == 0)
+            {
+                std::cout << " [NO DROP]";
+            }
+
+            std::cout << std::endl;
         }
 
         for (size_t j = 0; j < EQ_NUM_CONTAINER_SLOTS; j++)
@@ -77,6 +87,8 @@ void EQAPP_InventoryList_Print(const char* filterItemName)
             {
                 continue;
             }
+
+            DWORD containerItemSubInfo = EQ_ReadMemory<DWORD>(containerItemInfo + EQ_OFFSET_ITEM_INFO_ITEM_SUB_INFO);
 
             DWORD containerItemCount = EQ_ReadMemory<DWORD>(containerItemInfo + EQ_OFFSET_ITEM_INFO_COUNT);
 
@@ -98,7 +110,21 @@ void EQAPP_InventoryList_Print(const char* filterItemName)
                     std::cout << containerItemCount << " x ";
                 }
 
-                std::cout << containerItemName << std::endl;
+                std::cout << containerItemName;
+
+                int itemIsLore = EQ_ReadMemory<DWORD>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_LORE);
+                if (itemIsLore != 0)
+                {
+                    std::cout << " [LORE ITEM]";
+                }
+
+                int itemIsNotNoDrop = EQ_ReadMemory<BYTE>(containerItemSubInfo + EQ_OFFSET_ITEM_SUB_INFO_IS_NOT_NO_DROP);
+                if (itemIsNotNoDrop == 0)
+                {
+                    std::cout << " [NO DROP]";
+                }
+
+                std::cout << std::endl;
             }
         }
     }

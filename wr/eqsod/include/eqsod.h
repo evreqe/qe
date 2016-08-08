@@ -14,42 +14,45 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 
 #define EQ_BASE_ADDRESS 0x00400000
 
-#define EQ_WINDOW_HWND   0x00AD6974 // DWORD
-#define EQ_WINDOW_WIDTH  0x00AD6950 // DWORD
-#define EQ_WINDOW_HEIGHT 0x00AD6954 // DWORD
-
-#define EQ_EXIT_STATUS 0x00A60A03 // BYTE, 0 = not exiting, 1 or 2 = exiting
-
-#define EQ_RESET_DEVICE_VALUE 0x00AD6DB4
-
-#define EQ_BOOL_AUTO_ATTACK    0x00AC1196 // BYTE
-#define EQ_BOOL_AUTO_FIRE      0x00AC1197 // BYTE
-#define EQ_BOOL_AUTO_RUN       0x00A603FC // DWORD
-#define EQ_BOOL_NET_STATUS     0x00A603E1 // BYTE
-#define EQ_BOOL_SAFELOCK       0x00A96858 // BYTE
-#define EQ_BOOL_SCREENSHOT     0x00A609A1 // BYTE, set to 1 to force the game to take a screenshot
-
-#define EQ_BOOL_KEYBOARD_SHIFT           0x00A609B0 // BYTE
-#define EQ_BOOL_KEYBOARD_CONTROL         0x00A609B1 // BYTE
-#define EQ_BOOL_KEYBOARD_ALT             0x00A609B2 // BYTE
-#define EQ_BOOL_KEYBOARD_LEFT_SHIFT      0x00A609B3 // BYTE
-#define EQ_BOOL_KEYBOARD_LEFT_CONTROL    0x00A609B4 // BYTE
-#define EQ_BOOL_KEYBOARD_LEFT_ALT        0x00A609B5 // BYTE
-#define EQ_BOOL_KEYBOARD_RIGHT_SHIFT     0x00A609B6 // BYTE
-#define EQ_BOOL_KEYBOARD_RIGHT_CONTROL   0x00A609B7 // BYTE
-#define EQ_BOOL_KEYBOARD_RIGHT_ALT       0x00A609B8 // BYTE
-
 #define EQ_GRAPHICS_DLL_POINTER_BASE_ADDRESS 0x00B112A8 // EQGraphicsDX9.DLL
 
 #define EQ_GRAPHICS_DLL_OFFSET_FRAMES_PER_SECOND 0x173CB0 // FLOAT
 
-#define EQ_GRAPHICS_DLL_OFFSET_DrawLine 0x7A850
-#define EQ_GRAPHICS_DLL_OFFSET_DrawQuad 0x7A560
+#define EQ_GRAPHICS_DLL_OFFSET_DrawLine    0x7A850
+#define EQ_GRAPHICS_DLL_OFFSET_DrawQuad    0x7A560
 
-#define EQ_GRAPHICS_DLL_ORDINAL_DrawLine 0x84
-#define EQ_GRAPHICS_DLL_ORDINAL_DrawQuad 0x9C
+#define EQ_GRAPHICS_DLL_ORDINAL_DrawLine    0x84
+#define EQ_GRAPHICS_DLL_ORDINAL_DrawQuad    0x9C
+
+#define EQ_WINDOW_HWND      0x00AD6974 // DWORD
+#define EQ_WINDOW_WIDTH     0x00AD6950 // DWORD
+#define EQ_WINDOW_HEIGHT    0x00AD6954 // DWORD
+
+#define EQ_EXIT_STATUS 0x00A60A03 // BYTE ; 0 = not exiting, 1 or 2 = exiting
+
+#define EQ_RESET_DEVICE_VALUE 0x00AD6DB4
+
+#define EQ_BOOL_AUTO_ATTACK         0x00AC1196 // BYTE
+#define EQ_BOOL_AUTO_FIRE           0x00AC1197 // BYTE
+#define EQ_BOOL_AUTO_RUN            0x00A603FC // DWORD
+#define EQ_BOOL_NET_STATUS          0x00A603E1 // BYTE
+#define EQ_BOOL_SAFELOCK            0x00A96858 // BYTE
+#define EQ_BOOL_SCREENSHOT          0x00A609A1 // BYTE ; set to 1 to force the game to take a screenshot
+#define EQ_BOOL_INVITED_TO_GROUP    0x00A96858 // BYTE
+
+#define EQ_BOOL_KEYBOARD_SHIFT            0x00A609B0 // BYTE
+#define EQ_BOOL_KEYBOARD_CONTROL          0x00A609B1 // BYTE
+#define EQ_BOOL_KEYBOARD_ALT              0x00A609B2 // BYTE
+#define EQ_BOOL_KEYBOARD_LEFT_SHIFT       0x00A609B3 // BYTE
+#define EQ_BOOL_KEYBOARD_LEFT_CONTROL     0x00A609B4 // BYTE
+#define EQ_BOOL_KEYBOARD_LEFT_ALT         0x00A609B5 // BYTE
+#define EQ_BOOL_KEYBOARD_RIGHT_SHIFT      0x00A609B6 // BYTE
+#define EQ_BOOL_KEYBOARD_RIGHT_CONTROL    0x00A609B7 // BYTE
+#define EQ_BOOL_KEYBOARD_RIGHT_ALT        0x00A609B8 // BYTE
 
 #define EQ_POINTER_EQGraphicsDLL              0x00B112BC
+
+#define EQ_POINTER_0x00B112C0                 0x00B112C0
 
 #define EQ_POINTER_CDisplay                   0x00A42628
 #define EQ_POINTER_CEverQuest                 0x00AD6DB8
@@ -102,8 +105,8 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 
 #define EQ_EXECUTECMD_LIST 0x00851940
 
-#define EQ_FONT_INFO_2_COLOR_ADDRESS 0x0046D8FF
-#define EQ_FONT_INFO_2_COLOR_VALUE   0xFF000000
+#define EQ_FONT_INFO_2_COLOR_ADDRESS    0x0046D8FF
+#define EQ_FONT_INFO_2_COLOR_VALUE      0xFF000000
 
 #define EQ_ZONE_INFO_CHARACTER_NAME    0x00A6057C // STRING [0x40]
 #define EQ_ZONE_INFO_SHORT_NAME        0x00A605BC // STRING [0x20]
@@ -114,21 +117,25 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 #define EQ_ZONE_INFO_MIN_CLIP          0x00A607E0 // FLOAT
 #define EQ_ZONE_INFO_MAX_CLIP          0x00A607E4 // FLOAT
 
-#define EQ_FUNCTION_Exit 0x004B06B0 // called by the "/exit" slash command
+#define EQ_FUNCTION_Exit 0x004B06B0 // called by the "/exit" command
 
-#define EQ_FUNCTION_ResetDevice  0x00561790
-#define EQ_FUNCTION_WindowResize 0x00561840
+#define EQ_FUNCTION_ResetDevice     0x00561790
+#define EQ_FUNCTION_WindowResize    0x00561840
 
-#define EQ_FUNCTION_CastRay                     0x004C3E40 // __CastRay
-#define EQ_FUNCTION_CXWnd_DrawColoredRect       0x006DBB30
-#define EQ_FUNCTION_DrawNetStatus               0x00512280
-#define EQ_FUNCTION_ExecuteCmd                  0x004A5580
-#define EQ_FUNCTION_get_melee_range             0x004AAA20 // __get_melee_range
-#define EQ_FUNCTION_get_bearing                 0x004B7BF0
-#define EQ_FUNCTION_Screenshot                  0x00469CC0
-#define EQ_FUNCTION_SetTarget                   0x004B2F90
-#define EQ_FUNCTION_OpenAllContainers           0x005CF1A0
-#define EQ_FUNCTION_CloseAllContainers          0x005CF200
+#define EQ_FUNCTION_CastRay                      0x004C3E40 // __CastRay
+#define EQ_FUNCTION_CXWnd_DrawColoredRect        0x006DBB30
+#define EQ_FUNCTION_DrawNetStatus                0x00512280
+#define EQ_FUNCTION_ExecuteCmd                   0x004A5580
+#define EQ_FUNCTION_get_melee_range              0x004AAA20 // __get_melee_range
+#define EQ_FUNCTION_get_bearing                  0x004B7BF0
+#define EQ_FUNCTION_Screenshot                   0x00469CC0
+#define EQ_FUNCTION_SetTarget                    0x004B2F90
+#define EQ_FUNCTION_OpenAllContainers            0x005CF1A0
+#define EQ_FUNCTION_CloseAllContainers           0x005CF200
+#define EQ_FUNCTION_ReceivedGroupInvite          0x004E4070
+#define EQ_FUNCTION_AcceptGroupInvite            0x004E4310
+#define EQ_FUNCTION_InviteToGroup                0x004E3CD0
+#define EQ_FUNCTION_UpdateLight                  0x004C0F70
 
 #define EQ_FUNCTION_EQ_Guilds__GetGuildNameById    0x00421930 // GetPlayerGuildName
 
@@ -191,66 +198,66 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 
 #define EQ_FUNCTION_EQSwitch__ChangeState    0x004D0430
 
-#define EQ_SWIM_SPEED_MULTIPLIER    0x0085AFC0 // FLOAT
+#define EQ_SWIM_SPEED_MULTIPLIER 0x0085AFC0 // FLOAT
 
 #define EQ_CAMERA_VIEW 0x00990CF0 // DWORD
 
-#define EQ_CAMERA_VIEW_FIRST_PERSON          0
-#define EQ_CAMERA_VIEW_THIRD_PERSON_OVERHEAD 1
-#define EQ_CAMERA_VIEW_THIRD_PERSON2         2
-#define EQ_CAMERA_VIEW_THIRD_PERSON3         3
-#define EQ_CAMERA_VIEW_THIRD_PERSON4         4
-#define EQ_CAMERA_VIEW_THIRD_PERSON_CHASE    5
+#define EQ_CAMERA_VIEW_FIRST_PERSON             0
+#define EQ_CAMERA_VIEW_THIRD_PERSON_OVERHEAD    1
+#define EQ_CAMERA_VIEW_THIRD_PERSON2            2
+#define EQ_CAMERA_VIEW_THIRD_PERSON3            3
+#define EQ_CAMERA_VIEW_THIRD_PERSON4            4
+#define EQ_CAMERA_VIEW_THIRD_PERSON_CHASE       5
 
 #define EQ_DRAW_DISTANCE_MAX 0x00A607E4 // FLOAT
 
-#define EQ_SPAWN_TYPE_PLAYER        0
-#define EQ_SPAWN_TYPE_NPC           1
-#define EQ_SPAWN_TYPE_NPC_CORPSE    2
-#define EQ_SPAWN_TYPE_PLAYER_CORPSE 3
+#define EQ_SPAWN_TYPE_PLAYER           0
+#define EQ_SPAWN_TYPE_NPC              1
+#define EQ_SPAWN_TYPE_NPC_CORPSE       2
+#define EQ_SPAWN_TYPE_PLAYER_CORPSE    3
 
-#define EQ_DOOR_STATE_OPEN   2
-#define EQ_DOOR_STATE_CLOSED 3
+#define EQ_DOOR_STATE_OPEN      2
+#define EQ_DOOR_STATE_CLOSED    3
 
-#define EQ_GAME_STATE_CHARACTER_SELECT 1
-#define EQ_GAME_STATE_ZONING           3
-#define EQ_GAME_STATE_ZONING2          4
-#define EQ_GAME_STATE_IN_GAME          5
-#define EQ_GAME_STATE_LOADING_SCREEN   6
-#define EQ_GAME_STATE_ZONING3          7
+#define EQ_GAME_STATE_CHARACTER_SELECT    1
+#define EQ_GAME_STATE_ZONING              3
+#define EQ_GAME_STATE_ZONING2             4
+#define EQ_GAME_STATE_IN_GAME             5
+#define EQ_GAME_STATE_LOADING_SCREEN      6
+#define EQ_GAME_STATE_ZONING3             7
 
-#define EQ_TEXT_COLOR_BLACK       0x00
-#define EQ_TEXT_COLOR_GRAY        0x01
-#define EQ_TEXT_COLOR_GREEN       0x02
-#define EQ_TEXT_COLOR_GRAY2       0x03
-#define EQ_TEXT_COLOR_BLUE        0x04
-#define EQ_TEXT_COLOR_PINK        0x05
-#define EQ_TEXT_COLOR_GRAY3       0x06
-#define EQ_TEXT_COLOR_WHITE       0x07
-#define EQ_TEXT_COLOR_GRAY4       0x08
-#define EQ_TEXT_COLOR_GRAY5       0x09
-#define EQ_TEXT_COLOR_WHITE2      0x0A
-#define EQ_TEXT_COLOR_GRAY6       0x0B
-#define EQ_TEXT_COLOR_LIGHT_GRAY  0x0C
-#define EQ_TEXT_COLOR_RED         0x0D
-#define EQ_TEXT_COLOR_LIGHT_GREEN 0x0E
-#define EQ_TEXT_COLOR_YELLOW      0x0F
-#define EQ_TEXT_COLOR_LIGHT_BLUE  0x10
-#define EQ_TEXT_COLOR_GRAY7       0x11
-#define EQ_TEXT_COLOR_CYAN        0x12
-#define EQ_TEXT_COLOR_GRAY8       0x13
-#define EQ_TEXT_COLOR_BLACK2      0x14
+#define EQ_TEXT_COLOR_BLACK          0x00
+#define EQ_TEXT_COLOR_GRAY           0x01
+#define EQ_TEXT_COLOR_GREEN          0x02
+#define EQ_TEXT_COLOR_GRAY2          0x03
+#define EQ_TEXT_COLOR_BLUE           0x04
+#define EQ_TEXT_COLOR_PINK           0x05
+#define EQ_TEXT_COLOR_GRAY3          0x06
+#define EQ_TEXT_COLOR_WHITE          0x07
+#define EQ_TEXT_COLOR_GRAY4          0x08
+#define EQ_TEXT_COLOR_GRAY5          0x09
+#define EQ_TEXT_COLOR_WHITE2         0x0A
+#define EQ_TEXT_COLOR_GRAY6          0x0B
+#define EQ_TEXT_COLOR_LIGHT_GRAY     0x0C
+#define EQ_TEXT_COLOR_RED            0x0D
+#define EQ_TEXT_COLOR_LIGHT_GREEN    0x0E
+#define EQ_TEXT_COLOR_YELLOW         0x0F
+#define EQ_TEXT_COLOR_LIGHT_BLUE     0x10
+#define EQ_TEXT_COLOR_GRAY7          0x11
+#define EQ_TEXT_COLOR_CYAN           0x12
+#define EQ_TEXT_COLOR_GRAY8          0x13
+#define EQ_TEXT_COLOR_BLACK2         0x14
 
 #define EQ_TOOLTIP_COLOR 0xC8000040 // ARGB color
 
 // EQPlayer::ChangePosition(BYTE standingState)
-#define EQ_STANDING_STATE_STANDING 0x64
-#define EQ_STANDING_STATE_FROZEN   0x66 // stunned / mesmerized / feared ; You lose control of yourself!
-#define EQ_STANDING_STATE_LOOTING  0x69 // looting or binding wounds
-#define EQ_STANDING_STATE_SITTING  0x6E
-#define EQ_STANDING_STATE_DUCKING  0x6F // crouching
-#define EQ_STANDING_STATE_FEIGNED  0x73 // feign death
-#define EQ_STANDING_STATE_DEAD     0x78
+#define EQ_STANDING_STATE_STANDING    0x64
+#define EQ_STANDING_STATE_FROZEN      0x66 // stunned / mesmerized / feared ; You lose control of yourself!
+#define EQ_STANDING_STATE_LOOTING     0x69 // looting or binding wounds
+#define EQ_STANDING_STATE_SITTING     0x6E
+#define EQ_STANDING_STATE_DUCKING     0x6F // crouching
+#define EQ_STANDING_STATE_FEIGNED     0x73 // feign death
+#define EQ_STANDING_STATE_DEAD        0x78
 
 #define EQ_ANIMATION_WALKING          17
 #define EQ_ANIMATION_RUNNING          18
@@ -291,23 +298,23 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 #define EQ_RACE_SKELETON3        484
 #define EQ_RACE_DRAKKIN          522
 
-#define EQ_CLASS_UNKNOWN                  0
-#define EQ_CLASS_WARRIOR                  1
-#define EQ_CLASS_CLERIC                   2
-#define EQ_CLASS_PALADIN                  3
-#define EQ_CLASS_RANGER                   4
-#define EQ_CLASS_SHADOWKNIGHT             5
-#define EQ_CLASS_DRUID                    6
-#define EQ_CLASS_MONK                     7
-#define EQ_CLASS_BARD                     8
-#define EQ_CLASS_ROGUE                    9
-#define EQ_CLASS_SHAMAN                   10
-#define EQ_CLASS_NECROMANCER              11
-#define EQ_CLASS_WIZARD                   12
-#define EQ_CLASS_MAGICIAN                 13
-#define EQ_CLASS_ENCHANTER                14
-#define EQ_CLASS_BEASTLORD                15
-#define EQ_CLASS_BANKER                   16
+#define EQ_CLASS_UNKNOWN         0
+#define EQ_CLASS_WARRIOR         1
+#define EQ_CLASS_CLERIC          2
+#define EQ_CLASS_PALADIN         3
+#define EQ_CLASS_RANGER          4
+#define EQ_CLASS_SHADOWKNIGHT    5
+#define EQ_CLASS_DRUID           6
+#define EQ_CLASS_MONK            7
+#define EQ_CLASS_BARD            8
+#define EQ_CLASS_ROGUE           9
+#define EQ_CLASS_SHAMAN          10
+#define EQ_CLASS_NECROMANCER     11
+#define EQ_CLASS_WIZARD          12
+#define EQ_CLASS_MAGICIAN        13
+#define EQ_CLASS_ENCHANTER       14
+#define EQ_CLASS_BEASTLORD       15
+#define EQ_CLASS_BANKER          16
 
 #define EQ_EXECUTECMD_AUTORUN                            0
 #define EQ_EXECUTECMD_JUMP                               1
@@ -581,6 +588,8 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 #define EQ_EXECUTECMD_CMD_EXITGAME                       274
 // #define EQ_EXECUTECMD_                                289
 
+#define EQ_SKILL_SWIMMING 50
+
 #define EQ_NUM_INVENTORY_SLOTS      31      // 23 equipment slots, 8 bag slots
 #define EQ_NUM_BANK_SLOTS           26      // 24 bag slots, 2 shared bag slots
 #define EQ_NUM_CONTAINER_SLOTS      10      // number of items that can fit in a bag, backpack or box
@@ -600,8 +609,6 @@ const char* EQ_STRING_GRAPHICS_DLL_NAME_LOWERCASE = "eqgraphicsdx9.dll";
 
 #define EQ_LEVEL_MIN 1
 #define EQ_LEVEL_MAX 100
-
-#define EQ_SKILL_SWIMMING 50
 
 #define EQ_SKILL_MAX 250
 

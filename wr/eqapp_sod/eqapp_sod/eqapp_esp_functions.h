@@ -10,8 +10,7 @@ void EQAPP_ESP_Execute();
 void EQAPP_ESP_Spawns_Draw();
 void EQAPP_ESP_GroundSpawns_Draw();
 void EQAPP_ESP_Doors_Draw();
-void EQAPP_ESP_ZoneObjects_Debug();
-void EQAPP_ESP_ZoneObjects_Draw();
+void EQAPP_ESP_ZoneActors_Draw();
 void EQAPP_ESP_Waypoints_Draw();
 void EQAPP_ESP_Locator_Draw();
 void EQAPP_ESP_Locator_Print();
@@ -20,6 +19,11 @@ void EQAPP_ESP_SpawnSkeleton_Draw(DWORD spawnInfo, DWORD argbColor);
 
 void EQAPP_ESP_Execute()
 {
+    if (EQ_IsInGame() == false)
+    {
+        return;
+    }
+
     if (g_espIsEnabled == false)
     {
         return;
@@ -38,7 +42,7 @@ void EQAPP_ESP_Execute()
     // draw order is least important to most important
     EQAPP_ESP_Custom_Draw();
     EQAPP_ESP_Waypoints_Draw();
-    EQAPP_ESP_ZoneObjects_Draw();
+    EQAPP_ESP_ZoneActors_Draw();
     EQAPP_ESP_Doors_Draw();
     EQAPP_ESP_GroundSpawns_Draw();
     EQAPP_ESP_Locator_Draw();
@@ -393,103 +397,9 @@ void EQAPP_ESP_Doors_Draw()
     }
 }
 
-void EQAPP_ESP_ZoneObjects_Debug()
+void EQAPP_ESP_ZoneActors_Draw()
 {
-    std::cout << "ESP Zone Objects Debug:" << std::endl;
-
-    DWORD playerSpawn = EQ_GetPlayerSpawn();
-
-    FLOAT playerY = EQ_GetSpawnY(playerSpawn);
-    FLOAT playerX = EQ_GetSpawnX(playerSpawn);
-    FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
-
-    DWORD pointer1 = EQ_ReadMemory<DWORD>(0x00B112C0);
-    if (pointer1 != NULL)
-    {
-        DWORD pointer2 = EQ_ReadMemory<DWORD>(pointer1 + 0x94);
-        if (pointer2 != NULL)
-        {
-            DWORD zoneObject = EQ_ReadMemory<DWORD>(pointer2 + 0x5C);
-
-            while (zoneObject)
-            {
-                DWORD zoneObject0x0C = EQ_ReadMemory<DWORD>(zoneObject + 0x0C);
-
-                if (zoneObject0x0C == 2)
-                {
-                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
-                    continue;
-                }
-
-                DWORD zoneObject0x2C = EQ_ReadMemory<BYTE>(zoneObject + 0x2C);
-                DWORD zoneObject0x2D = EQ_ReadMemory<BYTE>(zoneObject + 0x2D);
-
-                // skip player and npc models
-                //if (EQ_IsKeyControlPressed() == false && zoneObject0x2C == 1 && zoneObject0x2D == 0)
-                //{
-                    //zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
-                    //continue;
-                //}
-
-                FLOAT zoneObjectY = EQ_ReadMemory<FLOAT>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_Y);
-                FLOAT zoneObjectX = EQ_ReadMemory<FLOAT>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_X);
-                FLOAT zoneObjectZ = EQ_ReadMemory<FLOAT>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_Z);
-
-                if (zoneObjectY == 0 && zoneObjectX == 0 && zoneObjectZ == 0)
-                {
-                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
-                    continue;
-                }
-
-                float zoneObjectDistance = EQ_CalculateDistance3d(playerX, playerY, playerZ, zoneObjectX, zoneObjectY, zoneObjectZ);
-                if (zoneObjectDistance > g_espZoneObjectDistance)
-                {
-                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
-                    continue;
-                }
-
-                std::string zoneObjectName = "ZONEOBJECT";
-
-                DWORD zoneObject0x14 = EQ_ReadMemory<DWORD>(zoneObject + 0x14);
-                if (zoneObject0x14 != NULL)
-                {
-                    DWORD zoneObject0x14x18 = EQ_ReadMemory<DWORD>(zoneObject0x14 + 0x18);
-                    if (zoneObject0x14x18 != NULL)
-                    {
-                        PCHAR zoneObjectNamePointer = EQ_ReadMemory<PCHAR>(zoneObject0x14x18 + 0x08);
-                        if (zoneObjectNamePointer != NULL)
-                        {
-                            zoneObjectName = std::string(zoneObjectNamePointer);
-                        }
-                    }
-                }
-
-                std::cout << "Zone Object Name: " << zoneObjectName << std::endl;
-
-                std::cout << "Zone Object Distance: " << zoneObjectDistance << std::endl;
-
-                std::cout << "Zone Object Y: " << zoneObjectY << std::endl;
-                std::cout << "Zone Object X: " << zoneObjectX << std::endl;
-                std::cout << "Zone Object Z: " << zoneObjectZ << std::endl;
-
-                std::cout << "Zone Object 0x0C: " << zoneObject0x0C << std::endl;
-
-                std::cout << "Zone Object 0x2C: " << zoneObject0x2C << std::endl;
-                std::cout << "Zone Object 0x2D: " << zoneObject0x2D << std::endl;
-
-                std::cout << "--------------------------------------------------" << std::endl;
-
-                zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
-            }
-        }
-    }
-}
-
-void EQAPP_ESP_ZoneObjects_Draw()
-{
-    // TODO: fix magic numbers for addresses and offsets
-
-    if (g_espZoneObjectIsEnabled == false)
+    if (g_espZoneActorIsEnabled == false)
     {
         return;
     }
@@ -500,80 +410,190 @@ void EQAPP_ESP_ZoneObjects_Draw()
     FLOAT playerX = EQ_GetSpawnX(playerSpawn);
     FLOAT playerZ = EQ_GetSpawnZ(playerSpawn);
 
-    DWORD pointer1 = EQ_ReadMemory<DWORD>(0x00B112C0);
+    DWORD pointer1 = EQ_ReadMemory<DWORD>(EQ_POINTER_0x00B112C0);
     if (pointer1 != NULL)
     {
-        DWORD pointer2 = EQ_ReadMemory<DWORD>(pointer1 + 0x94);
+        DWORD pointer2 = EQ_ReadMemory<DWORD>(pointer1 + EQ_OFFSET_0x00B112C0_POINTER_2);
         if (pointer2 != NULL)
         {
-            DWORD zoneObject = EQ_ReadMemory<DWORD>(pointer2 + 0x5C);
+            DWORD zoneActor = EQ_ReadMemory<DWORD>(pointer2 + EQ_OFFSET_0x00B112C0_POINTER_2_ZONE_ACTOR_INFO_FIRST);
 
-            while (zoneObject)
+            while (zoneActor)
             {
-                DWORD zoneObject0x0C = EQ_ReadMemory<DWORD>(zoneObject + 0x0C);
-
-                if (zoneObject0x0C == 2)
+                DWORD zoneActor0x0C = EQ_ReadMemory<DWORD>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_0x0C);
+                if (zoneActor0x0C == 2)
                 {
-                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
+                    zoneActor = EQ_ReadMemory<DWORD>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_NEXT); // next
                     continue;
                 }
 
-                //DWORD zoneObject0x2C = EQ_ReadMemory<BYTE>(zoneObject + 0x2C);
-                //DWORD zoneObject0x2D = EQ_ReadMemory<BYTE>(zoneObject + 0x2D);
+                int zoneActor0x2C = EQ_ReadMemory<BYTE>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_0x2C);
+                int zoneActor0x2D = EQ_ReadMemory<BYTE>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_0x2D);
+                int zoneActor0x2E = EQ_ReadMemory<BYTE>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_0x2E);
+                int zoneActor0x2F = EQ_ReadMemory<BYTE>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_0x2F);
 
-                // skip player and npc models
-                //if (EQ_IsKeyControlPressed() == false && zoneObject0x2C == 1 && zoneObject0x2D == 0)
-                //{
-                    //zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
-                    //continue;
-                //}
+                DWORD zoneActor0x1C = EQ_ReadMemory<DWORD>(zoneActor + 0x1C);
+                DWORD zoneActor0x20 = EQ_ReadMemory<DWORD>(zoneActor + 0x20);
+                DWORD zoneActor0x24 = EQ_ReadMemory<DWORD>(zoneActor + 0x24);
+                DWORD zoneActor0x28 = EQ_ReadMemory<DWORD>(zoneActor + 0x28);
 
-                FLOAT zoneObjectY = EQ_ReadMemory<FLOAT>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_Y);
-                FLOAT zoneObjectX = EQ_ReadMemory<FLOAT>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_X);
-                FLOAT zoneObjectZ = EQ_ReadMemory<FLOAT>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_Z);
+                FLOAT zoneActor0x40 = EQ_ReadMemory<FLOAT>(zoneActor + 0x40);
+                FLOAT zoneActor0x44 = EQ_ReadMemory<FLOAT>(zoneActor + 0x44);
+                FLOAT zoneActor0x4C = EQ_ReadMemory<FLOAT>(zoneActor + 0x4C);
 
-                float zoneObjectDistance = EQ_CalculateDistance3d(playerX, playerY, playerZ, zoneObjectX, zoneObjectY, zoneObjectZ);
-                if (zoneObjectDistance > g_espZoneObjectDistance)
+                DWORD zoneActor0x50 = EQ_ReadMemory<DWORD>(zoneActor + 0x50);
+                DWORD zoneActor0x54 = EQ_ReadMemory<DWORD>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_0x54);
+
+                FLOAT zoneActorY = EQ_ReadMemory<FLOAT>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_Y);
+                FLOAT zoneActorX = EQ_ReadMemory<FLOAT>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_X);
+                FLOAT zoneActorZ = EQ_ReadMemory<FLOAT>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_Z);
+
+                FLOAT zoneActorRotation = EQ_ReadMemory<FLOAT>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_ROTATION);
+                FLOAT zoneActorScale = EQ_ReadMemory<FLOAT>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_SCALE);
+
+                float zoneActorDistance = EQ_CalculateDistance3d(playerX, playerY, playerZ, zoneActorX, zoneActorY, zoneActorZ);
+                if (zoneActorDistance > g_espZoneActorDistance)
                 {
-                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
+                    zoneActor = EQ_ReadMemory<DWORD>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_NEXT); // next
                     continue;
                 }
 
                 int screenX = -1;
                 int screenY = -1;
-                bool result = EQ_WorldSpaceToScreenSpace(zoneObjectX, zoneObjectY, zoneObjectZ, screenX, screenY);
+                bool result = EQ_WorldSpaceToScreenSpace(zoneActorX, zoneActorY, zoneActorZ, screenX, screenY);
                 if (result == false)
                 {
-                    zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
+                    zoneActor = EQ_ReadMemory<DWORD>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_NEXT); // next
                     continue;
                 }
 
-                std::string zoneObjectName = "ZONEOBJECT";
+                std::string zoneActorName = "ZONEACTOR";
 
-                DWORD zoneObject0x14 = EQ_ReadMemory<DWORD>(zoneObject + 0x14);
-                if (zoneObject0x14 != NULL)
+                DWORD zoneActor0x14 = EQ_ReadMemory<DWORD>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_0x14);
+                if (zoneActor0x14 != NULL)
                 {
-                    DWORD zoneObject0x14x18 = EQ_ReadMemory<DWORD>(zoneObject0x14 + 0x18);
-                    if (zoneObject0x14x18 != NULL)
+                    DWORD zoneActor0x14x18 = EQ_ReadMemory<DWORD>(zoneActor0x14 + EQ_OFFSET_ZONE_ACTOR_INFO_0x14_0x18);
+                    if (zoneActor0x14x18 != NULL)
                     {
-                        PCHAR zoneObjectNamePointer = EQ_ReadMemory<PCHAR>(zoneObject0x14x18 + 0x08);
-                        if (zoneObjectNamePointer != NULL)
+                        PCHAR zoneActorNamePointer = EQ_ReadMemory<PCHAR>(zoneActor0x14x18 + EQ_OFFSET_ZONE_ACTOR_INFO_NAME_0x14_0x18_0x08);
+                        if (zoneActorNamePointer != NULL)
                         {
-                            zoneObjectName = std::string(zoneObjectNamePointer);
+                            zoneActorName = std::string(zoneActorNamePointer);
                         }
                     }
                 }
 
+                std::string zoneActorExName = "ZONEACTOREX";
+
+                DWORD zoneActorSpawnInfo = NULL;
+
+                FLOAT zoneActorEx0x08 = NULL;
+                FLOAT zoneActorEx0x0C = NULL;
+                FLOAT zoneActorEx0x10 = NULL;
+                FLOAT zoneActorEx0x14 = NULL;
+
+                FLOAT zoneActorExY1 = 0.0f;
+                FLOAT zoneActorExX1 = 0.0f;
+                FLOAT zoneActorExZ1 = 0.0f;
+
+                FLOAT zoneActorExY2 = 0.0f;
+                FLOAT zoneActorExX2 = 0.0f;
+                FLOAT zoneActorExZ2 = 0.0f;
+
+                FLOAT zoneActorExY3 = 0.0f;
+                FLOAT zoneActorExX3 = 0.0f;
+                FLOAT zoneActorExZ3 = 0.0f;
+
+                DWORD zoneActorEx = EQ_ReadMemory<DWORD>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_ACTOR_SUB_INFO);
+                if (zoneActorEx != NULL)
+                {
+                    zoneActorSpawnInfo = EQ_ReadMemory<DWORD>(zoneActorEx + EQ_OFFSET_ZONE_ACTOR_SUB_INFO_SPAWN_INFO);
+
+                    if (zoneActorSpawnInfo == NULL)
+                    {
+                        PCHAR zoneActorExNamePointer = (PCHAR)(zoneActorEx - EQ_OFFSET_ZONE_ACTOR_SUB_INFO_NAME);
+                        if (zoneActorExNamePointer != NULL)
+                        {
+                            zoneActorExName = std::string(zoneActorExNamePointer);
+                        }
+                    }
+
+                    zoneActorEx0x08 = EQ_ReadMemory<FLOAT>(zoneActorEx + 0x08);
+                    zoneActorEx0x0C = EQ_ReadMemory<FLOAT>(zoneActorEx + 0x0C);
+                    zoneActorEx0x10 = EQ_ReadMemory<FLOAT>(zoneActorEx + 0x10);
+                    zoneActorEx0x14 = EQ_ReadMemory<FLOAT>(zoneActorEx + 0x14);
+
+                    zoneActorExY1 = EQ_ReadMemory<FLOAT>(zoneActorEx + EQ_OFFSET_ZONE_ACTOR_SUB_INFO_Y1);
+                    zoneActorExX1 = EQ_ReadMemory<FLOAT>(zoneActorEx + EQ_OFFSET_ZONE_ACTOR_SUB_INFO_X1);
+                    zoneActorExZ1 = EQ_ReadMemory<FLOAT>(zoneActorEx + EQ_OFFSET_ZONE_ACTOR_SUB_INFO_Z1);
+
+                    zoneActorExY2 = EQ_ReadMemory<FLOAT>(zoneActorEx + EQ_OFFSET_ZONE_ACTOR_SUB_INFO_Y2);
+                    zoneActorExX2 = EQ_ReadMemory<FLOAT>(zoneActorEx + EQ_OFFSET_ZONE_ACTOR_SUB_INFO_X2);
+                    zoneActorExZ2 = EQ_ReadMemory<FLOAT>(zoneActorEx + EQ_OFFSET_ZONE_ACTOR_SUB_INFO_Z2);
+
+                    zoneActorExY3 = EQ_ReadMemory<FLOAT>(zoneActorEx + EQ_OFFSET_ZONE_ACTOR_SUB_INFO_Y3);
+                    zoneActorExX3 = EQ_ReadMemory<FLOAT>(zoneActorEx + EQ_OFFSET_ZONE_ACTOR_SUB_INFO_X3);
+                    zoneActorExZ3 = EQ_ReadMemory<FLOAT>(zoneActorEx + EQ_OFFSET_ZONE_ACTOR_SUB_INFO_Z3);
+                }
+
                 std::stringstream ssDrawText;
-                ssDrawText << "+ " << zoneObjectName << " (" << (int)zoneObjectDistance << ")\n";
+                ssDrawText << "+ " << zoneActorName << " (" << (int)zoneActorDistance << ")\n";
 
-                ssDrawText << "Y: " << zoneObjectY << "\n";
-                ssDrawText << "X: " << zoneObjectX << "\n";
-                ssDrawText << "Z: " << zoneObjectZ << "\n";
+/*
+                ssDrawText << "Address: " << std::hex << zoneActor << "\n";
+                ssDrawText << "Address Ex: " << std::hex << zoneActorEx << "\n";
+*/
 
-                EQ_DrawText(ssDrawText.str().c_str(), screenX, screenY, g_espZoneObjectColor, 2);
+                ssDrawText << "Y: " << zoneActorY << "\n";
+                ssDrawText << "X: " << zoneActorX << "\n";
+                ssDrawText << "Z: " << zoneActorZ << "\n";
 
-                zoneObject = EQ_ReadMemory<DWORD>(zoneObject + EQ_OFFSET_ZONE_OBJECT_INFO_NEXT); // next
+                ssDrawText << "Rotation: " << zoneActorRotation << "\n";
+                ssDrawText << "Scale: " << zoneActorScale << "\n";
+
+/*
+                ssDrawText << "0x2C: " << zoneActor0x2C << "\n";
+                ssDrawText << "0x2D: " << zoneActor0x2D << "\n";
+                ssDrawText << "0x2E: " << zoneActor0x2E << "\n";
+                ssDrawText << "0x2F: " << zoneActor0x2F << "\n";
+
+                ssDrawText << "0x1C: " << std::hex << zoneActor0x1C << "\n";
+                ssDrawText << "0x20: " << std::hex << zoneActor0x20 << "\n";
+                ssDrawText << "0x24: " << std::hex << zoneActor0x24 << "\n";
+                ssDrawText << "0x28: " << std::hex << zoneActor0x28 << "\n";
+
+                ssDrawText << "0x40: " << zoneActor0x40 << "\n";
+                ssDrawText << "0x44: " << zoneActor0x44 << "\n";
+                ssDrawText << "0x4C: " << zoneActor0x4C << "\n";
+
+                ssDrawText << "0x50: " << std::hex << zoneActor0x50 << "\n";
+                ssDrawText << "0x54: " << std::hex << zoneActor0x54 << "\n";
+*/
+
+/*
+                ssDrawText << zoneActorExName << "\n";
+
+                ssDrawText << "Y1: " << zoneActorExY1 << "\n";
+                ssDrawText << "X1: " << zoneActorExX1 << "\n";
+                ssDrawText << "Z1: " << zoneActorExZ1 << "\n";
+
+                ssDrawText << "Y2: " << zoneActorExY2 << "\n";
+                ssDrawText << "X2: " << zoneActorExX2 << "\n";
+                ssDrawText << "Z2: " << zoneActorExZ2 << "\n";
+
+                ssDrawText << "Y3: " << zoneActorExY3 << "\n";
+                ssDrawText << "X3: " << zoneActorExX3 << "\n";
+                ssDrawText << "Z3: " << zoneActorExZ3 << "\n";
+*/
+
+                if (zoneActorSpawnInfo != NULL)
+                {
+                    ssDrawText << "Spawn Info: " << std::hex << zoneActorSpawnInfo << "\n";
+                }
+
+                EQ_DrawText(ssDrawText.str().c_str(), screenX, screenY, g_espZoneActorColor, 2);
+
+                zoneActor = EQ_ReadMemory<DWORD>(zoneActor + EQ_OFFSET_ZONE_ACTOR_INFO_NEXT); // next
             }
         }
     }

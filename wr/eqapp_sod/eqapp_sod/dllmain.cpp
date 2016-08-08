@@ -82,6 +82,8 @@
 #include "eqapp_banklist.h"
 #include "eqapp_inventorylist.h"
 #include "eqapp_replaceraces.h"
+#include "eqapp_autogroup.h"
+#include "eqapp_zoneactors.h"
 #include "eqapp_esp.h"                 // needs to be included last
 #include "eqapp_esp_functions.h"       // needs to be included last
 #include "eqapp_hud.h"                 // needs to be included last
@@ -106,6 +108,8 @@ void EQAPP_Load()
 
     EQAPP_CharacterFile_Write();
 
+    EQ_UpdateLight(EQ_GetCharInfo());
+
     std::cout << "Loaded." << std::endl;
 
     g_bLoaded = 1;
@@ -126,6 +130,8 @@ void EQAPP_Unload()
     EQAPP_FreeCamera_Set(false);
 
     EQAPP_SwimSpeed_Off();
+
+    EQ_UpdateLight(EQ_GetCharInfo());
 
     EQ_SetWindowTitle(EQ_STRING_WINDOW_TITLE);
 
@@ -163,14 +169,15 @@ void EQAPP_SetWindowTitles()
         memcpy(playerName, (LPVOID)(playerSpawn + EQ_OFFSET_SPAWN_INFO_NAME), sizeof(playerName));
 
         std::stringstream ss;
-        ss << EQ_STRING_WINDOW_TITLE << ": " << playerName;
+        ss << "EQ: " << playerName;
 
         SetWindowTextA(window, ss.str().c_str());
+        //SetWindowTextA(window, playerName);
 
         if (g_consoleWindowHwnd != NULL)
         {
             std::stringstream ss;
-            ss << g_applicationName << ": " << playerName;
+            ss << "EQC: " << playerName;
 
             SetWindowTextA(g_consoleWindowHwnd, ss.str().c_str());
         }
@@ -214,6 +221,14 @@ int __cdecl EQAPP_DETOUR_ExecuteCmd(DWORD a1, BOOL a2, PVOID a3)
         {
             return EQAPP_REAL_ExecuteCmd(NULL, 0, 0);
         }
+    }
+
+    // camping out
+    if (a1 == EQ_EXECUTECMD_CAMP)
+    {
+        EQ_ResetViewActor();
+
+        EQAPP_CharacterFile_Write();
     }
 
     // open all windows is a toggle, no need for a separate close all windows key
@@ -465,6 +480,8 @@ int __fastcall EQAPP_DETOUR_CEverQuest__MoveToZone(void* pThis, void* not_used, 
         return EQAPP_REAL_CEverQuest__MoveToZone(pThis, a1, a2, a3, a4, a5, a6, a7, a8);
     }
 
+    g_espZoneActorIsEnabled = false;
+
     EQAPP_MapLabels_Remove();
 
     return EQAPP_REAL_CEverQuest__MoveToZone(pThis, a1, a2, a3, a4, a5, a6, a7, a8);
@@ -609,12 +626,11 @@ int __fastcall EQAPP_DETOUR_EQPlayer__do_change_form(void* pThis, void* not_used
     if (g_debugIsEnabled == true)
     {
         std::cout << "EQPlayer::do_change_form():" << std::endl;
-        std::cout << "a1: " << std::hex << a1 << std::dec << std::endl;
 
         unsigned const char* bytes = (unsigned const char*)a1;
 
         std::cout << "Bytes:" << std::endl;
-        for (size_t i = 0; i < 128; i++)
+        for (size_t i = 0; i < 128; i++) // size of structure is unknown, look at 128 bytes to guess values
         {
             std::cout << "#" << i << ": " << std::hex << std::uppercase << (int)bytes[i] << std::dec << " " << std::endl;
         }
@@ -774,6 +790,7 @@ int __cdecl EQAPP_DETOUR_DrawNetStatus(int a1, unsigned short a2, unsigned short
     EQAPP_PlayerAlert_Execute();
     EQAPP_TargetBeep_Execute();
 
+    EQAPP_AutoGroup_Execute();
     EQAPP_HideCorpseLooted_Execute();
     EQAPP_AlwaysAttack_Execute();
     EQAPP_MaxSwimmingSkill_Execute();

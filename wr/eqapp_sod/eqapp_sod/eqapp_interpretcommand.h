@@ -33,15 +33,15 @@ const std::vector<std::string> g_interpretCommandList
     "//espgroundspawn, //espgs",
     "//espdoor, //espd",
     "//espskeleton, //espsk",
-    "//espzoneobject, //espzo",
-    "//espzoneobjectdebug, //espzodebug",
+    "//espzoneactor, //espza",
+    "//zoneactorsdebug, //zad",
     "//espcustom, //espc",
     "//espwaypoint, //espwp",
     "//setespspawndistance (distance), //setesps (distance), //setesp (distance)",
     "//setespgroundspawndistance (distance), //setespgs (distance)",
     "//setespdoordistance (distance), //setespd (distance)",
     "//setespskeletondistance (distance), //setespsk (distance)",
-    "//setespzoneobjectdistance (distance), //setespzo (distance)",
+    "//setespzoneactordistance (distance), //setespza (distance)",
     "//setespcustomdistance (distance), //setespc (distance)",
     "//setespwaypointdistance (distance), //setespwp (distance)",
     "//getespcustomlocation, //getecl",
@@ -512,18 +512,18 @@ void EQAPP_InterpretCommand(const char* command)
         return;
     }
 
-    // toggle esp zone object
-    if (strcmp(command, "//espzoneobject") == 0 || strcmp(command, "//espzo") == 0)
+    // toggle esp zone actor
+    if (strcmp(command, "//espzoneactor") == 0 || strcmp(command, "//espza") == 0)
     {
-        EQ_ToggleBool(g_espZoneObjectIsEnabled);
-        EQAPP_PrintBool("ESP Zone Object", g_espZoneObjectIsEnabled);
+        EQ_ToggleBool(g_espZoneActorIsEnabled);
+        EQAPP_PrintBool("ESP Zone Actor", g_espZoneActorIsEnabled);
         return;
     }
 
-    // debug esp zone object
-    if (strcmp(command, "//espzoneobjectdebug") == 0 || strcmp(command, "//espzodebug") == 0)
+    // debug zone actors
+    if (strcmp(command, "//zoneactorsdebug") == 0 || strcmp(command, "//zad") == 0)
     {
-        EQAPP_ESP_ZoneObjects_Debug();
+        EQAPP_ZoneActors_Debug();
         return;
     }
 
@@ -622,8 +622,8 @@ void EQAPP_InterpretCommand(const char* command)
         return;
     }
 
-    // set esp zone object distance
-    if (strncmp(command, "//setespzoneobjectdistance ", 27) == 0 || strncmp(command, "//setespzo ", 11) == 0)
+    // set esp zone actor distance
+    if (strncmp(command, "//setespzoneactordistance ", 26) == 0 || strncmp(command, "//setespza ", 11) == 0)
     {
         char commandEx[128];
 
@@ -632,9 +632,9 @@ void EQAPP_InterpretCommand(const char* command)
         int result = sscanf_s(command, "%s %f", commandEx, sizeof(commandEx), &distance);
         if (result == 2)
         {
-            g_espZoneObjectDistance = distance;
+            g_espZoneActorDistance = distance;
 
-            std::cout << "ESP Zone Object Distance: " << distance << std::endl;
+            std::cout << "ESP Zone Actor Distance: " << distance << std::endl;
         }
 
         return;
