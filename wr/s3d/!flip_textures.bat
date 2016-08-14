@@ -1,0 +1,2 @@
+mogrify -flip *.dds
+pause

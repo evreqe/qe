@@ -562,6 +562,22 @@ struct EQAPPIMGUIOptionsWindow
             ImGui::PopID();
         }
 
+        if (ImGui::CollapsingHeader("Set Target"))
+        {
+            ImGui::PushID("ID Set Target");
+
+            ImGui::Checkbox("Enabled", &g_setTargetIsEnabled);
+            ImGui::SameLine(200);
+            ImGui::Text("Lets you target from any distance with improved /target command");
+
+            ImGui::Separator();
+
+            ImGui::Checkbox("Use Max Distance", &g_setTargetMaxDistanceIsEnabled);
+            ImGui::InputFloat("Max Distance", &g_setTargetMaxDistance, 1.0f, 100.0f, 0);
+
+            ImGui::PopID();
+        }
+
         if (ImGui::CollapsingHeader("Other"))
         {
             ImGui::PushID("ID Always Attack");

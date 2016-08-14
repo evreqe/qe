@@ -119,6 +119,8 @@ void EQAPP_Unload()
 {
     std::cout << "Unloading..." << std::endl;
 
+    EQAPP_CharacterFile_Write();
+
     g_spawnCastSpellList.clear();
 
     EQ_ResetViewActor();
@@ -214,7 +216,7 @@ int __cdecl EQAPP_DETOUR_ExecuteCmd(DWORD a1, BOOL a2, PVOID a3)
         // prevent movement and changing the camera view
         if
         (
-            (a1 >= EQ_EXECUTECMD_JUMP && a1 <= EQ_EXECUTECMD_STRAFE_RIGHT)                                      ||
+            (a1 >= EQ_EXECUTECMD_JUMP && a1 <= EQ_EXECUTECMD_STRAFE_RIGHT)            ||
             (a1 >= EQ_EXECUTECMD_OVERHEAD_CAMERA && a1 <= EQ_EXECUTECMD_USER2_CAMERA) ||
             a1 == EQ_EXECUTECMD_TOGGLECAM
         )
@@ -223,9 +225,11 @@ int __cdecl EQAPP_DETOUR_ExecuteCmd(DWORD a1, BOOL a2, PVOID a3)
         }
     }
 
-    // camping out
-    if (a1 == EQ_EXECUTECMD_CAMP)
+    // camping out or exiting the game
+    if (a1 == EQ_EXECUTECMD_CAMP || a1 == EQ_EXECUTECMD_CMD_EXITGAME)
     {
+        std::cout << "Camping out or exiting the game..." << std::endl;
+
         EQ_ResetViewActor();
 
         EQAPP_CharacterFile_Write();
@@ -259,7 +263,10 @@ int __cdecl EQAPP_DETOUR_SetTarget(DWORD a1, const char* a2)
         return EQAPP_REAL_SetTarget(a1, a2);
     }
 
-    int result = EQAPP_REAL_SetTarget(NULL, a2);
+    if (g_setTargetIsEnabled == false)
+    {
+        return EQAPP_REAL_SetTarget(a1, a2);
+    }
 
     if (g_debugIsEnabled == true && a2 != NULL)
     {
@@ -270,9 +277,16 @@ int __cdecl EQAPP_DETOUR_SetTarget(DWORD a1, const char* a2)
 
     std::string targetName = a2;
 
-    EQ_SetTargetByName(targetName.c_str());
+    float maxDistance = EQ_SET_TARGET_DISTANCE_MAX;
 
-    return result;
+    if (g_setTargetMaxDistanceIsEnabled == true)
+    {
+        maxDistance = g_setTargetMaxDistance;
+    }
+
+    EQ_SetTargetByName(targetName.c_str(), maxDistance);
+
+    return 0;
 }
 
 int __fastcall EQAPP_DETOUR_CEverQuest__SetGameState(void* pThis, void* not_used, int a1)
@@ -282,6 +296,11 @@ int __fastcall EQAPP_DETOUR_CEverQuest__SetGameState(void* pThis, void* not_used
     if (g_bExit == 1)
     {
         return EQAPP_REAL_CEverQuest__SetGameState(pThis, a1);
+    }
+
+    if (g_debugIsEnabled == true)
+    {
+        std::cout << "[debug] CEverQuest::SetGameState(): " << a1 << std::endl;
     }
 
     return EQAPP_REAL_CEverQuest__SetGameState(pThis, a1);
@@ -367,7 +386,7 @@ int __fastcall EQAPP_DETOUR_CDisplay__CreatePlayerActor(void* pThis, void* not_u
         if (g_debugIsEnabled == true && spawnNumberedName != NULL)
         {
             std::cout << "[debug] CDisplay::CreatePlayerActor(): " << spawnNumberedName << std::endl;
-            std::cout << "[debug] a1: " << a1 << std::endl; // spawnInfo
+            std::cout << "[debug] a1: " << std::hex << a1 << std::endl; // spawnInfo
             std::cout << "[debug] a2: " << a2 << std::endl; // 0
             std::cout << "[debug] a3: " << a3 << std::endl; // 1
             std::cout << "[debug] a4: " << a4 << std::endl; // 2
@@ -407,7 +426,7 @@ int __fastcall EQAPP_DETOUR_CDisplay__DeleteActor(void* pThis, void* not_used, D
 
             if (g_debugIsEnabled == true && spawnNumberedName != NULL)
             {
-                std::cout << "[debug] CDisplay::DeleteActor(): " << spawnNumberedName << std::endl;
+                std::cout << "[debug] CDisplay::DeleteActor(): " << spawnNumberedName << " (" << std::hex << spawnInfo << ")" << std::endl;
             }
 
             EQAPP_OnScreenText_AddSpawnMessage(spawnInfo, true);
@@ -470,6 +489,15 @@ int __fastcall EQAPP_DETOUR_CEverQuest__dsp_chat(void* pThis, void* not_used, co
         }
     }
 
+    // camping out
+    const char* eqstr12293 = EQ_StringTable->getString(12293, 0); // 12293 It will take you about 30 seconds to prepare your camp.
+    if (strcmp(a1, eqstr12293) == 0)
+    {
+        EQ_ResetViewActor();
+
+        EQAPP_CharacterFile_Write();
+    }
+
     return EQAPP_REAL_CEverQuest__dsp_chat(pThis, a1, a2, a3);
 }
 
@@ -479,6 +507,8 @@ int __fastcall EQAPP_DETOUR_CEverQuest__MoveToZone(void* pThis, void* not_used, 
     {
         return EQAPP_REAL_CEverQuest__MoveToZone(pThis, a1, a2, a3, a4, a5, a6, a7, a8);
     }
+
+    std::cout << "Moving to zone..." << std::endl;
 
     g_espZoneActorIsEnabled = false;
 
@@ -494,9 +524,9 @@ int __fastcall EQAPP_DETOUR_CEverQuest__EnterZone(void* pThis, void* not_used, s
         return EQAPP_REAL_CEverQuest__EnterZone(pThis, a1);
     }
 
-    int result = EQAPP_REAL_CEverQuest__EnterZone(pThis, a1);
-
     std::cout << "Entering zone..." << std::endl;
+
+    int result = EQAPP_REAL_CEverQuest__EnterZone(pThis, a1);
 
     EQAPP_MapLabels_Remove();
 
